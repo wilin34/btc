@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC Battlefield - Edición Realista</title>
+    <title>BTC War - Tanques y Dispersión</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #020208; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; }
+        body { margin: 0; overflow: hidden; background-color: #050510; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; }
         
-        /* HUD Mínimo */
+        /* HUD */
         #hud { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; }
         
         .top-left { position: absolute; top: 20px; left: 20px; text-align: left; }
         .top-right { position: absolute; top: 20px; right: 20px; text-align: right; }
         
-        .price { font-size: 3rem; font-weight: bold; transition: color 0.5s ease; text-shadow: 0 0 30px rgba(0,0,0,0.9); }
-        .price.green { color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
-        .price.red { color: #ff3355; text-shadow: 0 0 20px rgba(255, 51, 85, 0.4); }
-        .subtext { font-size: 0.9rem; color: #888; }
+        .price { font-size: 3.5rem; font-weight: bold; transition: color 0.5s ease; text-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        .price.green { color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+        .price.red { color: #ff3355; text-shadow: 0 0 20px rgba(255, 51, 85, 0.6); }
+        .subtext { font-size: 0.9rem; color: #888; margin-top: -5px; }
         
         .sides { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; box-sizing: border-box; pointer-events: none; }
         .bull { color: #00ff88; font-size: 1.5rem; font-weight: bold; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
@@ -33,7 +33,7 @@
         
         .dominance-bar-container {
             position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
-            width: 400px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px;
+            width: 500px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px;
             overflow: hidden;
         }
         .dominance-bar {
@@ -49,17 +49,16 @@
 
     <div id="hud">
         <div class="top-left">
-            <div class="bull">BULLS</div>
+            <div class="bull">🏛️ BULLS HQ</div>
             <div class="price green" id="btcPrice">Cargando...</div>
             <div class="subtext" id="btcChange">--%</div>
         </div>
         <div class="top-right">
-            <div class="bear">BEARS</div>
+            <div class="bear">🐻 BEARS HQ</div>
         </div>
 
         <div class="status-badge" id="statusText">⚔️ EQUILIBRIO</div>
         
-        <!-- Barra de dominancia visual -->
         <div class="dominance-bar-container">
             <div class="dominance-bar" id="dominanceBar"></div>
         </div>
@@ -70,12 +69,11 @@
 
         // --- 1. CONFIGURACIÓN DE ESCENA ---
         const scene = new THREE.Scene();
-        // Un cielo oscuro con un ligero tono azulado
         scene.background = new THREE.Color(0x0a0a1a);
         scene.fog = new THREE.FogExp2(0x0a0a1a, 0.0015);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 30, 45);
+        camera.position.set(0, 35, 55);
         camera.lookAt(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
@@ -85,66 +83,57 @@
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
 
-        // Iluminación avanzada
+        // Iluminación
         const ambient = new THREE.AmbientLight(0x404060, 0.6);
         scene.add(ambient);
         
-        // Luz principal (sol simulado)
-        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.0);
         sunLight.position.set(-30, 40, 20);
         sunLight.castShadow = true;
         sunLight.shadow.mapSize.width = 2048;
         sunLight.shadow.mapSize.height = 2048;
-        sunLight.shadow.camera.near = 0.5;
-        sunLight.shadow.camera.far = 100;
-        sunLight.shadow.camera.left = -40;
-        sunLight.shadow.camera.right = 40;
-        sunLight.shadow.camera.top = 40;
-        sunLight.shadow.camera.bottom = -40;
+        sunLight.shadow.camera.left = -60;
+        sunLight.shadow.camera.right = 60;
+        sunLight.shadow.camera.top = 60;
+        sunLight.shadow.camera.bottom = -60;
         scene.add(sunLight);
 
-        // Luces de los bandos (iluminan el mapa)
-        const greenLight = new THREE.PointLight(0x00ff88, 100, 50);
-        greenLight.position.set(-20, 15, 0);
+        // Luces de los bandos
+        const greenLight = new THREE.PointLight(0x00ff88, 80, 50);
+        greenLight.position.set(-25, 15, 0);
         scene.add(greenLight);
-        const redLight = new THREE.PointLight(0xff3355, 100, 50);
-        redLight.position.set(20, 15, 0);
+        const redLight = new THREE.PointLight(0xff3355, 80, 50);
+        redLight.position.set(25, 15, 0);
         scene.add(redLight);
 
-        // --- 2. TERRENO CON TEXTURA Y RELIEVE ---
-        // Usamos un plano más detallado
-        const terrainWidth = 60;
-        const terrainDepth = 40;
-        const segments = 128;
+        // --- 2. TERRENO SUAVE ---
+        const terrainWidth = 70;
+        const terrainDepth = 50;
+        const segments = 100;
         const geometry = new THREE.PlaneGeometry(terrainWidth, terrainDepth, segments, segments);
         geometry.rotateX(-Math.PI / 2);
 
         const positionAttribute = geometry.attributes.position;
         const vertex = new THREE.Vector3();
         
-        // Generamos colinas suaves y naturales
         for (let i = 0; i < positionAttribute.count; i++) {
             vertex.fromBufferAttribute(positionAttribute, i);
-            // Combinación de ondas seno para crear un paisaje orgánico. 
-            // El centro (x=0) es un valle (trinchera).
-            const y = Math.sin(vertex.x * 0.4) * Math.cos(vertex.z * 0.3) * 2.0 
-                    + Math.sin(vertex.x * 0.1 + vertex.z * 0.2) * 1.0
-                    - Math.exp(-Math.pow(vertex.x, 2) * 0.05) * 1.5;
+            const y = Math.sin(vertex.x * 0.15) * Math.cos(vertex.z * 0.2) * 0.8 
+                    + Math.sin(vertex.x * 0.1 + vertex.z * 0.1) * 0.4
+                    - Math.exp(-Math.pow(vertex.x, 2) * 0.03) * 0.8;
             positionAttribute.setY(i, y);
         }
         geometry.computeVertexNormals();
 
-        // Creamos una textura de hierba procedural usando un Canvas
         function createGrassTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 256; canvas.height = 256;
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#1a3c1a';
             ctx.fillRect(0, 0, 256, 256);
-            // Puntos de hierba
-            for(let i=0; i<5000; i++) {
+            for(let i=0; i=10000; i++) {
                 ctx.fillStyle = Math.random() > 0.5 ? '#2a5c2a' : '#1a4a1a';
-                ctx.fillRect(Math.random()*256, Math.random()*256, 1, 2 + Math.random()*2);
+                ctx.fillRect(Math.random()*256, Math.random()*256, 1, 1 + Math.random()*2);
             }
             return new THREE.CanvasTexture(canvas);
         }
@@ -152,13 +141,13 @@
         const grassTexture = createGrassTexture();
         grassTexture.wrapS = THREE.RepeatWrapping;
         grassTexture.wrapT = THREE.RepeatWrapping;
-        grassTexture.repeat.set(8, 8);
+        grassTexture.repeat.set(10, 10);
 
         const material = new THREE.MeshStandardMaterial({
             map: grassTexture,
             roughness: 0.9,
             metalness: 0.0,
-            vertexColors: true, // Para el degradado de dominancia
+            vertexColors: true,
             side: THREE.DoubleSide
         });
 
@@ -166,20 +155,16 @@
         terrain.receiveShadow = true;
         scene.add(terrain);
 
-        // Función para actualizar el color de dominancia en el terreno
         function updateTerrainColors(dominance) {
             const colors = new Float32Array(positionAttribute.count * 3);
             const color = new THREE.Color();
-            // La línea de frente se mueve según la dominancia (-1 a 1)
-            let frontLineX = dominance * 5; 
+            let frontLineX = dominance * 6; 
 
             for (let i = 0; i < positionAttribute.count; i++) {
                 vertex.fromBufferAttribute(positionAttribute, i);
                 const x = vertex.x;
-                // Suavizamos la transición
-                const t = (x - (frontLineX - 6)) / 12;
+                const t = (x - (frontLineX - 8)) / 16;
                 const clampedT = Math.max(0, Math.min(1, t));
-                // Mezcla de Verde y Rojo
                 const hue = 0.33 - (clampedT * 0.33); 
                 color.setHSL(hue, 0.7, 0.12 + (clampedT * 0.25));
                 colors[i*3] = color.r;
@@ -190,126 +175,133 @@
             geometry.attributes.color.needsUpdate = true;
         }
 
-        // --- 3. DECORACIÓN DEL MAPA (Árboles y Rocas) ---
+        // --- 3. BASES MILITARES Y ÁRBOLES ---
+        function createBase(x, z, teamColor) {
+            const group = new THREE.Group();
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.9 });
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = 0.1;
+            floor.receiveShadow = true;
+            group.add(floor);
+
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x556677, roughness: 0.8 });
+            for(let i=0; i<4; i++) {
+                const wall = new THREE.Mesh(new THREE.BoxGeometry(7, 2.5, 0.5), wallMat);
+                wall.position.set( Math.sin(i*Math.PI/2)*3.5, 1.25, Math.cos(i*Math.PI/2)*3.5 );
+                wall.castShadow = true;
+                group.add(wall);
+            }
+
+            const comMat = new THREE.MeshStandardMaterial({ color: 0x445566, roughness: 0.6 });
+            const center = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2, 2.5, 8), comMat);
+            center.position.y = 1.25;
+            center.castShadow = true;
+            group.add(center);
+
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 3), poleMat);
+            pole.position.set(0, 1.5, 3.5);
+            group.add(pole);
+
+            const flagMat = new THREE.MeshStandardMaterial({ color: teamColor });
+            const flag = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.6), flagMat);
+            flag.position.set(0.5, 3, 3.5);
+            flag.rotation.y = -Math.PI/4;
+            group.add(flag);
+
+            const y = Math.sin(x * 0.15) * Math.cos(z * 0.2) * 0.8 + Math.sin(x * 0.1 + z * 0.1) * 0.4;
+            group.position.set(x, y, z);
+            return group;
+        }
+
         function createTree(x, z) {
             const group = new THREE.Group();
             const trunkMat = new THREE.MeshStandardMaterial({color: 0x4a3b32, roughness: 0.9});
-            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.25, 1.5, 6), trunkMat);
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 1.5), trunkMat);
             trunk.position.y = 0.75;
             trunk.castShadow = true;
             group.add(trunk);
 
             const leafMat = new THREE.MeshStandardMaterial({color: 0x1a5a1a, roughness: 0.8});
-            const leaf1 = new THREE.Mesh(new THREE.ConeGeometry(1.0, 1.8, 6), leafMat);
+            const leaf1 = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2, 6), leafMat);
             leaf1.position.y = 1.8;
             leaf1.castShadow = true;
             group.add(leaf1);
 
-            const leaf2 = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.2, 6), leafMat);
+            const leaf2 = new THREE.Mesh(new THREE.ConeGeometry(0.8, 1.5, 6), leafMat);
             leaf2.position.y = 2.8;
             leaf2.castShadow = true;
             group.add(leaf2);
 
-            const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
+            const y = Math.sin(x * 0.15) * Math.cos(z * 0.2) * 0.8 + Math.sin(x * 0.1 + z * 0.1) * 0.4;
             group.position.set(x, y, z);
             return group;
         }
 
-        function createRock(x, z, size) {
-            const mat = new THREE.MeshStandardMaterial({color: 0x556677, roughness: 0.9});
-            const geo = new THREE.DodecahedronGeometry(size);
-            const mesh = new THREE.Mesh(geo, mat);
-            const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
-            mesh.position.set(x, y + size/2, z);
-            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-            return mesh;
+        // Añadir bases y árboles
+        scene.add(createBase(-28, 0, 0x00ff88));
+        scene.add(createBase(28, 0, 0xff3355));
+
+        for(let i=0; i<200; i++) {
+            let x = (Math.random() - 0.5) * 65;
+            let z = (Math.random() - 0.5) * 45;
+            if(Math.abs(x) < 12 || Math.abs(x) > 26) continue; // Zona de batalla y bases libres
+            if(Math.abs(z) < 3) continue;
+            scene.add(createTree(x, z));
         }
 
-        // Poblar el mapa
-        const trees = [];
-        const rocks = [];
-
-        for(let i=0; i<100; i++) {
-            let x = (Math.random() - 0.5) * 50;
-            let z = (Math.random() - 0.5) * 30;
-            if(Math.abs(x) < 8 || Math.abs(z) < 3) continue; // Zona de batalla libre
-            if(Math.abs(x) > 25) continue; // Zona de bases libre
-            
-            const tree = createTree(x, z);
-            scene.add(tree);
-            trees.push(tree);
-        }
-
-        for(let i=0; i<40; i++) {
-            let x = (Math.random() - 0.5) * 50;
-            let z = (Math.random() - 0.5) * 30;
-            if(Math.abs(x) < 8 || Math.abs(x) > 25) continue;
-            const rock = createRock(x, z, 0.3 + Math.random()*0.5);
-            scene.add(rock);
-            rocks.push(rock);
-        }
-
-        // --- 4. SOLDADOS 3D ESTILIZADOS (NUEVO DISEÑO) ---
-        // En lugar de sprites, usamos geometría 3D para que se vean más reales y tengan volumen.
+        // --- 4. SOLDADOS CON DISPERSIÓN ---
         function create3DSoldier(color) {
             const group = new THREE.Group();
             const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.3 });
             const darkMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
-            const skinMat = new THREE.MeshStandardMaterial({ color: 0xdcb38a });
-
-            // Cuerpo (Torso)
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.8, 6), mat);
-            torso.position.y = 0.9;
+            
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 0.6, 6), mat);
+            torso.position.y = 0.7;
             torso.castShadow = true;
             group.add(torso);
 
-            // Cabeza (Casco)
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), darkMat);
-            head.position.y = 1.4;
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), darkMat);
+            head.position.y = 1.1;
             head.castShadow = true;
             group.add(head);
             
-            // Visor del casco
-            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.3), new THREE.MeshStandardMaterial({color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.5}));
-            visor.position.set(0, 1.3, 0.25);
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.05, 0.25), new THREE.MeshStandardMaterial({color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.5}));
+            visor.position.set(0, 1.05, 0.2);
             group.add(visor);
 
-            // Brazos
             const armMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.6 });
-            const armGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.6, 4);
+            const armGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.5, 4);
             
             const armL = new THREE.Mesh(armGeo, armMat);
-            armL.position.set(-0.4, 0.9, 0);
-            armL.rotation.z = 0.2;
+            armL.position.set(-0.3, 0.7, 0);
+            armL.rotation.z = 0.3;
             armL.castShadow = true;
             group.add(armL);
 
             const armR = new THREE.Mesh(armGeo, armMat);
-            armR.position.set(0.4, 0.9, 0);
-            armR.rotation.z = -0.2;
+            armR.position.set(0.3, 0.7, 0);
+            armR.rotation.z = -0.3;
             armR.castShadow = true;
             group.add(armR);
 
-            // Piernas
-            const legMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
-            const legGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.6, 4);
+            const legMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.8 });
+            const legGeo = new THREE.CylinderGeometry(0.1, 0.15, 0.5, 4);
             
             const legL = new THREE.Mesh(legGeo, legMat);
-            legL.position.set(-0.15, 0.3, 0);
+            legL.position.set(-0.15, 0.25, 0);
             legL.castShadow = true;
             group.add(legL);
 
             const legR = new THREE.Mesh(legGeo, legMat);
-            legR.position.set(0.15, 0.3, 0);
+            legR.position.set(0.15, 0.25, 0);
             legR.castShadow = true;
             group.add(legR);
 
-            // Rifle
-            const rifleMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.5, roughness: 0.4 });
-            const rifle = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.08, 0.08), rifleMat);
-            rifle.position.set(0.5, 0.9, 0);
+            const rifleMat = new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.5, roughness: 0.4 });
+            const rifle = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.08, 0.08), rifleMat);
+            rifle.position.set(0.5, 0.7, 0);
             rifle.rotation.z = -0.1;
             group.add(rifle);
 
@@ -324,41 +316,54 @@
                 
                 const color = team === 'green' ? 0x00ff88 : 0xff3355;
                 this.mesh = create3DSoldier(color);
-                const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
+                const y = Math.sin(x * 0.15) * Math.cos(z * 0.2) * 0.8 + Math.sin(x * 0.1 + z * 0.1) * 0.4;
                 this.mesh.position.set(x, y, z);
                 
-                // Rotar el soldado hacia el frente
                 if(team === 'green') this.mesh.rotation.y = 0;
                 else this.mesh.rotation.y = Math.PI;
 
                 scene.add(this.mesh);
-                this.speed = 0.03 + Math.random() * 0.02;
                 
-                // Límite de movimiento en Z (NUNCA se salen del mapa)
-                this.zBoundary = 14; 
+                // Lógica de dispersión
+                this.speed = 0.02 + Math.random() * 0.02;
+                this.zBoundary = 20; 
                 this.initialZ = z;
+                this.targetZ = z;
+                this.targetX = x;
+                this.timeToChangeTarget = 0;
             }
 
             update(pushStrength, time) {
                 if(!this.alive) return;
 
-                // Movimiento frontal (solo en X)
-                let moveForce = this.speed + (pushStrength * 0.03);
-                if(this.team === 'green') this.mesh.position.x += moveForce;
-                else this.mesh.position.x -= moveForce;
+                // Cambiar objetivo aleatoriamente para dispersarse
+                this.timeToChangeTarget -= 0.01;
+                if(this.timeToChangeTarget <= 0) {
+                    // El soldado elige un punto aleatorio hacia adelante y a los lados
+                    const forward = this.team === 'green' ? 2 : -2;
+                    this.targetX = this.mesh.position.x + forward + (Math.random() - 0.5) * 3;
+                    this.targetZ = this.mesh.position.z + (Math.random() - 0.5) * 5;
+                    // Limitar el objetivo dentro del campo
+                    this.targetZ = Math.max(-this.zBoundary, Math.min(this.zBoundary, this.targetZ));
+                    this.timeToChangeTarget = 0.5 + Math.random() * 1.0;
+                }
 
-                // Movimiento lateral limitado (para que no se salgan por los lados)
-                // El soldado se mueve en Z, pero rebota si llega al borde del mapa (14 o -14)
-                let zMove = Math.sin(time * 0.001 + this.initialZ * 10) * 0.02;
-                this.mesh.position.z += zMove;
-                
-                // CORRECCIÓN: Si el soldado está a punto de salirse del mapa, lo empujamos hacia adentro
-                if (this.mesh.position.z > this.zBoundary) this.mesh.position.z = this.zBoundary - 0.1;
-                if (this.mesh.position.z < -this.zBoundary) this.mesh.position.z = -this.zBoundary + 0.1;
+                // Movimiento suave hacia el objetivo (dispersión)
+                const dx = this.targetX - this.mesh.position.x;
+                const dz = this.targetZ - this.mesh.position.z;
+                const dist = Math.sqrt(dx*dx + dz*dz);
 
-                // Límites de la trinchera (no pasan del centro)
-                if(this.mesh.position.x > 4 && this.team === 'green') this.mesh.position.x = 4;
-                if(this.mesh.position.x < -4 && this.team === 'red') this.mesh.position.x = -4;
+                if(dist > 0.1) {
+                    const moveSpeed = Math.min(this.speed, dist);
+                    // Empuje del mercado + movimiento táctico
+                    const marketPush = this.team === 'green' ? pushStrength * 0.02 : -pushStrength * 0.02;
+                    this.mesh.position.x += (dx / dist) * moveSpeed + marketPush;
+                    this.mesh.position.z += (dz / dist) * moveSpeed;
+                }
+
+                // Limitar el borde del mapa en Z
+                if (this.mesh.position.z > this.zBoundary) this.mesh.position.z = this.zBoundary - 0.5;
+                if (this.mesh.position.z < -this.zBoundary) this.mesh.position.z = -this.zBoundary + 0.5;
             }
 
             takeDamage(dmg) {
@@ -366,41 +371,163 @@
                 if(this.hp <= 0) {
                     this.alive = false;
                     scene.remove(this.mesh);
-                    createExplosion(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z, this.team);
-                    // Reaparecer en la retaguardia
-                    setTimeout(() => this.respawn(), 1500 + Math.random() * 1000);
+                    createExplosion(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z, this.team, 1);
+                    return true;
                 }
+                return false;
             }
 
-            respawn() {
+            respawn(x, z) {
                 this.alive = true;
                 this.hp = 100;
-                const z = (Math.random() - 0.5) * 20; // Dentro de los límites del mapa
-                const y = Math.sin(this.mesh.position.x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(this.mesh.position.x * 0.1 + z * 0.2) * 1.0;
-                
-                if(this.team === 'green') {
-                    this.mesh.position.set(-12 - Math.random()*2, y, z);
-                } else {
-                    this.mesh.position.set(12 + Math.random()*2, y, z);
-                }
+                const y = Math.sin(x * 0.15) * Math.cos(z * 0.2) * 0.8 + Math.sin(x * 0.1 + z * 0.1) * 0.4;
+                this.mesh.position.set(x, y, z);
                 scene.add(this.mesh);
-                this.initialZ = z;
+                this.targetX = x;
+                this.targetZ = z;
+                this.timeToChangeTarget = 1.0;
             }
         }
 
-        // --- 5. EXPLOSIONES MEJORADAS ---
+        // --- 5. TANQUES DE GUERRA ---
+        function createTank(color) {
+            const group = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x445566, roughness: 0.8, metalness: 0.3 });
+            const trackMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.9 });
+            const teamMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.6, metalness: 0.5 });
+
+            // Chasis
+            const hull = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.8, 1.5), bodyMat);
+            hull.position.y = 0.6;
+            hull.castShadow = true;
+            group.add(hull);
+
+            // Orugas
+            const trackGeo = new THREE.BoxGeometry(0.3, 0.5, 2);
+            const trackL = new THREE.Mesh(trackGeo, trackMat);
+            trackL.position.set(-1.4, 0.5, 0);
+            group.add(trackL);
+            const trackR = new THREE.Mesh(trackGeo, trackMat);
+            trackR.position.set(1.4, 0.5, 0);
+            group.add(trackR);
+
+            // Torreta
+            const turret = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.8, 0.6, 8), teamMat);
+            turret.position.y = 1.2;
+            turret.castShadow = true;
+            group.add(turret);
+
+            // Cañón
+            const cannon = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.15, 1.2, 6), teamMat);
+            cannon.position.set(0, 1.2, 1.2);
+            cannon.rotation.x = Math.PI / 2;
+            cannon.castShadow = true;
+            group.add(cannon);
+
+            return group;
+        }
+
+        class Tank {
+            constructor(x, z, team) {
+                this.team = team;
+                this.alive = true;
+                this.hp = 500;
+                this.cooldown = 0;
+                
+                const color = team === 'green' ? 0x00ff88 : 0xff3355;
+                this.mesh = createTank(color);
+                const y = Math.sin(x * 0.15) * Math.cos(z * 0.2) * 0.8 + Math.sin(x * 0.1 + z * 0.1) * 0.4;
+                this.mesh.position.set(x, y, z);
+                if(team === 'green') this.mesh.rotation.y = 0;
+                else this.mesh.rotation.y = Math.PI;
+                scene.add(this.mesh);
+
+                this.speed = 0.01;
+                this.zBoundary = 18;
+                this.targetZ = z;
+                this.timeToChangeTarget = 0;
+            }
+
+            update(pushStrength, time) {
+                if(!this.alive) return;
+
+                // Movimiento lento del tanque
+                const marketPush = this.team === 'green' ? pushStrength * 0.01 : -pushStrength * 0.01;
+                this.mesh.position.x += this.speed + marketPush;
+
+                // Dispersión lateral de tanques
+                this.timeToChangeTarget -= 0.01;
+                if(this.timeToChangeTarget <= 0) {
+                    this.targetZ = this.mesh.position.z + (Math.random() - 0.5) * 4;
+                    this.targetZ = Math.max(-this.zBoundary, Math.min(this.zBoundary, this.targetZ));
+                    this.timeToChangeTarget = 2 + Math.random() * 2;
+                }
+                const dz = this.targetZ - this.mesh.position.z;
+                if(Math.abs(dz) > 0.1) this.mesh.position.z += Math.sign(dz) * 0.02;
+
+                // Disparar
+                this.cooldown -= 0.01;
+                if(this.cooldown <= 0 && this.alive) {
+                    this.shoot();
+                    this.cooldown = 1.5 + Math.random() * 1.0;
+                }
+
+                // Límites
+                if(this.mesh.position.x > 8 && this.team === 'green') this.mesh.position.x = 8;
+                if(this.mesh.position.x < -8 && this.team === 'red') this.mesh.position.x = -8;
+            }
+
+            shoot() {
+                // Crear un proyectil
+                const startX = this.mesh.position.x + (this.team === 'green' ? 1.5 : -1.5);
+                const y = Math.sin(startX * 0.15) * Math.cos(this.mesh.position.z * 0.2) * 0.8 + Math.sin(startX * 0.1 + this.mesh.position.z * 0.1) * 0.4 + 1.5;
+                createProjectile(startX, y, this.mesh.position.z, this.team);
+            }
+
+            takeDamage(dmg) {
+                this.hp -= dmg;
+                if(this.hp <= 0) {
+                    this.alive = false;
+                    scene.remove(this.mesh);
+                    createExplosion(this.mesh.position.x, this.mesh.position.y + 2, this.mesh.position.z, this.team, 3);
+                }
+            }
+        }
+
+        // --- 6. PROYECTILES DE TANQUES ---
+        const projectiles = [];
+
+        function createProjectile(x, y, z, team) {
+            const geo = new THREE.SphereGeometry(0.2, 6, 6);
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0xff5500, emissiveIntensity: 0.5 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(x, y, z);
+            scene.add(mesh);
+
+            const direction = team === 'green' ? 1 : -1;
+            projectiles.push({
+                mesh: mesh,
+                vx: 0.3 * direction + (Math.random() - 0.5) * 0.05,
+                vy: (Math.random() - 0.5) * 0.05,
+                vz: (Math.random() - 0.5) * 0.05,
+                team: team,
+                life: 3.0
+            });
+        }
+
+        // --- 7. EXPLOSIONES MEJORADAS ---
         const explosions = [];
-        function createExplosion(x, y, z, teamColor) {
-            const count = 100;
+        function createExplosion(x, y, z, teamColor, size) {
+            const count = 80 * size;
             const positions = new Float32Array(count * 3);
             const colors = new Float32Array(count * 3);
             const velocities = [];
             const baseColor = teamColor === 'green' ? [0, 1, 0.5] : [1, 0.2, 0.3];
 
             for(let i=0; i<count; i++) {
-                positions[i*3] = x + (Math.random()-0.5)*1.5;
+                positions[i*3] = x + (Math.random()-0.5)*2*size;
                 positions[i*3+1] = y;
-                positions[i*3+2] = z + (Math.random()-0.5)*1.5;
+                positions[i*3+2] = z + (Math.random()-0.5)*2*size;
                 
                 const r = Math.random();
                 if(r < 0.6) { colors[i*3] = 1; colors[i*3+1] = 0.6; colors[i*3+2] = 0; } // Fuego
@@ -408,9 +535,9 @@
                 else { colors[i*3] = baseColor[0]; colors[i*3+1] = baseColor[1]; colors[i*3+2] = baseColor[2]; } // Bando
 
                 velocities.push({
-                    x: (Math.random() - 0.5) * 4,
-                    y: Math.random() * 5 + 2,
-                    z: (Math.random() - 0.5) * 4
+                    x: (Math.random() - 0.5) * 5 * size,
+                    y: Math.random() * 6 * size + 2,
+                    z: (Math.random() - 0.5) * 5 * size
                 });
             }
 
@@ -419,7 +546,7 @@
             geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const mat = new THREE.PointsMaterial({
-                size: 0.3,
+                size: 0.4 * size,
                 vertexColors: true,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
@@ -428,21 +555,77 @@
 
             const points = new THREE.Points(geo, mat);
             scene.add(points);
-            explosions.push({ mesh: points, velocities: velocities, life: 1.0, decay: 0.015 });
+            explosions.push({ mesh: points, velocities: velocities, life: 1.5, decay: 0.015 });
         }
 
-        // --- 6. EJÉRCITOS ---
-        const greenArmy = [];
-        const redArmy = [];
-        const armyCount = 60; 
+        // --- 8. EJÉRCITOS Y TANQUES ---
+        let greenArmy = [];
+        let redArmy = [];
+        let greenTanks = [];
+        let redTanks = [];
+        let maxTotalArmy = 120;
 
-        for(let i=0; i<armyCount; i++) {
-            const z = (Math.random() - 0.5) * 20; // Controlado para que no salga
-            greenArmy.push(new Soldier(-12 - Math.random()*2, z, 'green'));
-            redArmy.push(new Soldier(12 + Math.random()*2, z, 'red'));
+        function spawnSoldier(team) {
+            const z = (Math.random() - 0.5) * 30;
+            let x;
+            if(team === 'green') x = -18 - Math.random()*3;
+            else x = 18 + Math.random()*3;
+            const soldier = new Soldier(x, z, team);
+            if(team === 'green') greenArmy.push(soldier);
+            else redArmy.push(soldier);
         }
 
-        // --- 7. PRECIO REAL ---
+        function spawnTank(team) {
+            const z = (Math.random() - 0.5) * 25;
+            let x;
+            if(team === 'green') x = -20 - Math.random()*2;
+            else x = 20 + Math.random()*2;
+            const tank = new Tank(x, z, team);
+            if(team === 'green') greenTanks.push(tank);
+            else redTanks.push(tank);
+        }
+
+        // Inicializar
+        for(let i=0; i<50; i++) spawnSoldier('green');
+        for(let i=0; i<50; i++) spawnSoldier('red');
+        for(let i=0; i<5; i++) spawnTank('green');
+        for(let i=0; i<5; i++) spawnTank('red');
+
+        function updateArmySize(greenTarget, redTarget) {
+            const greenCurrent = greenArmy.filter(s => s.alive).length;
+            const redCurrent = redArmy.filter(s => s.alive).length;
+
+            // Refuerzos para Verdes
+            if(greenCurrent < greenTarget) {
+                const deadGreen = greenArmy.find(s => !s.alive);
+                if(deadGreen) deadGreen.respawn(-18 - Math.random()*3, (Math.random() - 0.5) * 30);
+                else if(greenArmy.length + redArmy.length < maxTotalArmy) spawnSoldier('green');
+            } 
+            else if (greenCurrent > greenTarget) {
+                const aliveGreens = greenArmy.filter(s => s.alive);
+                if(aliveGreens.length > 0) {
+                    const randomGreen = aliveGreens[Math.floor(Math.random() * aliveGreens.length)];
+                    randomGreen.alive = false;
+                    scene.remove(randomGreen.mesh);
+                }
+            }
+
+            // Refuerzos para Rojos
+            if(redCurrent < redTarget) {
+                const deadRed = redArmy.find(s => !s.alive);
+                if(deadRed) deadRed.respawn(18 + Math.random()*3, (Math.random() - 0.5) * 30);
+                else if(greenArmy.length + redArmy.length < maxTotalArmy) spawnSoldier('red');
+            } else if (redCurrent > redTarget) {
+                const aliveReds = redArmy.filter(s => s.alive);
+                if(aliveReds.length > 0) {
+                    const randomRed = aliveReds[Math.floor(Math.random() * aliveReds.length)];
+                    randomRed.alive = false;
+                    scene.remove(randomRed.mesh);
+                }
+            }
+        }
+
+        // --- 9. PRECIO REAL ---
         let currentPrice = 64000;
         let dominance = 0;
         const priceElement = document.getElementById('btcPrice');
@@ -461,33 +644,27 @@
                 priceElement.className = `price ${change > 0 ? 'green' : 'red'}`;
                 changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
 
-                // Dominancia (-1 a 1)
                 dominance = Math.max(-1, Math.min(1, change / 2)); 
                 
-                // Actualizar terreno
-                updateTerrainColors(dominance);
+                // Calcular ejército basado en % de cambio
+                const baseArmy = 30; 
+                const maxExtra = 40;
+                const greenExtra = Math.min(maxExtra, Math.max(0, change * 8)); 
+                const redExtra = Math.min(maxExtra, Math.max(0, -change * 8));
+                updateArmySize(baseArmy + greenExtra, baseArmy + redExtra);
 
-                // Actualizar barra de dominancia (visual)
+                // Actualizar terreno y barra
+                updateTerrainColors(dominance);
                 const barPercent = 50 + (dominance * 50);
                 dominanceBar.style.width = `${Math.max(0, Math.min(100, barPercent))}%`;
-                if(dominance > 0.1) {
-                    dominanceBar.style.background = '#00ff88';
-                    dominanceBar.style.boxShadow = '0 0 10px #00ff88';
-                } else if (dominance < -0.1) {
-                    dominanceBar.style.background = '#ff3355';
-                    dominanceBar.style.boxShadow = '0 0 10px #ff3355';
-                } else {
-                    dominanceBar.style.background = '#888';
-                    dominanceBar.style.boxShadow = 'none';
-                }
+                dominanceBar.style.background = dominance > 0.1 ? '#00ff88' : dominance < -0.1 ? '#ff3355' : '#888';
 
-                // Estado
                 if(dominance > 0.3) {
-                    statusElement.innerHTML = '🐂 AVANCE BULL';
+                    statusElement.innerHTML = '🔥 OFENSIVA BULL';
                     statusElement.style.color = '#00ff88';
                     statusElement.style.borderColor = '#00ff88';
                 } else if (dominance < -0.3) {
-                    statusElement.innerHTML = '🐻 AVANCE BEAR';
+                    statusElement.innerHTML = '🔥 OFENSIVA BEAR';
                     statusElement.style.color = '#ff3355';
                     statusElement.style.borderColor = '#ff3355';
                 } else {
@@ -503,9 +680,9 @@
         fetchBTCPrice();
         setInterval(fetchBTCPrice, 3000);
 
-        // --- 8. COMBATE ---
+        // --- 10. COMBATE Y FÍSICA ---
         function checkCollisions() {
-            const limit = 1.8;
+            const limit = 1.5;
             for(let g of greenArmy) {
                 if(!g.alive) continue;
                 for(let r of redArmy) {
@@ -514,35 +691,26 @@
                     const dz = g.mesh.position.z - r.mesh.position.z;
                     const dist = Math.sqrt(dx*dx + dz*dz);
                     if(dist < limit) {
-                        g.takeDamage(25);
-                        r.takeDamage(25);
-                        // Rebote
-                        const pushX = dx / dist;
-                        const pushZ = dz / dist;
-                        g.mesh.position.x += pushX * 0.5;
-                        r.mesh.position.x -= pushX * 0.5;
-                        g.mesh.position.z += pushZ * 0.5;
-                        r.mesh.position.z -= pushZ * 0.5;
+                        g.takeDamage(20);
+                        r.takeDamage(20);
                     }
                 }
             }
         }
 
-        // --- 9. BUCLE PRINCIPAL ---
+        // --- 11. BUCLE PRINCIPAL ---
         let time = 0;
-        let rainPositions;
         
-        // Crear lluvia (partículas)
-        const rainCount = 2000;
+        const rainCount = 3000;
         const rainGeo = new THREE.BufferGeometry();
         const rainPos = new Float32Array(rainCount * 3);
         for(let i=0; i<rainCount*3; i+=3) {
-            rainPos[i] = (Math.random()-0.5)*100;
-            rainPos[i+1] = Math.random()*60;
-            rainPos[i+2] = (Math.random()-0.5)*100;
+            rainPos[i] = (Math.random()-0.5)*150;
+            rainPos[i+1] = Math.random()*80;
+            rainPos[i+2] = (Math.random()-0.5)*150;
         }
         rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
-        const rainMat = new THREE.PointsMaterial({color: 0x88aaff, size: 0.1, transparent: true, opacity: 0.2});
+        const rainMat = new THREE.PointsMaterial({color: 0x88aaff, size: 0.15, transparent: true, opacity: 0.3});
         const rain = new THREE.Points(rainGeo, rainMat);
         scene.add(rain);
 
@@ -554,19 +722,37 @@
             const rPos = rain.geometry.attributes.position.array;
             for(let i=1; i<rPos.length; i+=3) {
                 rPos[i] -= 0.8;
-                if(rPos[i] < -10) rPos[i] = 60;
+                if(rPos[i] < -10) rPos[i] = 80;
             }
             rain.geometry.attributes.position.needsUpdate = true;
 
-            // Actualizar soldados (solo avanzan y con límite Z)
+            // Actualizar entidades
             const pushStrength = dominance * 0.6;
             greenArmy.forEach(g => g.update(pushStrength, time));
             redArmy.forEach(r => r.update(pushStrength, time));
+            greenTanks.forEach(t => t.update(pushStrength, time));
+            redTanks.forEach(t => t.update(pushStrength, time));
 
-            // Peleas
             checkCollisions();
 
-            // Explosiones
+            // Actualizar proyectiles
+            for(let i=projectiles.length-1; i>=0; i--) {
+                const p = projectiles[i];
+                p.mesh.position.x += p.vx;
+                p.mesh.position.y += p.vy;
+                p.mesh.position.z += p.vz;
+                p.vy -= 0.005; // Gravedad
+                p.life -= 0.02;
+                
+                if(p.life <= 0 || p.mesh.position.y < 0) {
+                    // Impacto
+                    createExplosion(p.mesh.position.x, p.mesh.position.y, p.mesh.position.z, p.team, 2);
+                    scene.remove(p.mesh);
+                    projectiles.splice(i, 1);
+                }
+            }
+
+            // Actualizar explosiones
             for(let i=explosions.length-1; i>=0; i--) {
                 const exp = explosions[i];
                 exp.life -= exp.decay;
@@ -590,7 +776,6 @@
 
         // Inicialización
         updateTerrainColors(0);
-        
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();

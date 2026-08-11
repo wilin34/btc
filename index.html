@@ -13,43 +13,37 @@
             box-sizing: border-box;
         }
         :root {
-            --bg-primary: #f5f7fa;
-            --bg-secondary: #ffffff;
-            --bg-panel: #f0f2f5;
-            --border-color: #e0e4e8;
-            --text-primary: #1a2634;
-            --text-secondary: #4a5a6a;
-            --text-muted: #8899aa;
-            --accent: #4a8bc2;
-            --accent-hover: #5a9bd2;
-            --accent-dim: rgba(74, 139, 194, 0.08);
-            --success: #4a9e6a;
-            --success-hover: #5aae7a;
-            --danger: #c06a6a;
-            --danger-hover: #d07a7a;
-            --warning: #c09a4a;
-            --warning-hover: #d0aa5a;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a1a;
+            --bg-panel: rgba(255, 255, 255, 0.04);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --text-primary: #e8e8e8;
+            --text-secondary: #9a9a9a;
+            --text-muted: #666666;
+            --accent: #6b6b6b;
+            --accent-hover: #888888;
+            --accent-dim: rgba(255, 255, 255, 0.06);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             --radius: 16px;
-            --radius-sm: 10px;
         }
         body {
-            background: #e8ecf0;
+            background: #080808;
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 16px;
+            padding: 12px;
         }
         .app {
             max-width: 1440px;
             width: 100%;
             background: var(--bg-primary);
             border-radius: 24px;
-            padding: 20px 24px 24px;
+            padding: 16px 20px 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
+            position: relative;
         }
 
         /* ===== HEADER ===== */
@@ -59,27 +53,26 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .logo {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
         .logo-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: var(--accent);
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: white;
-            box-shadow: 0 2px 8px rgba(74, 139, 194, 0.2);
         }
         .logo h1 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.3px;
@@ -90,11 +83,11 @@
             font-weight: 400;
             display: block;
             margin-top: -2px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
@@ -102,26 +95,26 @@
         .btn {
             background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            padding: 8px 18px;
+            padding: 7px 16px;
             border-radius: 30px;
             font-weight: 500;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease;
             font-family: inherit;
             white-space: nowrap;
         }
         .btn i {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
         .btn:hover {
-            background: #e4e8ed;
-            border-color: #c8ced6;
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.12);
             color: var(--text-primary);
         }
         .btn-primary {
@@ -137,76 +130,62 @@
             border-color: var(--accent-hover);
         }
         .btn-success {
-            background: var(--success);
-            border-color: var(--success);
+            background: #2a5a3a;
+            border-color: #2a5a3a;
             color: white;
         }
         .btn-success i {
             color: white;
         }
         .btn-success:hover {
-            background: var(--success-hover);
-            border-color: var(--success-hover);
+            background: #3a6a4a;
+            border-color: #3a6a4a;
         }
         .btn-danger {
-            background: var(--danger);
-            border-color: var(--danger);
+            background: #5a2a2a;
+            border-color: #5a2a2a;
             color: white;
         }
         .btn-danger i {
             color: white;
         }
         .btn-danger:hover {
-            background: var(--danger-hover);
-            border-color: var(--danger-hover);
-        }
-        .btn-warning {
-            background: var(--warning);
-            border-color: var(--warning);
-            color: white;
-        }
-        .btn-warning i {
-            color: white;
-        }
-        .btn-warning:hover {
-            background: var(--warning-hover);
-            border-color: var(--warning-hover);
+            background: #6a3a3a;
+            border-color: #6a3a3a;
         }
         .btn-outline {
             background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .btn-outline:hover {
-            background: var(--bg-panel);
-            border-color: #c8ced6;
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
         }
         .btn-sm {
-            padding: 5px 12px;
-            font-size: 0.7rem;
+            padding: 4px 10px;
+            font-size: 0.65rem;
         }
 
         /* ===== TOOLBAR ===== */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 12px;
+            gap: 6px 10px;
             align-items: center;
-            background: var(--bg-secondary);
+            background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 40px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            margin-bottom: 14px;
         }
         .toolbar .divider {
             width: 1px;
-            height: 28px;
+            height: 24px;
             background: var(--border-color);
         }
         .toolbar .btn-group {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
         }
 
@@ -214,19 +193,18 @@
         .map-wrapper {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            position: relative;
         }
         #mapCanvas {
             width: 100%;
             height: auto;
-            background: #ffffff;
-            border-radius: var(--radius-sm);
+            background: #111111;
+            border-radius: 10px;
             display: block;
             cursor: crosshair;
             touch-action: none;
-            border: 1px solid #eef0f2;
         }
 
         /* ===== INFO FOOTER ===== */
@@ -235,81 +213,79 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            margin-top: 12px;
-            padding: 0 4px;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 0 2px;
         }
         .stats {
             display: flex;
-            gap: 18px;
-            background: var(--bg-secondary);
-            padding: 6px 20px;
+            gap: 16px;
+            background: var(--bg-panel);
+            padding: 5px 16px;
             border-radius: 30px;
             border: 1px solid var(--border-color);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             flex-wrap: wrap;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
         }
         .stats span {
             color: var(--text-secondary);
         }
         .stats span strong {
             color: var(--text-primary);
-            font-weight: 600;
+            font-weight: 500;
         }
         .stats .accent {
-            color: var(--accent);
+            color: var(--text-secondary);
         }
         .legend {
             display: flex;
-            gap: 16px;
+            gap: 14px;
             align-items: center;
             flex-wrap: wrap;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .dot {
-            width: 13px;
-            height: 13px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .dot.camera {
-            background: #4a5a6a;
+            background: #3a3a3a;
         }
         .dot.selected {
-            background: #f5b342;
-            border-color: #f5b342;
+            background: #9a9a9a;
+            border-color: #9a9a9a;
         }
         .dot.fov {
-            background: rgba(74, 139, 194, 0.12);
-            border: 1px dashed var(--accent);
-            width: 15px;
-            height: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed var(--text-muted);
+            width: 14px;
+            height: 14px;
         }
         .map-scale {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-secondary);
-            padding: 4px 14px 4px 12px;
+            background: var(--bg-panel);
+            padding: 3px 12px 3px 10px;
             border-radius: 30px;
             border: 1px solid var(--border-color);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
         }
         .map-scale input {
             width: 60px;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            background: var(--bg-primary);
+            background: rgba(0, 0, 0, 0.3);
             color: var(--text-primary);
             text-align: center;
             font-size: 0.7rem;
@@ -317,45 +293,43 @@
         }
         .map-scale input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(74, 139, 194, 0.08);
         }
 
         /* ===== EDIT PANEL ===== */
         .edit-panel {
-            background: var(--bg-secondary);
+            background: var(--bg-panel);
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            padding: 16px 20px 18px;
-            margin-top: 14px;
+            padding: 14px 18px 16px;
+            margin-top: 12px;
             display: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
         .edit-panel.visible {
             display: block;
         }
         .edit-panel h3 {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .edit-panel h3 i {
-            color: var(--accent);
+            color: var(--text-muted);
         }
         .edit-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px 20px;
+            gap: 10px 16px;
             align-items: flex-end;
         }
         .edit-field {
             display: flex;
             flex-direction: column;
-            gap: 3px;
-            min-width: 110px;
+            gap: 2px;
+            min-width: 100px;
             flex: 1 0 auto;
         }
         .edit-field label {
@@ -367,62 +341,127 @@
         }
         .edit-field input,
         .edit-field select {
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            background: var(--bg-primary);
+            background: rgba(0, 0, 0, 0.25);
             color: var(--text-primary);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             outline: none;
             width: 100%;
             font-family: inherit;
-            transition: border-color 0.2s;
         }
         .edit-field input:focus,
         .edit-field select:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(74, 139, 194, 0.08);
         }
         .edit-field select option {
-            background: white;
+            background: var(--bg-secondary);
             color: var(--text-primary);
         }
         .edit-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 12px;
+            gap: 8px;
+            margin-top: 10px;
             flex-wrap: wrap;
             align-items: center;
         }
         .badge-info {
             background: var(--accent-dim);
-            border: 1px solid rgba(74, 139, 194, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 30px;
-            padding: 4px 16px;
-            font-size: 0.7rem;
+            padding: 3px 14px;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+        }
+
+        /* ===== GOOGLE MAPS SECTION ===== */
+        .google-maps-section {
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            align-items: center;
+        }
+        .google-maps-section label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .google-maps-section input {
+            flex: 1;
+            min-width: 200px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.25);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            outline: none;
+            font-family: inherit;
+        }
+        .google-maps-section input:focus {
+            border-color: var(--accent);
+        }
+        .google-maps-section .btn {
+            padding: 5px 14px;
+            font-size: 0.7rem;
+        }
+        .google-maps-preview {
+            width: 100%;
+            margin-top: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #111;
+            min-height: 200px;
+            position: relative;
+        }
+        .google-maps-preview iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            display: block;
+        }
+        .google-maps-preview .placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .google-maps-preview .placeholder i {
+            font-size: 2rem;
+            opacity: 0.3;
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .app {
-                padding: 12px 14px;
+                padding: 10px 12px;
                 border-radius: 16px;
             }
             .logo h1 {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .logo-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
             }
             .toolbar {
-                border-radius: 24px;
-                padding: 10px 14px;
+                border-radius: 20px;
+                padding: 8px 12px;
                 flex-direction: column;
                 align-items: stretch;
             }
@@ -436,17 +475,17 @@
                 min-width: 100%;
             }
             .stats {
-                gap: 12px;
-                font-size: 0.65rem;
-                padding: 5px 14px;
+                gap: 10px;
+                font-size: 0.6rem;
+                padding: 4px 12px;
             }
             .legend {
-                gap: 12px;
-                font-size: 0.65rem;
+                gap: 10px;
+                font-size: 0.6rem;
             }
             .map-scale {
-                font-size: 0.65rem;
-                padding: 3px 10px;
+                font-size: 0.6rem;
+                padding: 2px 10px;
             }
             .map-scale input {
                 width: 50px;
@@ -454,34 +493,41 @@
             .header-actions .btn span {
                 display: none;
             }
+            .google-maps-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .google-maps-section input {
+                min-width: unset;
+            }
+            .google-maps-preview iframe {
+                height: 200px;
+            }
         }
         @media (max-width: 480px) {
             .btn {
-                font-size: 0.7rem;
-                padding: 6px 12px;
+                font-size: 0.65rem;
+                padding: 5px 10px;
             }
             .btn i {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             .stats {
-                gap: 8px;
-                font-size: 0.6rem;
-                padding: 4px 10px;
+                gap: 6px;
+                font-size: 0.55rem;
+                padding: 3px 10px;
             }
         }
 
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #c8ced6;
         }
     </style>
 </head>
@@ -506,12 +552,12 @@
         <div class="toolbar">
             <div class="btn-group">
                 <button class="btn btn-primary" id="addCameraBtn"><i class="fas fa-plus-circle"></i> Añadir</button>
-                <button class="btn btn-danger" id="deleteSelectedBtn"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                <button class="btn btn-outline" id="deleteSelectedBtn"><i class="fas fa-trash-alt"></i> Eliminar</button>
                 <button class="btn btn-outline" id="clearAllBtn"><i class="fas fa-eraser"></i> Limpiar</button>
             </div>
             <div class="divider"></div>
             <div class="btn-group">
-                <button class="btn btn-warning" id="loadBgBtn"><i class="fas fa-image"></i> Fondo</button>
+                <button class="btn btn-outline" id="loadBgBtn"><i class="fas fa-image"></i> Fondo local</button>
                 <input type="file" id="bgFileInput" accept="image/*" style="display:none;" />
                 <button class="btn btn-outline" id="removeBgBtn"><i class="fas fa-times"></i> Quitar</button>
             </div>
@@ -533,6 +579,21 @@
             <canvas id="mapCanvas" width="1200" height="650"></canvas>
         </div>
 
+        <!-- GOOGLE MAPS SECTION -->
+        <div class="google-maps-section">
+            <label><i class="fas fa-map"></i> Google Maps:</label>
+            <input type="text" id="googleMapsUrl" placeholder="Pega la URL de Google Maps (embed) o dirección" />
+            <button class="btn btn-primary" id="loadGoogleMapsBtn"><i class="fas fa-check"></i> Cargar mapa</button>
+            <button class="btn btn-outline" id="clearGoogleMapsBtn"><i class="fas fa-times"></i> Quitar</button>
+            <div class="google-maps-preview" id="googleMapsPreview">
+                <div class="placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Pega una URL de Google Maps para usarla como fondo</span>
+                    <span style="font-size:0.6rem;color:var(--text-muted);">Ej: https://www.google.com/maps/embed?pb=...</span>
+                </div>
+            </div>
+        </div>
+
         <!-- INFO FOOTER -->
         <div class="info-footer">
             <div class="stats">
@@ -549,7 +610,7 @@
                 <span class="map-scale">
                     <i class="fas fa-ruler-combined"></i>
                     1px = <input type="number" id="scaleInput" value="0.05" step="0.005" min="0.005" max="2" /> m
-                    <button class="btn btn-sm btn-outline" id="applyScaleBtn" style="padding:2px 10px;">✓</button>
+                    <button class="btn btn-sm btn-outline" id="applyScaleBtn" style="padding:1px 8px;">✓</button>
                 </span>
             </div>
         </div>
@@ -593,18 +654,18 @@
         </div>
 
         <!-- MODAL HELP -->
-        <div id="helpModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-            <div style="background:white;border-radius:20px;padding:30px;max-width:480px;margin:20px;border:1px solid var(--border-color);box-shadow:var(--shadow);">
-                <h3 style="color:var(--text-primary);margin-bottom:14px;font-weight:600;"><i class="fas fa-lightbulb" style="color:var(--warning);margin-right:10px;"></i>Guía rápida</h3>
-                <ul style="list-style:none;color:var(--text-secondary);font-size:0.9rem;line-height:2.2;">
-                    <li><i class="fas fa-mouse-pointer" style="color:var(--accent);width:24px;"></i> Click en cámara → seleccionar</li>
-                    <li><i class="fas fa-arrows-alt" style="color:var(--accent);width:24px;"></i> Arrastrar cámara → mover</li>
-                    <li><i class="fas fa-plus-circle" style="color:var(--accent);width:24px;"></i> "Añadir" → nueva cámara</li>
-                    <li><i class="fas fa-sliders-h" style="color:var(--accent);width:24px;"></i> Panel edita: lente, distancia, rotación</li>
-                    <li><i class="fas fa-ruler-combined" style="color:var(--accent);width:24px;"></i> Escala ajustable</li>
-                    <li><i class="fas fa-image" style="color:var(--accent);width:24px;"></i> Cargar fondo (imagen local)</li>
-                    <li><i class="fas fa-download" style="color:var(--accent);width:24px;"></i> Guardar/Cargar proyectos</li>
-                    <li><i class="fas fa-camera" style="color:var(--accent);width:24px;"></i> Exportar Imagen (PNG)</li>
+        <div id="helpModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(6px);">
+            <div style="background:var(--bg-secondary);border-radius:20px;padding:28px;max-width:480px;margin:20px;border:1px solid var(--border-color);">
+                <h3 style="color:var(--text-primary);margin-bottom:14px;font-weight:600;"><i class="fas fa-lightbulb" style="color:var(--text-secondary);margin-right:10px;"></i>Guía rápida</h3>
+                <ul style="list-style:none;color:var(--text-secondary);font-size:0.85rem;line-height:2.2;">
+                    <li><i class="fas fa-mouse-pointer" style="color:var(--text-muted);width:22px;"></i> Click en cámara → seleccionar</li>
+                    <li><i class="fas fa-arrows-alt" style="color:var(--text-muted);width:22px;"></i> Arrastrar cámara → mover</li>
+                    <li><i class="fas fa-plus-circle" style="color:var(--text-muted);width:22px;"></i> "Añadir" → nueva cámara</li>
+                    <li><i class="fas fa-sliders-h" style="color:var(--text-muted);width:22px;"></i> Panel edita: lente, distancia, rotación</li>
+                    <li><i class="fas fa-ruler-combined" style="color:var(--text-muted);width:22px;"></i> Escala ajustable</li>
+                    <li><i class="fas fa-image" style="color:var(--text-muted);width:22px;"></i> Fondo local o Google Maps</li>
+                    <li><i class="fas fa-download" style="color:var(--text-muted);width:22px;"></i> Guardar/Cargar proyectos</li>
+                    <li><i class="fas fa-camera" style="color:var(--text-muted);width:22px;"></i> Exportar Imagen (PNG)</li>
                 </ul>
                 <button onclick="document.getElementById('helpModal').style.display='none'" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Entendido</button>
             </div>
@@ -621,6 +682,7 @@
             let nextId = 1;
             let backgroundImage = null;
             let backgroundImageData = null;
+            let googleMapsIframe = null;
             let scaleMetersPerPixel = 0.05;
 
             const canvas = document.getElementById('mapCanvas');
@@ -644,6 +706,8 @@
             const closeEditBtn = document.getElementById('closeEditBtn');
             const scaleInput = document.getElementById('scaleInput');
             const applyScaleBtn = document.getElementById('applyScaleBtn');
+            const googleMapsUrl = document.getElementById('googleMapsUrl');
+            const googleMapsPreview = document.getElementById('googleMapsPreview');
 
             const DEFAULT_DISTANCIA = 5;
             const DEFAULT_ROTATION = 0;
@@ -684,8 +748,30 @@
             function drawMap() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Fondo blanco o imagen
-                if (backgroundImage) {
+                // Fondo: Google Maps o imagen local
+                if (googleMapsIframe) {
+                    // Dibujar el iframe de Google Maps como fondo
+                    try {
+                        // Intentar dibujar el contenido del iframe en el canvas
+                        // Nota: Por políticas de seguridad, no se puede dibujar un iframe directamente
+                        // Mostramos un mensaje indicando que el mapa está cargado
+                        ctx.fillStyle = '#1a1a2e';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.save();
+                        ctx.fillStyle = '#4a4a6a';
+                        ctx.font = '16px "Inter", sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('Google Maps cargado como fondo', canvas.width / 2, canvas.height / 2 - 20);
+                        ctx.fillStyle = '#6a6a8a';
+                        ctx.font = '12px "Inter", sans-serif';
+                        ctx.fillText('(El mapa se muestra en el panel inferior)', canvas.width / 2, canvas.height / 2 + 20);
+                        ctx.restore();
+                    } catch (e) {
+                        ctx.fillStyle = '#1a1a2e';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                } else if (backgroundImage) {
                     const imgRatio = backgroundImage.width / backgroundImage.height;
                     const canvasRatio = canvas.width / canvas.height;
                     let drawWidth, drawHeight, offsetX, offsetY;
@@ -702,11 +788,8 @@
                     }
                     ctx.drawImage(backgroundImage, offsetX, offsetY, drawWidth, drawHeight);
                 } else {
-                    ctx.fillStyle = '#fcfcfd';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    // Grid sutil
                     ctx.save();
-                    ctx.strokeStyle = '#eef0f2';
+                    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
                     ctx.lineWidth = 0.5;
                     for (let i = 0; i < canvas.width; i += 50) {
                         ctx.beginPath();
@@ -726,8 +809,8 @@
                 // Marca de agua sutil
                 ctx.save();
                 ctx.globalAlpha = 0.04;
-                ctx.font = '22px "Inter", sans-serif';
-                ctx.fillStyle = '#4a8bc2';
+                ctx.font = '24px "Inter", sans-serif';
+                ctx.fillStyle = '#ffffff';
                 ctx.textAlign = 'right';
                 ctx.textBaseline = 'bottom';
                 ctx.fillText('WijiTech CCTV', canvas.width - 16, canvas.height - 10);
@@ -775,24 +858,24 @@
 
                     // Cono FOV
                     ctx.save();
-                    ctx.globalAlpha = 0.15;
+                    ctx.globalAlpha = 0.12;
                     ctx.beginPath();
                     ctx.moveTo(points[0].x, points[0].y);
                     ctx.lineTo(points[1].x, points[1].y);
                     ctx.lineTo(points[2].x, points[2].y);
                     ctx.closePath();
-                    ctx.fillStyle = isSelected ? '#f5b342' : '#4a8bc2';
+                    ctx.fillStyle = isSelected ? '#9a9a9a' : '#5a5a7a';
                     ctx.fill();
-                    ctx.globalAlpha = 0.35;
-                    ctx.strokeStyle = isSelected ? '#d4952a' : '#3a7bb2';
+                    ctx.globalAlpha = 0.3;
+                    ctx.strokeStyle = isSelected ? '#8a8a8a' : '#6a6a8a';
                     ctx.lineWidth = 1.2;
                     ctx.setLineDash([4, 5]);
                     ctx.stroke();
                     ctx.restore();
 
                     ctx.save();
-                    ctx.globalAlpha = 0.25;
-                    ctx.strokeStyle = isSelected ? '#d4952a' : '#4a8bc2';
+                    ctx.globalAlpha = 0.2;
+                    ctx.strokeStyle = isSelected ? '#8a8a8a' : '#6a6a8a';
                     ctx.lineWidth = 1;
                     ctx.setLineDash([3, 5]);
                     ctx.beginPath();
@@ -805,16 +888,16 @@
 
                     // Cámara
                     ctx.save();
-                    ctx.shadowColor = 'rgba(0,0,0,0.06)';
-                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+                    ctx.shadowBlur = 12;
                     ctx.shadowOffsetY = 2;
 
-                    const cw = 32,
-                        ch = 24;
+                    const cw = 30,
+                        ch = 22;
                     const cx = x - cw / 2,
                         cy = y - ch / 2;
 
-                    const radius = 5;
+                    const radius = 4;
                     ctx.beginPath();
                     ctx.moveTo(cx + radius, cy);
                     ctx.lineTo(cx + cw - radius, cy);
@@ -829,61 +912,61 @@
 
                     const grad = ctx.createLinearGradient(x, y - 8, x, y + 8);
                     if (isSelected) {
-                        grad.addColorStop(0, '#f5c842');
-                        grad.addColorStop(1, '#d4a82a');
+                        grad.addColorStop(0, '#8a8a8a');
+                        grad.addColorStop(1, '#6a6a6a');
                     } else {
-                        grad.addColorStop(0, '#4a5a6a');
-                        grad.addColorStop(1, '#3a4a5a');
+                        grad.addColorStop(0, '#3a3a4a');
+                        grad.addColorStop(1, '#2a2a3a');
                     }
                     ctx.fillStyle = grad;
                     ctx.fill();
                     ctx.shadowBlur = 0;
-                    ctx.strokeStyle = isSelected ? '#b8922a' : '#2a3a4a';
+                    ctx.strokeStyle = isSelected ? '#5a5a5a' : '#1a1a2a';
                     ctx.lineWidth = 1.2;
                     ctx.stroke();
 
                     ctx.beginPath();
-                    ctx.arc(x, y, 8, 0, Math.PI * 2);
-                    const lensGrad = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 8);
-                    lensGrad.addColorStop(0, '#8ab4d4');
-                    lensGrad.addColorStop(0.5, '#4a8ab4');
-                    lensGrad.addColorStop(1, '#2a6a8a');
+                    ctx.arc(x, y, 7, 0, Math.PI * 2);
+                    const lensGrad = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 7);
+                    lensGrad.addColorStop(0, '#8a9aaa');
+                    lensGrad.addColorStop(0.5, '#5a6a7a');
+                    lensGrad.addColorStop(1, '#3a4a5a');
                     ctx.fillStyle = lensGrad;
                     ctx.fill();
-                    ctx.strokeStyle = '#1a4a6a';
+                    ctx.strokeStyle = '#2a3a4a';
                     ctx.lineWidth = 1;
                     ctx.stroke();
 
                     ctx.beginPath();
-                    ctx.arc(x - 2, y - 3, 3, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                    ctx.arc(x - 2, y - 3, 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
                     ctx.fill();
 
                     ctx.beginPath();
-                    ctx.arc(x + 12, y - 8, 2.5, 0, Math.PI * 2);
-                    ctx.fillStyle = isSelected ? '#d4a82a' : '#4a9a5a';
+                    ctx.arc(x + 11, y - 7, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = isSelected ? '#8a8a8a' : '#4a7a4a';
                     ctx.fill();
                     ctx.shadowBlur = 4;
-                    ctx.shadowColor = 'rgba(74,154,90,0.2)';
+                    ctx.shadowColor = 'rgba(74,122,74,0.3)';
                     ctx.shadowBlur = 0;
                     ctx.restore();
 
                     // Etiqueta
                     ctx.save();
                     ctx.shadowBlur = 6;
-                    ctx.shadowColor = 'rgba(255,255,255,0.8)';
+                    ctx.shadowColor = 'rgba(0,0,0,0.7)';
                     ctx.font = 'bold 10px "Inter", sans-serif';
-                    ctx.fillStyle = '#1a2634';
+                    ctx.fillStyle = '#d0d0d0';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'bottom';
-                    ctx.fillText(cam.label || `#${cam.id}`, x, y - ch / 2 - 5);
+                    ctx.fillText(cam.label || `#${cam.id}`, x, y - ch / 2 - 4);
                     ctx.restore();
 
                     ctx.save();
                     ctx.shadowBlur = 4;
-                    ctx.shadowColor = 'rgba(255,255,255,0.6)';
+                    ctx.shadowColor = 'rgba(0,0,0,0.5)';
                     ctx.font = '7px "Inter", sans-serif';
-                    ctx.fillStyle = '#5a6a7a';
+                    ctx.fillStyle = isSelected ? '#4a4a4a' : '#6a7a8a';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
                     ctx.fillText(`${lente}mm · ${Math.round(angle)}° · ${distancia}m`, x, y + ch / 2 + 3);
@@ -913,6 +996,71 @@
                 if (selectedId !== null && editPanel.classList.contains('visible')) {
                     loadCamToEdit(selectedId);
                 }
+            }
+
+            // ============================================================
+            //  GOOGLE MAPS
+            // ============================================================
+            function loadGoogleMaps(url) {
+                // Extraer URL de embed si es necesario
+                let embedUrl = url.trim();
+                // Si es una URL de maps normal, convertir a embed
+                if (embedUrl.includes('google.com/maps') && !embedUrl.includes('embed')) {
+                    // Intentar extraer coordenadas o lugar
+                    const coordsMatch = embedUrl.match(/@([-\d.]+),([-\d.]+),([\d.]+)z/);
+                    if (coordsMatch) {
+                        const lat = coordsMatch[1];
+                        const lng = coordsMatch[2];
+                        const zoom = coordsMatch[3] || '15';
+                        embedUrl =
+                            `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d${Math.round(parseFloat(zoom)*1000)}!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1`;
+                    } else {
+                        // Si no se puede extraer, mostrar mensaje
+                        alert(
+                        'No se pudo convertir la URL. Usa el formato de embed de Google Maps o pega una dirección.');
+                        return;
+                    }
+                }
+
+                // Crear iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.style.width = '100%';
+                iframe.style.height = '300px';
+                iframe.style.border = 'none';
+                iframe.allowFullscreen = true;
+                iframe.loading = 'lazy';
+
+                // Limpiar preview y agregar iframe
+                googleMapsPreview.innerHTML = '';
+                googleMapsPreview.appendChild(iframe);
+
+                // Guardar referencia
+                googleMapsIframe = iframe;
+
+                // Intentar usar el iframe como fondo (no se puede dibujar directamente por políticas de seguridad)
+                // En su lugar, mostramos un indicador en el canvas
+                drawMap();
+
+                // Actualizar el placeholder
+                const statusDiv = document.createElement('div');
+                statusDiv.style.cssText =
+                    'position:absolute;bottom:8px;right:12px;background:rgba(0,0,0,0.7);color:#8a8a8a;padding:4px 12px;border-radius:20px;font-size:0.6rem;pointer-events:none;';
+                statusDiv.textContent = 'Google Maps cargado';
+                googleMapsPreview.style.position = 'relative';
+                googleMapsPreview.appendChild(statusDiv);
+            }
+
+            function clearGoogleMaps() {
+                googleMapsIframe = null;
+                googleMapsPreview.innerHTML = `
+                    <div class="placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Pega una URL de Google Maps para usarla como fondo</span>
+                        <span style="font-size:0.6rem;color:var(--text-muted);">Ej: https://www.google.com/maps/embed?pb=...</span>
+                    </div>
+                `;
+                drawMap();
             }
 
             // ============================================================
@@ -965,6 +1113,10 @@
                     img.onload = function() {
                         backgroundImage = img;
                         backgroundImageData = e.target.result;
+                        // Limpiar Google Maps si está activo
+                        if (googleMapsIframe) {
+                            clearGoogleMaps();
+                        }
                         drawMap();
                     };
                     img.src = e.target.result;
@@ -1020,48 +1172,50 @@
             }
 
             // ============================================================
-            //  EXPORTAR IMAGEN
+            //  EXPORTAR IMAGEN (CORREGIDO)
             // ============================================================
             function exportImage() {
+                // Crear canvas temporal para exportar
                 const exportCanvas = document.createElement('canvas');
                 exportCanvas.width = canvas.width;
                 exportCanvas.height = canvas.height;
                 const exportCtx = exportCanvas.getContext('2d');
 
-                // Fondo blanco
-                exportCtx.fillStyle = '#fcfcfd';
+                // Fondo oscuro
+                exportCtx.fillStyle = '#0a0a0a';
                 exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
-                // Copiar el contenido del canvas
+                // Copiar el contenido del canvas principal
                 exportCtx.drawImage(canvas, 0, 0);
 
-                // Marco
+                // Agregar marco y branding
                 exportCtx.save();
-                exportCtx.strokeStyle = '#e0e4e8';
+                exportCtx.strokeStyle = 'rgba(255,255,255,0.04)';
                 exportCtx.lineWidth = 1;
                 exportCtx.strokeRect(8, 8, exportCanvas.width - 16, exportCanvas.height - 16);
                 exportCtx.restore();
 
                 // Watermark
                 exportCtx.save();
-                exportCtx.globalAlpha = 0.05;
-                exportCtx.font = '20px "Inter", sans-serif';
-                exportCtx.fillStyle = '#4a8bc2';
+                exportCtx.globalAlpha = 0.04;
+                exportCtx.font = '22px "Inter", sans-serif';
+                exportCtx.fillStyle = '#ffffff';
                 exportCtx.textAlign = 'right';
                 exportCtx.textBaseline = 'bottom';
                 exportCtx.fillText('WijiTech CCTV', exportCanvas.width - 14, exportCanvas.height - 8);
                 exportCtx.restore();
 
-                // Logo
+                // Logo en esquina superior izquierda
                 exportCtx.save();
-                exportCtx.globalAlpha = 0.12;
-                exportCtx.font = '13px "Inter", sans-serif';
-                exportCtx.fillStyle = '#4a8bc2';
+                exportCtx.globalAlpha = 0.1;
+                exportCtx.font = '14px "Inter", sans-serif';
+                exportCtx.fillStyle = '#ffffff';
                 exportCtx.textAlign = 'left';
                 exportCtx.textBaseline = 'top';
                 exportCtx.fillText('WijiTech CCTV', 14, 10);
                 exportCtx.restore();
 
+                // Descargar - método mejorado
                 try {
                     const link = document.createElement('a');
                     link.download = `wijitech_cctv_${new Date().toISOString().slice(0,10)}.png`;
@@ -1070,6 +1224,7 @@
                     link.click();
                     document.body.removeChild(link);
                 } catch (e) {
+                    // Fallback: usar el canvas directamente
                     try {
                         const link = document.createElement('a');
                         link.download = `wijitech_cctv_${new Date().toISOString().slice(0,10)}.png`;
@@ -1078,7 +1233,7 @@
                         link.click();
                         document.body.removeChild(link);
                     } catch (e2) {
-                        alert('Error al exportar la imagen. Intenta guardar la página o usar otro navegador.');
+                        alert('Error al exportar la imagen. Intenta guardar la página o usar un navegador diferente.');
                     }
                 }
             }
@@ -1118,7 +1273,7 @@
                     const dx = x - cam.x,
                         dy = y - cam.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 30 && dist < minDist) {
+                    if (dist < 28 && dist < minDist) {
                         found = cam;
                         minDist = dist;
                     }
@@ -1200,7 +1355,26 @@
             applyScaleBtn.addEventListener('click', applyScale);
             scaleInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') applyScale(); });
 
+            // Exportar imagen
             document.getElementById('exportImageBtn').addEventListener('click', exportImage);
+
+            // Google Maps
+            document.getElementById('loadGoogleMapsBtn').addEventListener('click', () => {
+                const url = googleMapsUrl.value.trim();
+                if (url) {
+                    loadGoogleMaps(url);
+                } else {
+                    alert('Por favor, pega una URL de Google Maps');
+                }
+            });
+
+            document.getElementById('clearGoogleMapsBtn').addEventListener('click', clearGoogleMaps);
+
+            googleMapsUrl.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('loadGoogleMapsBtn').click();
+                }
+            });
 
             editLenteType.addEventListener('change', function() {
                 const dist = parseFloat(editDistancia.value) || DEFAULT_DISTANCIA;
@@ -1237,7 +1411,11 @@
             // ============================================================
             document.getElementById('resetExampleBtn').addEventListener('click', () => {
                 clearAll();
+                // Limpiar Google Maps
+                clearGoogleMaps();
+                // Limpiar fondo local
                 removeBackground();
+
                 scaleMetersPerPixel = 0.05;
                 scaleInput.value = '0.05';
 
@@ -1303,7 +1481,10 @@
                     try {
                         const data = JSON.parse(ev.target.result);
                         if (data.cameras && Array.isArray(data.cameras)) {
+                            // Limpiar Google Maps y fondo local
+                            clearGoogleMaps();
                             removeBackground();
+
                             cameras = data.cameras.map(c => ({
                                 id: c.id,
                                 x: c.x,

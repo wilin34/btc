@@ -3,54 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC War - RTS Realista</title>
+    <title>BTC Battlefield - Edición Realista</title>
     <style>
         body { margin: 0; overflow: hidden; background-color: #020208; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; }
         
-        /* HUD */
+        /* HUD Mínimo */
         #hud { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; }
-        .top-stats { text-align: center; text-shadow: 0 0 20px rgba(0,0,0,0.9); margin-top: -10px;}
-        .price { font-size: 3.5rem; font-weight: bold; transition: color 0.5s ease; }
-        .price.green { color: #00ff88; text-shadow: 0 0 30px rgba(0, 255, 136, 0.6); }
-        .price.red { color: #ff3355; text-shadow: 0 0 30px rgba(255, 51, 85, 0.6); }
-        .subtext { font-size: 1rem; color: #888; }
         
-        .sides { display: flex; justify-content: space-between; position: absolute; top: 15%; width: 90%; font-weight: bold; font-size: 1.2rem; }
-        .bull { color: #00ff88; text-shadow: 0 0 15px rgba(0, 255, 136, 0.5); }
-        .bear { color: #ff3355; text-shadow: 0 0 15px rgba(255, 51, 85, 0.5); }
+        .top-left { position: absolute; top: 20px; left: 20px; text-align: left; }
+        .top-right { position: absolute; top: 20px; right: 20px; text-align: right; }
         
-        .bottom-container { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            pointer-events: auto; 
-        }
+        .price { font-size: 3rem; font-weight: bold; transition: color 0.5s ease; text-shadow: 0 0 30px rgba(0,0,0,0.9); }
+        .price.green { color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+        .price.red { color: #ff3355; text-shadow: 0 0 20px rgba(255, 51, 85, 0.4); }
+        .subtext { font-size: 0.9rem; color: #888; }
         
-        /* Gráfico de Velas REAL */
-        .candlestick-chart { 
-            background: rgba(10, 10, 26, 0.85); 
-            backdrop-filter: blur(5px);
-            border: 1px solid #333; 
-            border-radius: 10px; 
-            padding: 10px;
-            width: 400px; 
-            height: 180px; 
-            position: relative;
-        }
-        #candleCanvas { width: 100%; height: 100%; display: block; }
-        
-        .bottom-feed { 
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); padding: 15px; border-radius: 10px; 
-            width: 250px; border: 1px solid #333; font-size: 0.9rem; max-height: 180px; overflow-y: auto;
-        }
-        .feed-item { margin-bottom: 5px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        .green-text { color: #00ff88; }
-        .red-text { color: #ff3355; }
+        .sides { position: absolute; top: 50%; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; box-sizing: border-box; pointer-events: none; }
+        .bull { color: #00ff88; font-size: 1.5rem; font-weight: bold; text-transform: uppercase; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .bear { color: #ff3355; font-size: 1.5rem; font-weight: bold; text-transform: uppercase; text-shadow: 0 0 20px rgba(255, 51, 85, 0.5); }
         
         .status-badge { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            background: rgba(0,0,0,0.9); padding: 10px 20px; border-radius: 20px; 
-            font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
-            border: 1px solid #555; transition: all 1s ease;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); 
+            background: rgba(0,0,0,0.85); padding: 10px 30px; border-radius: 30px; 
+            font-weight: bold; letter-spacing: 2px; text-transform: uppercase;
+            border: 1px solid #555; transition: all 0.8s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
+        }
+        
+        .dominance-bar-container {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px;
+            overflow: hidden;
+        }
+        .dominance-bar {
+            height: 100%; width: 50%; background: #888; transition: width 0.5s ease, background 0.5s ease;
+            border-radius: 10px;
         }
     </style>
     <script type="importmap">
@@ -60,113 +48,140 @@
 <body>
 
     <div id="hud">
-        <div>
-            <div class="top-stats">
-                <div class="price green" id="btcPrice">Cargando...</div>
-                <div class="subtext" id="btcChange">--% • Binance</div>
-            </div>
-            <div class="sides">
-                <div class="bull">🏛️ BULLS</div>
-                <div class="bear">🐻 BEARS</div>
-            </div>
+        <div class="top-left">
+            <div class="bull">BULLS</div>
+            <div class="price green" id="btcPrice">Cargando...</div>
+            <div class="subtext" id="btcChange">--%</div>
+        </div>
+        <div class="top-right">
+            <div class="bear">BEARS</div>
         </div>
 
-        <div class="bottom-container">
-            <div class="candlestick-chart">
-                <canvas id="candleCanvas"></canvas>
-            </div>
-            <div class="bottom-feed" id="feedContainer">
-                <div style="display:flex; justify-content:space-between; color:#aaa; border-bottom:1px solid #444; padding-bottom:5px;">📰 GUERRA</div>
-                <div id="feedList"></div>
-            </div>
+        <div class="status-badge" id="statusText">⚔️ EQUILIBRIO</div>
+        
+        <!-- Barra de dominancia visual -->
+        <div class="dominance-bar-container">
+            <div class="dominance-bar" id="dominanceBar"></div>
         </div>
-        <div class="status-badge" id="statusText">⚖️ EQUILIBRIO</div>
     </div>
 
     <script type="module">
         import * as THREE from 'three';
 
-        // --- 1. ESCENA ---
+        // --- 1. CONFIGURACIÓN DE ESCENA ---
         const scene = new THREE.Scene();
+        // Un cielo oscuro con un ligero tono azulado
         scene.background = new THREE.Color(0x0a0a1a);
-        scene.fog = new THREE.FogExp2(0x0a0a1a, 0.001);
+        scene.fog = new THREE.FogExp2(0x0a0a1a, 0.0015);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 35, 50);
+        camera.position.set(0, 30, 45);
         camera.lookAt(0, 0, 0);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.shadowMap.bias = 0.0001;
         document.body.appendChild(renderer.domElement);
 
-        // Luces
-        const ambient = new THREE.AmbientLight(0x222244, 0.5);
+        // Iluminación avanzada
+        const ambient = new THREE.AmbientLight(0x404060, 0.6);
         scene.add(ambient);
         
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 1);
-        dirLight.position.set(-30, 40, 20);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.camera.near = 0.5;
-        dirLight.shadow.camera.far = 100;
-        dirLight.shadow.camera.left = -40;
-        dirLight.shadow.camera.right = 40;
-        dirLight.shadow.camera.top = 40;
-        dirLight.shadow.camera.bottom = -40;
-        scene.add(dirLight);
+        // Luz principal (sol simulado)
+        const sunLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+        sunLight.position.set(-30, 40, 20);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 100;
+        sunLight.shadow.camera.left = -40;
+        sunLight.shadow.camera.right = 40;
+        sunLight.shadow.camera.top = 40;
+        sunLight.shadow.camera.bottom = -40;
+        scene.add(sunLight);
 
-        const greenLight = new THREE.PointLight(0x00ff88, 150, 60);
-        greenLight.position.set(-25, 15, 0);
+        // Luces de los bandos (iluminan el mapa)
+        const greenLight = new THREE.PointLight(0x00ff88, 100, 50);
+        greenLight.position.set(-20, 15, 0);
         scene.add(greenLight);
-        const redLight = new THREE.PointLight(0xff3355, 150, 60);
-        redLight.position.set(25, 15, 0);
+        const redLight = new THREE.PointLight(0xff3355, 100, 50);
+        redLight.position.set(20, 15, 0);
         scene.add(redLight);
 
-        // --- 2. TERRENO UNIFICADO CON GRADIENTE DINÁMICO ---
-        const terrainWidth = 70;
-        const terrainDepth = 50;
-        const segments = 100;
+        // --- 2. TERRENO CON TEXTURA Y RELIEVE ---
+        // Usamos un plano más detallado
+        const terrainWidth = 60;
+        const terrainDepth = 40;
+        const segments = 128;
         const geometry = new THREE.PlaneGeometry(terrainWidth, terrainDepth, segments, segments);
         geometry.rotateX(-Math.PI / 2);
 
         const positionAttribute = geometry.attributes.position;
         const vertex = new THREE.Vector3();
         
+        // Generamos colinas suaves y naturales
         for (let i = 0; i < positionAttribute.count; i++) {
             vertex.fromBufferAttribute(positionAttribute, i);
-            const y = Math.sin(vertex.x * 0.2) * Math.cos(vertex.z * 0.3) * 2.0 - Math.exp(-Math.pow(vertex.x, 2) * 0.05) * 2.0;
+            // Combinación de ondas seno para crear un paisaje orgánico. 
+            // El centro (x=0) es un valle (trinchera).
+            const y = Math.sin(vertex.x * 0.4) * Math.cos(vertex.z * 0.3) * 2.0 
+                    + Math.sin(vertex.x * 0.1 + vertex.z * 0.2) * 1.0
+                    - Math.exp(-Math.pow(vertex.x, 2) * 0.05) * 1.5;
             positionAttribute.setY(i, y);
         }
         geometry.computeVertexNormals();
 
+        // Creamos una textura de hierba procedural usando un Canvas
+        function createGrassTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#1a3c1a';
+            ctx.fillRect(0, 0, 256, 256);
+            // Puntos de hierba
+            for(let i=0; i<5000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#2a5c2a' : '#1a4a1a';
+                ctx.fillRect(Math.random()*256, Math.random()*256, 1, 2 + Math.random()*2);
+            }
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const grassTexture = createGrassTexture();
+        grassTexture.wrapS = THREE.RepeatWrapping;
+        grassTexture.wrapT = THREE.RepeatWrapping;
+        grassTexture.repeat.set(8, 8);
+
         const material = new THREE.MeshStandardMaterial({
-            roughness: 0.7,
+            map: grassTexture,
+            roughness: 0.9,
             metalness: 0.0,
-            vertexColors: true,
+            vertexColors: true, // Para el degradado de dominancia
             side: THREE.DoubleSide
         });
 
         const terrain = new THREE.Mesh(geometry, material);
         terrain.receiveShadow = true;
-        terrain.castShadow = false;
         scene.add(terrain);
 
+        // Función para actualizar el color de dominancia en el terreno
         function updateTerrainColors(dominance) {
             const colors = new Float32Array(positionAttribute.count * 3);
             const color = new THREE.Color();
-            let frontLineX = dominance * 4; 
+            // La línea de frente se mueve según la dominancia (-1 a 1)
+            let frontLineX = dominance * 5; 
 
             for (let i = 0; i < positionAttribute.count; i++) {
                 vertex.fromBufferAttribute(positionAttribute, i);
                 const x = vertex.x;
-                const t = (x - (frontLineX - 8)) / 16;
+                // Suavizamos la transición
+                const t = (x - (frontLineX - 6)) / 12;
                 const clampedT = Math.max(0, Math.min(1, t));
+                // Mezcla de Verde y Rojo
                 const hue = 0.33 - (clampedT * 0.33); 
-                color.setHSL(hue, 0.7, 0.15 + (clampedT * 0.25));
+                color.setHSL(hue, 0.7, 0.12 + (clampedT * 0.25));
                 colors[i*3] = color.r;
                 colors[i*3+1] = color.g;
                 colors[i*3+2] = color.b;
@@ -175,191 +190,175 @@
             geometry.attributes.color.needsUpdate = true;
         }
 
-        // --- 3. BASES MILITARES ---
-        function createBase(x, z, teamColor) {
-            const group = new THREE.Group();
-            // Suelo de la base (hormigón)
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.9 });
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(6, 6), floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            floor.position.y = 0.1;
-            floor.receiveShadow = true;
-            group.add(floor);
-
-            // Paredes (Torreón)
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0x556677, roughness: 0.8 });
-            for(let i=0; i<4; i++) {
-                const wall = new THREE.Mesh(new THREE.BoxGeometry(5, 2, 0.5), wallMat);
-                wall.position.set( Math.sin(i*Math.PI/2)*2.5, 1, Math.cos(i*Math.PI/2)*2.5 );
-                wall.castShadow = true;
-                group.add(wall);
-            }
-
-            // Centro de mando
-            const comMat = new THREE.MeshStandardMaterial({ color: 0x445566, roughness: 0.6 });
-            const center = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2, 2.5, 8), comMat);
-            center.position.y = 1.25;
-            center.castShadow = true;
-            group.add(center);
-
-            // Bandera
-            const poleMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
-            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 3), poleMat);
-            pole.position.set(0, 1.5, 2);
-            group.add(pole);
-
-            const flagMat = new THREE.MeshStandardMaterial({ color: teamColor });
-            const flag = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.6), flagMat);
-            flag.position.set(0.5, 3, 2);
-            flag.rotation.y = -Math.PI/4;
-            group.add(flag);
-
-            group.position.set(x, 0, z);
-            return group;
-        }
-
-        const baseGreen = createBase(-20, 0, 0x00ff88);
-        scene.add(baseGreen);
-        const baseRed = createBase(20, 0, 0xff3355);
-        scene.add(baseRed);
-
-        // --- 4. ÁRBOLES ---
+        // --- 3. DECORACIÓN DEL MAPA (Árboles y Rocas) ---
         function createTree(x, z) {
             const group = new THREE.Group();
-            const trunkMat = new THREE.MeshStandardMaterial({color: 0x4a3b32});
-            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 1.5), trunkMat);
+            const trunkMat = new THREE.MeshStandardMaterial({color: 0x4a3b32, roughness: 0.9});
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.25, 1.5, 6), trunkMat);
             trunk.position.y = 0.75;
             trunk.castShadow = true;
             group.add(trunk);
 
-            const leafMat = new THREE.MeshStandardMaterial({color: 0x1a4a1a});
-            const leaf1 = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2, 6), leafMat);
+            const leafMat = new THREE.MeshStandardMaterial({color: 0x1a5a1a, roughness: 0.8});
+            const leaf1 = new THREE.Mesh(new THREE.ConeGeometry(1.0, 1.8, 6), leafMat);
             leaf1.position.y = 1.8;
             leaf1.castShadow = true;
             group.add(leaf1);
 
-            const leaf2 = new THREE.Mesh(new THREE.ConeGeometry(0.8, 1.5, 6), leafMat);
+            const leaf2 = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.2, 6), leafMat);
             leaf2.position.y = 2.8;
             leaf2.castShadow = true;
             group.add(leaf2);
 
-            const y = Math.sin(x * 0.2) * Math.cos(z * 0.3) * 2.0;
+            const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
             group.position.set(x, y, z);
             return group;
         }
 
+        function createRock(x, z, size) {
+            const mat = new THREE.MeshStandardMaterial({color: 0x556677, roughness: 0.9});
+            const geo = new THREE.DodecahedronGeometry(size);
+            const mesh = new THREE.Mesh(geo, mat);
+            const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
+            mesh.position.set(x, y + size/2, z);
+            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            return mesh;
+        }
+
+        // Poblar el mapa
         const trees = [];
-        for(let i=0; i<150; i++) {
-            let x = (Math.random() - 0.5) * 60;
-            let z = (Math.random() - 0.5) * 40;
-            if(Math.abs(x) < 10 || Math.abs(x) > 28) continue;
-            if(Math.abs(z) < 4) continue;
+        const rocks = [];
+
+        for(let i=0; i<100; i++) {
+            let x = (Math.random() - 0.5) * 50;
+            let z = (Math.random() - 0.5) * 30;
+            if(Math.abs(x) < 8 || Math.abs(z) < 3) continue; // Zona de batalla libre
+            if(Math.abs(x) > 25) continue; // Zona de bases libre
+            
             const tree = createTree(x, z);
             scene.add(tree);
             trees.push(tree);
         }
 
-        // --- 5. SOLDADOS REALISTAS CON ANIMACIÓN ---
-        function createSoldierTexture(color, weaponColor) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64; canvas.height = 96; // Más alto para animación
-            const ctx = canvas.getContext('2d');
-            
-            // Cuerpo (Casco y Máscara)
-            ctx.fillStyle = '#2d4a22';
-            ctx.beginPath();
-            ctx.ellipse(32, 20, 12, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#111';
-            ctx.beginPath();
-            ctx.ellipse(32, 15, 6, 4, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#2a2a2a';
-            ctx.fillRect(28, 22, 8, 6);
-
-            // Torso y Mochila
-            ctx.fillStyle = color;
-            ctx.fillRect(22, 36, 20, 18);
-            ctx.fillStyle = '#111';
-            ctx.fillRect(24, 40, 16, 2); 
-
-            ctx.fillStyle = '#3a3a3a';
-            ctx.fillRect(18, 38, 4, 14);
-
-            // Brazos (Pistola o Rifle)
-            ctx.fillStyle = '#333';
-            ctx.fillRect(18, 38, 4, 14); 
-            ctx.fillRect(42, 38, 4, 14);
-
-            ctx.fillStyle = weaponColor;
-            ctx.fillRect(44, 34, 16, 3);
-            ctx.fillStyle = '#222';
-            ctx.fillRect(56, 32, 4, 7);
-
-            return new THREE.CanvasTexture(canvas);
+        for(let i=0; i<40; i++) {
+            let x = (Math.random() - 0.5) * 50;
+            let z = (Math.random() - 0.5) * 30;
+            if(Math.abs(x) < 8 || Math.abs(x) > 25) continue;
+            const rock = createRock(x, z, 0.3 + Math.random()*0.5);
+            scene.add(rock);
+            rocks.push(rock);
         }
 
-        const soldierGreenTex = createSoldierTexture('#00ff88', '#ffffff');
-        const soldierRedTex = createSoldierTexture('#ff3355', '#ffffff');
+        // --- 4. SOLDADOS 3D ESTILIZADOS (NUEVO DISEÑO) ---
+        // En lugar de sprites, usamos geometría 3D para que se vean más reales y tengan volumen.
+        function create3DSoldier(color) {
+            const group = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.4, metalness: 0.3 });
+            const darkMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xdcb38a });
+
+            // Cuerpo (Torso)
+            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.8, 6), mat);
+            torso.position.y = 0.9;
+            torso.castShadow = true;
+            group.add(torso);
+
+            // Cabeza (Casco)
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), darkMat);
+            head.position.y = 1.4;
+            head.castShadow = true;
+            group.add(head);
+            
+            // Visor del casco
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.3), new THREE.MeshStandardMaterial({color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.5}));
+            visor.position.set(0, 1.3, 0.25);
+            group.add(visor);
+
+            // Brazos
+            const armMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.6 });
+            const armGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.6, 4);
+            
+            const armL = new THREE.Mesh(armGeo, armMat);
+            armL.position.set(-0.4, 0.9, 0);
+            armL.rotation.z = 0.2;
+            armL.castShadow = true;
+            group.add(armL);
+
+            const armR = new THREE.Mesh(armGeo, armMat);
+            armR.position.set(0.4, 0.9, 0);
+            armR.rotation.z = -0.2;
+            armR.castShadow = true;
+            group.add(armR);
+
+            // Piernas
+            const legMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8 });
+            const legGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.6, 4);
+            
+            const legL = new THREE.Mesh(legGeo, legMat);
+            legL.position.set(-0.15, 0.3, 0);
+            legL.castShadow = true;
+            group.add(legL);
+
+            const legR = new THREE.Mesh(legGeo, legMat);
+            legR.position.set(0.15, 0.3, 0);
+            legR.castShadow = true;
+            group.add(legR);
+
+            // Rifle
+            const rifleMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.5, roughness: 0.4 });
+            const rifle = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.08, 0.08), rifleMat);
+            rifle.position.set(0.5, 0.9, 0);
+            rifle.rotation.z = -0.1;
+            group.add(rifle);
+
+            return group;
+        }
 
         class Soldier {
             constructor(x, z, team) {
                 this.team = team;
                 this.alive = true;
                 this.hp = 100;
-                this.walkCycle = Math.random() * Math.PI * 2;
-                this.isShooting = false;
                 
-                const spriteMat = new THREE.SpriteMaterial({
-                    map: team === 'green' ? soldierGreenTex : soldierRedTex,
-                    depthTest: true,
-                    depthWrite: false
-                });
-                this.mesh = new THREE.Sprite(spriteMat);
-                this.mesh.scale.set(2.5, 3.5, 1);
-                this.mesh.position.set(x, 1, z);
+                const color = team === 'green' ? 0x00ff88 : 0xff3355;
+                this.mesh = create3DSoldier(color);
+                const y = Math.sin(x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(x * 0.1 + z * 0.2) * 1.0;
+                this.mesh.position.set(x, y, z);
+                
+                // Rotar el soldado hacia el frente
+                if(team === 'green') this.mesh.rotation.y = 0;
+                else this.mesh.rotation.y = Math.PI;
+
                 scene.add(this.mesh);
-
-                // Sombra en el suelo (un círculo oscuro)
-                const shadowMat = new THREE.SpriteMaterial({
-                    map: new THREE.CanvasTexture(generateShadowCircle()),
-                    depthWrite: false,
-                    transparent: true,
-                    opacity: 0.3
-                });
-                this.shadow = new THREE.Sprite(shadowMat);
-                this.shadow.scale.set(1.5, 1.5, 1);
-                this.shadow.position.set(x, 0.1, z);
-                scene.add(this.shadow);
-
-                this.speed = 0.04 + Math.random() * 0.03;
+                this.speed = 0.03 + Math.random() * 0.02;
+                
+                // Límite de movimiento en Z (NUNCA se salen del mapa)
+                this.zBoundary = 14; 
+                this.initialZ = z;
             }
 
             update(pushStrength, time) {
                 if(!this.alive) return;
 
-                let moveForce = this.speed + (pushStrength * 0.04);
+                // Movimiento frontal (solo en X)
+                let moveForce = this.speed + (pushStrength * 0.03);
                 if(this.team === 'green') this.mesh.position.x += moveForce;
                 else this.mesh.position.x -= moveForce;
-                
-                // Movimiento de caderas (animación de caminar)
-                this.walkCycle += 0.1;
-                const bob = Math.sin(this.walkCycle) * 0.15;
-                this.mesh.position.z += Math.sin(time * 0.002 + this.mesh.position.x * 0.5) * 0.03;
-                
-                // Inclinación al disparar
-                if(Math.random() < 0.02) this.isShooting = !this.isShooting;
-                if(this.isShooting) {
-                    this.mesh.position.z += 0.2; // Se inclina hacia adelante
-                }
 
-                // Sombra sigue al soldado
-                this.shadow.position.x = this.mesh.position.x;
-                this.shadow.position.z = this.mesh.position.z;
+                // Movimiento lateral limitado (para que no se salgan por los lados)
+                // El soldado se mueve en Z, pero rebota si llega al borde del mapa (14 o -14)
+                let zMove = Math.sin(time * 0.001 + this.initialZ * 10) * 0.02;
+                this.mesh.position.z += zMove;
+                
+                // CORRECCIÓN: Si el soldado está a punto de salirse del mapa, lo empujamos hacia adentro
+                if (this.mesh.position.z > this.zBoundary) this.mesh.position.z = this.zBoundary - 0.1;
+                if (this.mesh.position.z < -this.zBoundary) this.mesh.position.z = -this.zBoundary + 0.1;
 
-                if(this.mesh.position.x > 5 && this.team === 'green') this.mesh.position.x = 5;
-                if(this.mesh.position.x < -5 && this.team === 'red') this.mesh.position.x = -5;
+                // Límites de la trinchera (no pasan del centro)
+                if(this.mesh.position.x > 4 && this.team === 'green') this.mesh.position.x = 4;
+                if(this.mesh.position.x < -4 && this.team === 'red') this.mesh.position.x = -4;
             }
 
             takeDamage(dmg) {
@@ -367,66 +366,51 @@
                 if(this.hp <= 0) {
                     this.alive = false;
                     scene.remove(this.mesh);
-                    scene.remove(this.shadow);
-                    createExplosion(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z, this.team);
-                    setTimeout(() => this.respawn(), 2000 + Math.random() * 1000);
+                    createExplosion(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z, this.team);
+                    // Reaparecer en la retaguardia
+                    setTimeout(() => this.respawn(), 1500 + Math.random() * 1000);
                 }
             }
 
             respawn() {
                 this.alive = true;
                 this.hp = 100;
-                const z = -18 + Math.random() * 36;
+                const z = (Math.random() - 0.5) * 20; // Dentro de los límites del mapa
+                const y = Math.sin(this.mesh.position.x * 0.4) * Math.cos(z * 0.3) * 2.0 + Math.sin(this.mesh.position.x * 0.1 + z * 0.2) * 1.0;
+                
                 if(this.team === 'green') {
-                    this.mesh.position.set(-16 - Math.random()*3, 1, z);
-                    this.shadow.position.set(-16 - Math.random()*3, 0.1, z);
+                    this.mesh.position.set(-12 - Math.random()*2, y, z);
                 } else {
-                    this.mesh.position.set(16 + Math.random()*3, 1, z);
-                    this.shadow.position.set(16 + Math.random()*3, 0.1, z);
+                    this.mesh.position.set(12 + Math.random()*2, y, z);
                 }
                 scene.add(this.mesh);
-                scene.add(this.shadow);
+                this.initialZ = z;
             }
         }
 
-        // Helper para generar la textura de la sombra
-        function generateShadowCircle() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64; canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            gradient.addColorStop(0, 'rgba(0,0,0,1)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(32, 32, 32, 0, Math.PI * 2);
-            ctx.fill();
-            return canvas;
-        }
-
-        // --- 6. EXPLOSIONES ---
+        // --- 5. EXPLOSIONES MEJORADAS ---
         const explosions = [];
         function createExplosion(x, y, z, teamColor) {
-            const count = 80;
+            const count = 100;
             const positions = new Float32Array(count * 3);
             const colors = new Float32Array(count * 3);
             const velocities = [];
             const baseColor = teamColor === 'green' ? [0, 1, 0.5] : [1, 0.2, 0.3];
 
             for(let i=0; i<count; i++) {
-                positions[i*3] = x + (Math.random()-0.5)*2;
-                positions[i*3+1] = y + 0.5;
-                positions[i*3+2] = z + (Math.random()-0.5)*2;
+                positions[i*3] = x + (Math.random()-0.5)*1.5;
+                positions[i*3+1] = y;
+                positions[i*3+2] = z + (Math.random()-0.5)*1.5;
                 
                 const r = Math.random();
-                if(r < 0.6) { colors[i*3] = 1; colors[i*3+1] = 0.6; colors[i*3+2] = 0; } 
-                else if(r < 0.8) { colors[i*3] = 1; colors[i*3+1] = 1; colors[i*3+2] = 1; } 
-                else { colors[i*3] = baseColor[0]; colors[i*3+1] = baseColor[1]; colors[i*3+2] = baseColor[2]; }
+                if(r < 0.6) { colors[i*3] = 1; colors[i*3+1] = 0.6; colors[i*3+2] = 0; } // Fuego
+                else if(r < 0.8) { colors[i*3] = 1; colors[i*3+1] = 1; colors[i*3+2] = 1; } // Humo
+                else { colors[i*3] = baseColor[0]; colors[i*3+1] = baseColor[1]; colors[i*3+2] = baseColor[2]; } // Bando
 
                 velocities.push({
-                    x: (Math.random() - 0.5) * 5,
-                    y: Math.random() * 6 + 1,
-                    z: (Math.random() - 0.5) * 5
+                    x: (Math.random() - 0.5) * 4,
+                    y: Math.random() * 5 + 2,
+                    z: (Math.random() - 0.5) * 4
                 });
             }
 
@@ -435,7 +419,7 @@
             geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const mat = new THREE.PointsMaterial({
-                size: 0.4,
+                size: 0.3,
                 vertexColors: true,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
@@ -444,78 +428,30 @@
 
             const points = new THREE.Points(geo, mat);
             scene.add(points);
-            explosions.push({ mesh: points, velocities: velocities, life: 1.0, decay: 0.012 });
+            explosions.push({ mesh: points, velocities: velocities, life: 1.0, decay: 0.015 });
         }
 
-        // --- 7. EJÉRCITOS ---
+        // --- 6. EJÉRCITOS ---
         const greenArmy = [];
         const redArmy = [];
-        const armyCount = 100;
+        const armyCount = 60; 
 
         for(let i=0; i<armyCount; i++) {
-            const z = -18 + Math.random() * 36;
-            greenArmy.push(new Soldier(-14 - Math.random()*2, z, 'green'));
-            redArmy.push(new Soldier(14 + Math.random()*2, z, 'red'));
+            const z = (Math.random() - 0.5) * 20; // Controlado para que no salga
+            greenArmy.push(new Soldier(-12 - Math.random()*2, z, 'green'));
+            redArmy.push(new Soldier(12 + Math.random()*2, z, 'red'));
         }
 
-        // --- 8. PRECIO REAL Y DOMINANCIA ---
+        // --- 7. PRECIO REAL ---
         let currentPrice = 64000;
         let dominance = 0;
-        let lastClosePrice = 64000;
         const priceElement = document.getElementById('btcPrice');
         const changeElement = document.getElementById('btcChange');
         const statusElement = document.getElementById('statusText');
-        const feedList = document.getElementById('feedList');
-
-        // --- 9. GRÁFICO DE VELAS (CANDLESTICK) ---
-        const canvas = document.getElementById('candleCanvas');
-        const ctx = canvas.getContext('2d');
-        let candleHistory = [];
-
-        function drawCandleChart() {
-            if(candleHistory.length === 0) return;
-            const w = canvas.clientWidth;
-            const h = canvas.clientHeight;
-            canvas.width = w; canvas.height = h;
-
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.5)';
-            ctx.fillRect(0, 0, w, h);
-
-            const maxPrice = Math.max(...candleHistory.map(c => c.high));
-            const minPrice = Math.min(...candleHistory.map(c => c.low));
-            const range = maxPrice - minPrice;
-            if(range === 0) return;
-
-            const candleWidth = w / candleHistory.length * 0.8;
-            const padding = 10;
-
-            candleHistory.forEach((candle, i) => {
-                const x = (i / candleHistory.length) * w + padding/2;
-                const highY = h - ((candle.high - minPrice) / range) * (h - padding);
-                const lowY = h - ((candle.low - minPrice) / range) * (h - padding);
-                const openY = h - ((candle.open - minPrice) / range) * (h - padding);
-                const closeY = h - ((candle.close - minPrice) / range) * (h - padding);
-
-                const isGreen = candle.close > candle.open;
-                ctx.strokeStyle = isGreen ? '#00ff88' : '#ff3355';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(x + candleWidth/2, highY);
-                ctx.lineTo(x + candleWidth/2, lowY);
-                ctx.stroke();
-
-                ctx.fillStyle = isGreen ? '#00ff88' : '#ff3355';
-                ctx.fillRect(x, Math.min(openY, closeY), candleWidth, Math.abs(closeY - openY));
-            });
-        }
-
-        // --- 10. LÓGICA DE DATOS ---
-        let lastFetchTime = Date.now();
-        let currentCandle = { open: 64000, high: 64000, low: 64000, close: 64000 };
+        const dominanceBar = document.getElementById('dominanceBar');
 
         async function fetchBTCPrice() {
             try {
-                // 1. Precio actual
                 const response = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 const data = await response.json();
                 currentPrice = parseFloat(data.lastPrice);
@@ -525,34 +461,33 @@
                 priceElement.className = `price ${change > 0 ? 'green' : 'red'}`;
                 changeElement.textContent = `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
 
-                // 2. Dominancia
+                // Dominancia (-1 a 1)
                 dominance = Math.max(-1, Math.min(1, change / 2)); 
+                
+                // Actualizar terreno
                 updateTerrainColors(dominance);
 
-                // 3. Lógica de Velas (Candlesticks)
-                const now = Date.now();
-                if(now - lastFetchTime > 60000) { // 1 minuto por vela
-                    if(candleHistory.length > 0) {
-                        currentCandle.close = currentPrice;
-                        candleHistory.push({...currentCandle});
-                        if(candleHistory.length > 30) candleHistory.shift();
-                    }
-                    currentCandle = { open: currentPrice, high: currentPrice, low: currentPrice, close: currentPrice };
-                    lastFetchTime = now;
+                // Actualizar barra de dominancia (visual)
+                const barPercent = 50 + (dominance * 50);
+                dominanceBar.style.width = `${Math.max(0, Math.min(100, barPercent))}%`;
+                if(dominance > 0.1) {
+                    dominanceBar.style.background = '#00ff88';
+                    dominanceBar.style.boxShadow = '0 0 10px #00ff88';
+                } else if (dominance < -0.1) {
+                    dominanceBar.style.background = '#ff3355';
+                    dominanceBar.style.boxShadow = '0 0 10px #ff3355';
                 } else {
-                    currentCandle.high = Math.max(currentCandle.high, currentPrice);
-                    currentCandle.low = Math.min(currentCandle.low, currentPrice);
-                    currentCandle.close = currentPrice;
+                    dominanceBar.style.background = '#888';
+                    dominanceBar.style.boxShadow = 'none';
                 }
-                drawCandleChart();
 
-                // 4. Estado
+                // Estado
                 if(dominance > 0.3) {
-                    statusElement.innerHTML = '🏹 BULLS AVANZAN';
+                    statusElement.innerHTML = '🐂 AVANCE BULL';
                     statusElement.style.color = '#00ff88';
                     statusElement.style.borderColor = '#00ff88';
                 } else if (dominance < -0.3) {
-                    statusElement.innerHTML = '🛡️ BEARS AVANZAN';
+                    statusElement.innerHTML = '🐻 AVANCE BEAR';
                     statusElement.style.color = '#ff3355';
                     statusElement.style.borderColor = '#ff3355';
                 } else {
@@ -561,27 +496,16 @@
                     statusElement.style.borderColor = '#555';
                 }
 
-                // 5. Feed
-                if(Math.abs(change) > 0.8) {
-                    const feedItem = document.createElement('div');
-                    feedItem.className = 'feed-item';
-                    const txt = change > 0 ? 'Liquidated SHORT' : 'Liquidated LONG';
-                    const amount = (Math.random() * 500 + 100).toFixed(0);
-                    feedItem.innerHTML = `<span class="${change > 0 ? 'green-text' : 'red-text'}">● ${txt}</span> $${amount}K`;
-                    feedList.prepend(feedItem);
-                    if(feedList.children.length > 6) feedList.removeChild(feedList.lastChild);
-                }
-
             } catch (error) {
                 console.error("API Error:", error);
             }
         }
         fetchBTCPrice();
-        setInterval(fetchBTCPrice, 3000); // Actualizar cada 3s
+        setInterval(fetchBTCPrice, 3000);
 
-        // --- 11. COMBATE ---
+        // --- 8. COMBATE ---
         function checkCollisions() {
-            const limit = 2.5;
+            const limit = 1.8;
             for(let g of greenArmy) {
                 if(!g.alive) continue;
                 for(let r of redArmy) {
@@ -590,34 +514,35 @@
                     const dz = g.mesh.position.z - r.mesh.position.z;
                     const dist = Math.sqrt(dx*dx + dz*dz);
                     if(dist < limit) {
-                        g.takeDamage(20);
-                        r.takeDamage(20);
+                        g.takeDamage(25);
+                        r.takeDamage(25);
+                        // Rebote
                         const pushX = dx / dist;
                         const pushZ = dz / dist;
-                        g.mesh.position.x += pushX * 0.4;
-                        r.mesh.position.x -= pushX * 0.4;
-                        g.mesh.position.z += pushZ * 0.4;
-                        r.mesh.position.z -= pushZ * 0.4;
+                        g.mesh.position.x += pushX * 0.5;
+                        r.mesh.position.x -= pushX * 0.5;
+                        g.mesh.position.z += pushZ * 0.5;
+                        r.mesh.position.z -= pushZ * 0.5;
                     }
                 }
             }
         }
 
-        // --- 12. BUCLE PRINCIPAL ---
+        // --- 9. BUCLE PRINCIPAL ---
         let time = 0;
         let rainPositions;
         
-        // Crear lluvia
-        const rainCount = 3000;
+        // Crear lluvia (partículas)
+        const rainCount = 2000;
         const rainGeo = new THREE.BufferGeometry();
         const rainPos = new Float32Array(rainCount * 3);
         for(let i=0; i<rainCount*3; i+=3) {
-            rainPos[i] = (Math.random()-0.5)*200;
-            rainPos[i+1] = Math.random()*80;
-            rainPos[i+2] = (Math.random()-0.5)*200;
+            rainPos[i] = (Math.random()-0.5)*100;
+            rainPos[i+1] = Math.random()*60;
+            rainPos[i+2] = (Math.random()-0.5)*100;
         }
         rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
-        const rainMat = new THREE.PointsMaterial({color: 0x88aaff, size: 0.2, transparent: true, opacity: 0.3});
+        const rainMat = new THREE.PointsMaterial({color: 0x88aaff, size: 0.1, transparent: true, opacity: 0.2});
         const rain = new THREE.Points(rainGeo, rainMat);
         scene.add(rain);
 
@@ -629,12 +554,12 @@
             const rPos = rain.geometry.attributes.position.array;
             for(let i=1; i<rPos.length; i+=3) {
                 rPos[i] -= 0.8;
-                if(rPos[i] < -10) rPos[i] = 80;
+                if(rPos[i] < -10) rPos[i] = 60;
             }
             rain.geometry.attributes.position.needsUpdate = true;
 
-            // Actualizar soldados
-            const pushStrength = dominance * 0.8;
+            // Actualizar soldados (solo avanzan y con límite Z)
+            const pushStrength = dominance * 0.6;
             greenArmy.forEach(g => g.update(pushStrength, time));
             redArmy.forEach(r => r.update(pushStrength, time));
 
@@ -665,11 +590,11 @@
 
         // Inicialización
         updateTerrainColors(0);
+        
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            drawCandleChart();
         });
 
         animate();

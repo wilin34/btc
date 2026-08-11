@@ -3,6 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#f5f7fa" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="WijiTech CCTV" />
+    <link rel="manifest" href="data:application/json,{
+        &quot;name&quot;: &quot;WijiTech CCTV&quot;,
+        &quot;short_name&quot;: &quot;WijiTech&quot;,
+        &quot;description&quot;: &quot;Diseñador profesional de videovigilancia&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#f5f7fa&quot;,
+        &quot;theme_color&quot;: &quot;#4a8bc2&quot;,
+        &quot;icons&quot;: [
+            {&quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%234a8bc2'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle' fill='white' font-family='Arial'%3E📹%3C/text%3E%3C/svg%3E&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/svg+xml&quot;, &quot;purpose&quot;: &quot;any maskable&quot;}
+        ]
+    }" />
     <title>WijiTech CCTV · Diseñador Profesional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
@@ -30,58 +46,71 @@
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             --radius: 16px;
             --radius-sm: 10px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
         body {
             background: #e8ecf0;
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             justify-content: center;
-            padding: 16px;
+            padding: 12px;
+            padding-bottom: calc(12px + var(--safe-bottom));
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .app {
             max-width: 1440px;
             width: 100%;
             background: var(--bg-primary);
             border-radius: 24px;
-            padding: 20px 24px 24px;
+            padding: 16px 18px 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 24px);
+            min-height: calc(100dvh - 24px);
         }
         .header {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
         }
         .logo {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
         .logo-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: var(--accent);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: white;
             box-shadow: 0 2px 8px rgba(74, 139, 194, 0.2);
+            flex-shrink: 0;
         }
         .logo h1 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.3px;
         }
         .logo h1 small {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: var(--text-muted);
             font-weight: 400;
             display: block;
@@ -90,28 +119,33 @@
         }
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         .btn {
             background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            padding: 8px 18px;
+            padding: 7px 14px;
             border-radius: 30px;
             font-weight: 500;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease;
             font-family: inherit;
             white-space: nowrap;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn i {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
+        }
+        .btn:active {
+            transform: scale(0.96);
         }
         .btn:hover {
             background: #e4e8ed;
@@ -129,6 +163,9 @@
         .btn-primary:hover {
             background: var(--accent-hover);
             border-color: var(--accent-hover);
+        }
+        .btn-primary:active {
+            background: var(--accent-hover);
         }
         .btn-success {
             background: var(--success);
@@ -176,37 +213,52 @@
             border-color: #c8ced6;
         }
         .btn-sm {
-            padding: 5px 12px;
-            font-size: 0.7rem;
+            padding: 4px 10px;
+            font-size: 0.65rem;
         }
+
+        /* Toolbar */
         .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px 12px;
+            gap: 6px 10px;
             align-items: center;
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 40px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .toolbar::-webkit-scrollbar {
+            display: none;
         }
         .toolbar .divider {
             width: 1px;
-            height: 28px;
+            height: 24px;
             background: var(--border-color);
+            flex-shrink: 0;
         }
         .toolbar .btn-group {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
+
+        /* Map */
         .map-wrapper {
             background: var(--bg-secondary);
             border-radius: var(--radius);
-            padding: 12px;
+            padding: 10px;
             border: 1px solid var(--border-color);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            flex: 1;
+            min-height: 300px;
+            position: relative;
         }
         #mapCanvas {
             width: 100%;
@@ -217,24 +269,28 @@
             cursor: crosshair;
             touch-action: none;
             border: 1px solid #eef0f2;
+            min-height: 300px;
         }
+
+        /* Info Footer */
         .info-footer {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-top: 12px;
-            padding: 0 4px;
+            padding: 0 2px;
+            flex-shrink: 0;
         }
         .stats {
             display: flex;
-            gap: 18px;
+            gap: 14px;
             background: var(--bg-secondary);
-            padding: 6px 20px;
+            padding: 5px 16px;
             border-radius: 30px;
             border: 1px solid var(--border-color);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             flex-wrap: wrap;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
         }
@@ -250,22 +306,23 @@
         }
         .legend {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .dot {
-            width: 13px;
-            height: 13px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
         .dot.camera {
             background: #4a5a6a;
@@ -277,30 +334,30 @@
         .dot.fov {
             background: rgba(74, 139, 194, 0.12);
             border: 1px dashed var(--accent);
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
         }
         .map-scale {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--bg-secondary);
-            padding: 4px 14px 4px 12px;
+            padding: 3px 12px 3px 10px;
             border-radius: 30px;
             border: 1px solid var(--border-color);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
         }
         .map-scale input {
-            width: 60px;
-            padding: 4px 8px;
+            width: 50px;
+            padding: 3px 6px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
             background: var(--bg-primary);
             color: var(--text-primary);
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             outline: none;
         }
         .map-scale input:focus {
@@ -308,27 +365,39 @@
             box-shadow: 0 0 0 3px rgba(74, 139, 194, 0.08);
         }
 
-        /* ===== EDIT PANEL (abajo) ===== */
+        /* Edit Panel */
         .edit-panel {
             background: var(--bg-secondary);
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            padding: 16px 20px 18px;
-            margin-top: 14px;
+            padding: 14px 18px 16px;
+            margin-top: 12px;
             display: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            flex-shrink: 0;
         }
         .edit-panel.visible {
             display: block;
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .edit-panel h3 {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .edit-panel h3 i {
             color: var(--accent);
@@ -336,18 +405,18 @@
         .edit-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px 20px;
+            gap: 10px 16px;
             align-items: flex-end;
         }
         .edit-field {
             display: flex;
             flex-direction: column;
-            gap: 3px;
-            min-width: 110px;
+            gap: 2px;
+            min-width: 100px;
             flex: 1 0 auto;
         }
         .edit-field label {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -355,21 +424,29 @@
         }
         .edit-field input,
         .edit-field select {
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             outline: none;
             width: 100%;
             font-family: inherit;
             transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
         }
         .edit-field input:focus,
         .edit-field select:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(74, 139, 194, 0.08);
+        }
+        .edit-field select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238899aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
         }
         .edit-field select option {
             background: white;
@@ -377,8 +454,8 @@
         }
         .edit-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 12px;
+            gap: 8px;
+            margin-top: 10px;
             flex-wrap: wrap;
             align-items: center;
         }
@@ -386,59 +463,121 @@
             background: var(--accent-dim);
             border: 1px solid rgba(74, 139, 194, 0.1);
             border-radius: 30px;
-            padding: 4px 16px;
-            font-size: 0.7rem;
+            padding: 3px 14px;
+            font-size: 0.65rem;
             color: var(--text-secondary);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .cam-indicator {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 6px 12px;
+            gap: 8px;
+            padding: 5px 10px;
             border-radius: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-left: 4px solid var(--accent);
             background: var(--accent-dim);
         }
         .cam-indicator .color-dot {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             flex-shrink: 0;
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
         .cam-indicator strong {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .cam-indicator span {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
 
+        /* Modal Help */
+        #helpModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        #helpModal.active {
+            display: flex;
+        }
+        #helpModal .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 480px;
+            width: 100%;
+            margin: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #helpModal .modal-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+        #helpModal .modal-content ul {
+            list-style: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 2.2;
+        }
+        #helpModal .modal-content ul li i {
+            color: var(--accent);
+            width: 24px;
+        }
+        #helpModal .modal-content .btn {
+            margin-top: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding: 8px;
+                padding-bottom: calc(8px + var(--safe-bottom));
+            }
             .app {
-                padding: 12px 14px;
+                padding: 10px 12px 14px;
                 border-radius: 16px;
+                min-height: calc(100vh - 16px);
+                min-height: calc(100dvh - 16px);
             }
             .logo h1 {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .logo-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
             }
             .toolbar {
                 border-radius: 24px;
-                padding: 10px 14px;
-                flex-direction: column;
-                align-items: stretch;
+                padding: 8px 12px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            .toolbar .btn-group {
+                flex-wrap: nowrap;
             }
             .toolbar .divider {
-                display: none;
+                margin: 0 2px;
             }
             .edit-grid {
                 flex-direction: column;
@@ -447,41 +586,97 @@
                 min-width: 100%;
             }
             .stats {
-                gap: 12px;
-                font-size: 0.65rem;
-                padding: 5px 14px;
+                gap: 10px;
+                font-size: 0.6rem;
+                padding: 4px 12px;
             }
             .legend {
-                gap: 12px;
-                font-size: 0.65rem;
+                gap: 10px;
+                font-size: 0.6rem;
             }
             .map-scale {
-                font-size: 0.65rem;
-                padding: 3px 10px;
+                font-size: 0.6rem;
+                padding: 2px 10px;
             }
             .map-scale input {
-                width: 50px;
+                width: 45px;
             }
             .header-actions .btn span {
                 display: none;
             }
+            #helpModal .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
         }
         @media (max-width: 480px) {
             .btn {
-                font-size: 0.7rem;
-                padding: 6px 12px;
+                font-size: 0.6rem;
+                padding: 5px 10px;
             }
             .btn i {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             .stats {
-                gap: 8px;
-                font-size: 0.6rem;
-                padding: 4px 10px;
+                gap: 6px;
+                font-size: 0.55rem;
+                padding: 3px 10px;
+            }
+            .logo h1 {
+                font-size: 0.9rem;
+            }
+            .logo h1 small {
+                font-size: 0.45rem;
+            }
+            .logo-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
             }
         }
+        @media (orientation: landscape) and (max-height: 500px) {
+            .app {
+                padding: 8px 12px 10px;
+            }
+            .header {
+                margin-bottom: 8px;
+            }
+            .toolbar {
+                padding: 5px 10px;
+                margin-bottom: 8px;
+            }
+            .edit-panel {
+                padding: 10px 14px 12px;
+                margin-top: 8px;
+            }
+            .map-wrapper {
+                padding: 6px;
+                min-height: 150px;
+            }
+            #mapCanvas {
+                min-height: 150px;
+            }
+            .info-footer {
+                margin-top: 8px;
+            }
+            .logo h1 {
+                font-size: 0.9rem;
+            }
+            .logo-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+            .btn {
+                padding: 4px 10px;
+                font-size: 0.6rem;
+            }
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg-primary);
@@ -493,10 +688,50 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #c8ced6;
         }
+
+        /* Botón de instalación PWA */
+        .install-banner {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .install-banner.visible {
+            display: flex;
+        }
+        .install-banner p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .install-banner p i {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+        .install-banner .btn {
+            flex-shrink: 0;
+        }
+        @media (max-width: 480px) {
+            .install-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .install-banner .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="app">
+    <div class="app" id="app">
+        <!-- HEADER -->
         <div class="header">
             <div class="logo">
                 <div class="logo-icon"><i class="fas fa-video"></i></div>
@@ -511,6 +746,13 @@
             </div>
         </div>
 
+        <!-- BANNER INSTALACIÓN PWA -->
+        <div class="install-banner" id="installBanner">
+            <p><i class="fas fa-download"></i> Instala WijiTech CCTV en tu dispositivo</p>
+            <button class="btn btn-primary btn-sm" id="installBtn"><i class="fas fa-plus-circle"></i> Instalar</button>
+        </div>
+
+        <!-- TOOLBAR -->
         <div class="toolbar">
             <div class="btn-group">
                 <button class="btn btn-primary" id="addCameraBtn"><i class="fas fa-plus-circle"></i> Añadir</button>
@@ -525,7 +767,7 @@
             </div>
             <div class="divider"></div>
             <div class="btn-group">
-                <button class="btn btn-success" id="exportImageBtn"><i class="fas fa-image"></i> Exportar Imagen</button>
+                <button class="btn btn-success" id="exportImageBtn"><i class="fas fa-image"></i> Exportar</button>
                 <button class="btn btn-outline" id="exportMapBtn"><i class="fas fa-download"></i> Guardar</button>
                 <button class="btn btn-outline" id="importMapBtn"><i class="fas fa-upload"></i> Cargar</button>
                 <input type="file" id="fileInput" accept=".json" style="display:none;" />
@@ -536,10 +778,12 @@
             </div>
         </div>
 
+        <!-- MAPA -->
         <div class="map-wrapper">
             <canvas id="mapCanvas" width="1200" height="650"></canvas>
         </div>
 
+        <!-- INFO FOOTER -->
         <div class="info-footer">
             <div class="stats">
                 <span><i class="fas fa-camera"></i> <strong id="cameraCount">0</strong></span>
@@ -555,12 +799,12 @@
                 <span class="map-scale">
                     <i class="fas fa-ruler-combined"></i>
                     1px = <input type="number" id="scaleInput" value="0.05" step="0.005" min="0.005" max="2" /> m
-                    <button class="btn btn-sm btn-outline" id="applyScaleBtn" style="padding:2px 10px;">✓</button>
+                    <button class="btn btn-sm btn-outline" id="applyScaleBtn" style="padding:1px 8px;">✓</button>
                 </span>
             </div>
         </div>
 
-        <!-- EDIT PANEL (abajo) -->
+        <!-- EDIT PANEL -->
         <div class="edit-panel" id="editPanel">
             <h3><i class="fas fa-sliders-h"></i> Editar cámara #<span id="editCamId">—</span></h3>
             <div id="editContent">
@@ -600,20 +844,21 @@
             </div>
         </div>
 
-        <div id="helpModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-            <div style="background:white;border-radius:20px;padding:30px;max-width:480px;margin:20px;border:1px solid var(--border-color);box-shadow:var(--shadow);">
-                <h3 style="color:var(--text-primary);margin-bottom:14px;font-weight:600;"><i class="fas fa-lightbulb" style="color:var(--warning);margin-right:10px;"></i>Guía rápida</h3>
-                <ul style="list-style:none;color:var(--text-secondary);font-size:0.9rem;line-height:2.2;">
-                    <li><i class="fas fa-mouse-pointer" style="color:var(--accent);width:24px;"></i> Click en cámara → seleccionar</li>
-                    <li><i class="fas fa-arrows-alt" style="color:var(--accent);width:24px;"></i> Arrastrar cámara → mover</li>
-                    <li><i class="fas fa-plus-circle" style="color:var(--accent);width:24px;"></i> "Añadir" → nueva cámara</li>
-                    <li><i class="fas fa-sliders-h" style="color:var(--accent);width:24px;"></i> Panel inferior edita: lente, distancia, rotación</li>
-                    <li><i class="fas fa-ruler-combined" style="color:var(--accent);width:24px;"></i> Escala ajustable</li>
-                    <li><i class="fas fa-image" style="color:var(--accent);width:24px;"></i> Cargar fondo (imagen local)</li>
-                    <li><i class="fas fa-download" style="color:var(--accent);width:24px;"></i> Guardar/Cargar proyectos</li>
-                    <li><i class="fas fa-camera" style="color:var(--accent);width:24px;"></i> Exportar Imagen (PNG)</li>
+        <!-- MODAL HELP -->
+        <div id="helpModal">
+            <div class="modal-content">
+                <h3><i class="fas fa-lightbulb" style="color:var(--warning);margin-right:10px;"></i>Guía rápida</h3>
+                <ul>
+                    <li><i class="fas fa-mouse-pointer"></i> Click en cámara → seleccionar</li>
+                    <li><i class="fas fa-arrows-alt"></i> Arrastrar cámara → mover</li>
+                    <li><i class="fas fa-plus-circle"></i> "Añadir" → nueva cámara</li>
+                    <li><i class="fas fa-sliders-h"></i> Panel inferior edita: lente, distancia, rotación</li>
+                    <li><i class="fas fa-ruler-combined"></i> Escala ajustable</li>
+                    <li><i class="fas fa-image"></i> Cargar fondo (imagen local)</li>
+                    <li><i class="fas fa-download"></i> Guardar/Cargar proyectos</li>
+                    <li><i class="fas fa-camera"></i> Exportar Imagen (PNG)</li>
                 </ul>
-                <button onclick="document.getElementById('helpModal').style.display='none'" class="btn btn-primary" style="margin-top:16px;width:100%;justify-content:center;">Entendido</button>
+                <button class="btn btn-primary" id="closeHelpBtn">Entendido</button>
             </div>
         </div>
     </div>
@@ -933,7 +1178,6 @@
                 }
                 scaleDisplay.textContent = scaleMetersPerPixel.toFixed(3);
 
-                // Actualizar panel de edición si está visible
                 if (selectedId !== null && editPanel.classList.contains('visible')) {
                     loadCamToEdit(selectedId);
                 }
@@ -1003,7 +1247,7 @@
             }
 
             // ============================================================
-            //  EDICIÓN (panel inferior)
+            //  EDICIÓN
             // ============================================================
             function loadCamToEdit(id) {
                 const cam = cameras.find(c => c.id === id);
@@ -1018,7 +1262,6 @@
                 angleDisplayEdit.textContent = `${Math.round(fov.hfov)}°`;
                 fovInfo.textContent = `${fov.ancho.toFixed(1)}m × ${fov.alto.toFixed(1)}m @ ${cam.distancia}m`;
 
-                // Actualizar color del indicador del lente
                 const color = LENTE_COLORS[cam.lente] || '#4a8bc2';
                 lenteColorIndicator.style.color = color;
             }
@@ -1253,10 +1496,41 @@
             });
 
             document.getElementById('helpBtn').addEventListener('click', () => {
-                document.getElementById('helpModal').style.display = 'flex';
+                document.getElementById('helpModal').classList.toggle('active');
+            });
+            document.getElementById('closeHelpBtn').addEventListener('click', () => {
+                document.getElementById('helpModal').classList.remove('active');
             });
             document.getElementById('helpModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) e.target.style.display = 'none';
+                if (e.target === e.currentTarget) e.target.classList.remove('active');
+            });
+
+            // ============================================================
+            //  PWA - INSTALACIÓN
+            // ============================================================
+            let deferredPrompt = null;
+            const installBanner = document.getElementById('installBanner');
+            const installBtn = document.getElementById('installBtn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBanner.classList.add('visible');
+            });
+
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        installBanner.classList.remove('visible');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                installBanner.classList.remove('visible');
             });
 
             // ============================================================

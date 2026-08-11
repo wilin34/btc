@@ -3,201 +3,312 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>⚔️ GUERRA DE TOROS Y OSOS - BTC ⚔️</title>
+    <title>⚔️ BATALLA BTC - League of Legends Style ⚔️</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
         body {
-            background: #0a0e14;
+            background: #0a0e17;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Orbitron', sans-serif;
             padding: 12px;
+            overflow-x: hidden;
         }
+
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             width: 100%;
-            background: #141a24;
-            border-radius: 32px;
-            padding: 16px 16px 20px;
-            border: 1px solid #2a3340;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+            background: linear-gradient(145deg, #111927, #0d1420);
+            border-radius: 30px;
+            padding: 20px 20px 24px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), inset 0 0 60px rgba(255, 215, 0, 0.03);
+            position: relative;
+            overflow: hidden;
         }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #f7931a33, transparent, #f7931a33, transparent);
+            border-radius: 32px;
+            z-index: -1;
+            filter: blur(2px);
+        }
+
+        /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 10px;
-            gap: 6px;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 0 8px;
         }
+
         .price-box {
             display: flex;
             align-items: baseline;
-            gap: 10px;
+            gap: 14px;
             flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 18px 6px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
         }
+
         .price-label {
-            color: #8899aa;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            color: #8899bb;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
+
         .price-value {
-            font-size: 1.9rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 900;
             background: linear-gradient(135deg, #f7931a, #ffb347);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 30px rgba(247, 147, 26, 0.3);
         }
+
         .price-change {
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 2px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 3px 14px;
             border-radius: 30px;
-            background: #1e2632;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .price-change.positive { color: #4caf50; }
-        .price-change.negative { color: #f44336; }
+
+        .price-change.positive {
+            color: #4caf50;
+            border-color: #4caf5044;
+        }
+        .price-change.negative {
+            color: #f44336;
+            border-color: #f4433644;
+        }
+
         .last-update {
-            font-size: 0.7rem;
-            color: #5e6f82;
+            font-size: 0.65rem;
+            color: #5a6a82;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
+
+        /* ARENA */
         .arena-wrapper {
             position: relative;
             border-radius: 20px;
             overflow: hidden;
-            border: 2px solid #2f3b4a;
-            background: #111820;
-            margin: 6px 0 12px;
-            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 215, 0, 0.08);
+            background: #0d1420;
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.8), 0 10px 40px rgba(0, 0, 0, 0.6);
+            margin: 6px 0 14px;
         }
+
         #battleCanvas {
             display: block;
             width: 100%;
             height: auto;
             aspect-ratio: 960 / 540;
-            background: #111820;
-            cursor: crosshair;
+            background: #0d1420;
         }
+
+        /* STATS */
         .stats {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
-            margin: 8px 0 12px;
+            margin: 10px 0 14px;
+            padding: 0 4px;
         }
+
         .stat-item {
-            background: #0f141c;
-            padding: 5px 14px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 18px;
             border-radius: 30px;
-            border: 1px solid #2a3340;
+            border: 1px solid rgba(255, 255, 255, 0.04);
             flex: 1;
             min-width: 80px;
             text-align: center;
+            backdrop-filter: blur(8px);
         }
+
         .stat-item .label {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             text-transform: uppercase;
-            color: #5e6f82;
-            letter-spacing: 1px;
+            color: #5a6a82;
+            letter-spacing: 2px;
         }
+
         .stat-item .value {
             font-size: 1rem;
             font-weight: 700;
-            margin-top: 1px;
+            margin-top: 2px;
+            color: #c8d8e8;
         }
-        .value.green { color: #4caf50; }
-        .value.red { color: #f44336; }
-        .value.neutral { color: #ffb347; }
+
+        .value.green {
+            color: #4caf50;
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+        .value.red {
+            color: #f44336;
+            text-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+        }
+        .value.neutral {
+            color: #ffb347;
+            text-shadow: 0 0 20px rgba(255, 180, 70, 0.2);
+        }
+
+        /* FOOTER */
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            padding: 0 4px;
         }
+
         .refresh-btn {
-            background: #1e2632;
-            border: 1px solid #3d4b5e;
-            color: #b0c4d9;
-            padding: 7px 18px;
-            border-radius: 30px;
-            font-size: 0.8rem;
+            background: rgba(255, 215, 0, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            color: #c8d8e8;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
         }
+
         .refresh-btn:hover {
-            background: #2a3340;
-            border-color: #ffb34755;
+            background: rgba(255, 215, 0, 0.12);
+            border-color: rgba(255, 215, 0, 0.3);
             color: #fff;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+            transform: scale(1.02);
         }
+
         .power-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px 16px 4px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
+
+        .power-label {
+            font-size: 0.7rem;
+            color: #8899bb;
+            font-weight: 700;
+        }
+
         .power-bar-bg {
-            width: 120px;
-            height: 10px;
-            background: #0f141c;
+            width: 140px;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 20px;
-            border: 1px solid #2a3340;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
         }
+
         .power-bar-fill {
             height: 100%;
             width: 50%;
             background: linear-gradient(90deg, #f44336, #ffb347, #4caf50);
             border-radius: 20px;
-            transition: width 0.4s ease;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
         }
-        .power-label {
-            font-size: 0.7rem;
-            color: #8899aa;
-        }
+
         @media (max-width: 600px) {
-            .price-value { font-size: 1.3rem; }
-            .stat-item .value { font-size: 0.8rem; }
-            .power-bar-bg { width: 70px; }
+            .price-value {
+                font-size: 1.3rem;
+            }
+            .stat-item .value {
+                font-size: 0.8rem;
+            }
+            .power-bar-bg {
+                width: 80px;
+            }
+            .container {
+                padding: 12px 12px 16px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- HEADER -->
         <div class="header">
             <div class="price-box">
-                <span class="price-label">BTC/USD</span>
+                <span class="price-label">⚡ BTC</span>
                 <span class="price-value" id="priceDisplay">—</span>
                 <span class="price-change" id="changeDisplay">—</span>
             </div>
             <div class="last-update" id="updateTime">⏱️ —</div>
         </div>
 
-        <!-- Campo de batalla 3D -->
+        <!-- ARENA -->
         <div class="arena-wrapper">
             <canvas id="battleCanvas" width="960" height="540"></canvas>
         </div>
 
-        <!-- Stats -->
+        <!-- STATS -->
         <div class="stats">
-            <div class="stat-item"><div class="label">Precio anterior</div><div class="value" id="prevPrice">—</div></div>
-            <div class="stat-item"><div class="label">Cambio %</div><div class="value" id="percentChange">—</div></div>
-            <div class="stat-item"><div class="label">Dominio</div><div class="value" id="powerStatus">⚖️</div></div>
+            <div class="stat-item">
+                <div class="label">Precio Anterior</div>
+                <div class="value" id="prevPrice">—</div>
+            </div>
+            <div class="stat-item">
+                <div class="label">Cambio %</div>
+                <div class="value" id="percentChange">—</div>
+            </div>
+            <div class="stat-item">
+                <div class="label">Dominio</div>
+                <div class="value" id="powerStatus">⚖️</div>
+            </div>
+            <div class="stat-item">
+                <div class="label">Victoria</div>
+                <div class="value" id="victoryStatus">⚔️</div>
+            </div>
         </div>
 
-        <!-- Footer -->
+        <!-- FOOTER -->
         <div class="footer">
-            <button class="refresh-btn" id="refreshBtn">🔄 Actualizar</button>
+            <button class="refresh-btn" id="refreshBtn">🔄 ACTUALIZAR</button>
             <div class="power-indicator">
                 <span class="power-label" style="color:#f44336;">🐻</span>
-                <div class="power-bar-bg"><div class="power-bar-fill" id="powerBarFill" style="width:50%;"></div></div>
+                <div class="power-bar-bg">
+                    <div class="power-bar-fill" id="powerBarFill" style="width:50%;"></div>
+                </div>
                 <span class="power-label" style="color:#4caf50;">🐂</span>
             </div>
         </div>
@@ -205,221 +316,250 @@
 
     <script>
         (function() {
-            // ----- CONFIG -----
+            // ============================================================
+            // CONFIGURACIÓN
+            // ============================================================
             const API_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
-            const REFRESH_MS = 8000;
+            const REFRESH_MS = 5000; // 5 segundos para máxima actualización
 
-            // ----- CANVAS -----
             const canvas = document.getElementById('battleCanvas');
             const ctx = canvas.getContext('2d');
             const W = 960,
                 H = 540;
 
-            // ----- DOM refs -----
+            // DOM
             const priceDisplay = document.getElementById('priceDisplay');
             const changeDisplay = document.getElementById('changeDisplay');
             const updateTime = document.getElementById('updateTime');
             const prevPriceEl = document.getElementById('prevPrice');
             const percentChangeEl = document.getElementById('percentChange');
             const powerStatusEl = document.getElementById('powerStatus');
+            const victoryStatusEl = document.getElementById('victoryStatus');
             const powerBarFill = document.getElementById('powerBarFill');
             const refreshBtn = document.getElementById('refreshBtn');
 
-            // ----- ESTADO DE GUERRA -----
+            // ============================================================
+            // ESTADO DEL JUEGO
+            // ============================================================
             let currentPrice = null;
             let lastPrice = null;
             let force = 0; // -1 (oso) a 1 (toro)
             let previousForce = 0;
+            let gameTime = 0;
 
-            // ----- EJÉRCITOS (unidades en perspectiva) -----
+            // Victorias
+            let bullWins = 0;
+            let bearWins = 0;
+
+            // ============================================================
+            // EJÉRCITOS - Estilo League of Legends
+            // ============================================================
             let bullArmy = [];
             let bearArmy = [];
             let projectiles = [];
             let particles = [];
             let explosions = [];
 
-            // ----- INICIALIZAR EJÉRCITOS -----
+            // Efectos visuales
+            let shakeIntensity = 0;
+            let shakeX = 0,
+                shakeY = 0;
+
+            // ============================================================
+            // CREAR EJÉRCITOS
+            // ============================================================
             function createArmies() {
                 bullArmy = [];
                 bearArmy = [];
-                // Toros: se posicionan en la izquierda con profundidad
-                for (let i = 0; i < 18; i++) {
-                    const row = Math.floor(i / 6);
-                    const col = i % 6;
+
+                // Toros (ejército izquierdo) - 20 unidades en formación
+                for (let i = 0; i < 20; i++) {
+                    const row = Math.floor(i / 5);
+                    const col = i % 5;
                     bullArmy.push({
-                        x: 80 + col * 28 + row * 5,
-                        y: 180 + row * 35 + Math.sin(i) * 8,
-                        z: row * 0.3, // profundidad simulada
-                        baseX: 80 + col * 28 + row * 5,
-                        baseY: 180 + row * 35 + Math.sin(i) * 8,
+                        x: 60 + col * 32 + row * 6,
+                        y: 150 + row * 38 + Math.sin(i * 1.3) * 6,
+                        baseX: 60 + col * 32 + row * 6,
+                        baseY: 150 + row * 38 + Math.sin(i * 1.3) * 6,
                         type: 'bull',
-                        health: 80 + Math.random() * 40,
-                        state: 'idle', // idle, attack, hit
-                        attackCooldown: 0,
-                        size: 0.6 + Math.random() * 0.3,
-                        phase: Math.random() * 100,
-                        alive: true
-                    });
-                }
-                // Osos: derecha
-                for (let i = 0; i < 18; i++) {
-                    const row = Math.floor(i / 6);
-                    const col = i % 6;
-                    bearArmy.push({
-                        x: 880 - col * 28 - row * 5,
-                        y: 180 + row * 35 + Math.sin(i + 10) * 8,
-                        z: row * 0.3,
-                        baseX: 880 - col * 28 - row * 5,
-                        baseY: 180 + row * 35 + Math.sin(i + 10) * 8,
-                        type: 'bear',
-                        health: 80 + Math.random() * 40,
+                        health: 100,
+                        maxHealth: 100,
                         state: 'idle',
                         attackCooldown: 0,
-                        size: 0.6 + Math.random() * 0.3,
+                        size: 0.6 + Math.random() * 0.25,
                         phase: Math.random() * 100,
-                        alive: true
+                        alive: true,
+                        attackTimer: 0,
+                        row: row,
+                        col: col
+                    });
+                }
+
+                // Osos (ejército derecho) - 20 unidades
+                for (let i = 0; i < 20; i++) {
+                    const row = Math.floor(i / 5);
+                    const col = i % 5;
+                    bearArmy.push({
+                        x: 900 - col * 32 - row * 6,
+                        y: 150 + row * 38 + Math.sin(i * 1.3 + 10) * 6,
+                        baseX: 900 - col * 32 - row * 6,
+                        baseY: 150 + row * 38 + Math.sin(i * 1.3 + 10) * 6,
+                        type: 'bear',
+                        health: 100,
+                        maxHealth: 100,
+                        state: 'idle',
+                        attackCooldown: 0,
+                        size: 0.6 + Math.random() * 0.25,
+                        phase: Math.random() * 100,
+                        alive: true,
+                        attackTimer: 0,
+                        row: row,
+                        col: col
                     });
                 }
             }
             createArmies();
 
-            // ----- PROYECTILES (catapultas) -----
-            let attackTimer = 0;
-
-            function spawnCatapultProjectile(fromX, fromY, toX, toY, isBull) {
+            // ============================================================
+            // PROYECTILES Y EXPLOSIONES
+            // ============================================================
+            function spawnProjectile(fromX, fromY, toX, toY, isBull) {
                 const dx = toX - fromX;
                 const dy = toY - fromY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                const speed = 4 + Math.random() * 1.5;
+                const speed = 5 + Math.random() * 1.5;
                 const vx = (dx / dist) * speed;
-                const vy = (dy / dist) * speed - 1.5;
+                const vy = (dy / dist) * speed - 1.2;
                 const color = isBull ? '#ff6d00' : '#2979ff';
+                const size = 12 + Math.random() * 6;
                 projectiles.push({
                     x: fromX,
-                    y: fromY - 20,
+                    y: fromY - 15,
                     vx: vx,
                     vy: vy,
-                    radius: 14 + Math.random() * 6,
+                    radius: size,
                     color: color,
                     isBull: isBull,
                     trail: [],
                     life: 1,
-                    gravity: 0.08
+                    gravity: 0.06,
+                    glow: isBull ? '#ff9800' : '#64b5f6'
                 });
             }
 
-            // ----- EXPLOSIONES Y PARTÍCULAS -----
-
-            function createExplosion(x, y, color, count = 80, big = false) {
-                const sizeMult = big ? 1.8 : 1;
-                for (let i = 0; i < count * sizeMult; i++) {
+            function createExplosion(x, y, color, count = 70, big = false) {
+                const mult = big ? 1.8 : 1;
+                const colors = [color, '#ffffff', color, '#ffcc80', '#90caf9'];
+                for (let i = 0; i < count * mult; i++) {
                     const angle = Math.random() * 2 * Math.PI;
-                    const speed = 1 + Math.random() * 8 * sizeMult;
-                    const size = 2 + Math.random() * 12 * sizeMult;
+                    const speed = 1 + Math.random() * 9 * mult;
+                    const size = 2 + Math.random() * 14 * mult;
+                    const c = colors[Math.floor(Math.random() * colors.length)];
                     particles.push({
-                        x,
-                        y,
+                        x: x + (Math.random() - 0.5) * 10,
+                        y: y + (Math.random() - 0.5) * 10,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed - 1.5,
                         radius: size,
-                        color: color,
+                        color: c,
                         life: 1,
-                        decay: 0.006 + Math.random() * 0.02,
-                        gravity: 0.04
+                        decay: 0.005 + Math.random() * 0.025,
+                        gravity: 0.05,
+                        sparkle: Math.random() > 0.7
                     });
                 }
-                // Destellos
-                for (let i = 0; i < 30 * sizeMult; i++) {
+                // Destellos blancos
+                for (let i = 0; i < 30 * mult; i++) {
                     particles.push({
-                        x: x + (Math.random() - 0.5) * 40,
-                        y: y + (Math.random() - 0.5) * 40,
-                        vx: (Math.random() - 0.5) * 4,
-                        vy: -2 - Math.random() * 5,
-                        radius: 1 + Math.random() * 5,
+                        x: x + (Math.random() - 0.5) * 30,
+                        y: y + (Math.random() - 0.5) * 30,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: -3 - Math.random() * 6,
+                        radius: 1 + Math.random() * 4,
                         color: '#ffffff',
                         life: 1,
-                        decay: 0.04 + Math.random() * 0.06,
-                        gravity: -0.01
+                        decay: 0.03 + Math.random() * 0.06,
+                        gravity: -0.02,
+                        sparkle: true
                     });
                 }
-                // Sacudida de pantalla (simulada con desplazamiento)
-                shakeIntensity = big ? 15 : 8;
+                shakeIntensity = big ? 18 : 10;
             }
 
-            // ----- SHAKE -----
-            let shakeIntensity = 0;
-            let shakeX = 0,
-                shakeY = 0;
-
-            // ----- ACTUALIZAR GUERRA -----
-
-            function updateWar() {
-                // Actualizar estado de las unidades según la fuerza
-                const attackThreshold = 0.15;
+            // ============================================================
+            // LÓGICA DE BATALLA
+            // ============================================================
+            function updateBattle() {
+                gameTime++;
+                const attackThreshold = 0.12;
                 const isBullDominant = force > attackThreshold;
                 const isBearDominant = force < -attackThreshold;
 
-                // Toros atacan si dominan
+                // === TOROS ===
                 for (const unit of bullArmy) {
                     if (!unit.alive) continue;
                     unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
-                    if (isBullDominant && unit.attackCooldown === 0 && Math.random() < 0.08 + Math.abs(force) * 0.15) {
-                        // Elegir un objetivo oso cercano
+
+                    // Movimiento de avance/retroceso según fuerza
+                    const advance = force * 25;
+                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase) * 3;
+                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7) * 2;
+
+                    // Atacar si dominan
+                    if (isBullDominant && unit.attackCooldown === 0 && Math.random() < 0.06 + Math.abs(force) * 0.12) {
                         const targets = bearArmy.filter(b => b.alive);
                         if (targets.length > 0) {
                             const target = targets[Math.floor(Math.random() * targets.length)];
-                            spawnCatapultProjectile(unit.x + 20, unit.y - 10, target.x - 10, target.y - 20, true);
+                            spawnProjectile(unit.x + 25, unit.y - 10, target.x - 15, target.y - 15, true);
                             unit.state = 'attack';
-                            unit.attackCooldown = 40 + Math.random() * 30;
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 300);
+                            unit.attackCooldown = 35 + Math.random() * 25;
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
                         }
                     }
-                    // Movimiento aleatorio
-                    unit.x += Math.sin(Date.now() * 0.001 + unit.phase) * 0.15;
-                    unit.y += Math.sin(Date.now() * 0.0015 + unit.phase * 0.7) * 0.1;
                 }
 
-                // Osos atacan si dominan
+                // === OSOS ===
                 for (const unit of bearArmy) {
                     if (!unit.alive) continue;
                     unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
-                    if (isBearDominant && unit.attackCooldown === 0 && Math.random() < 0.08 + Math.abs(force) * 0.15) {
+
+                    const advance = force * 25;
+                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase + 2) * 3;
+                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7 + 1) * 2;
+
+                    if (isBearDominant && unit.attackCooldown === 0 && Math.random() < 0.06 + Math.abs(force) * 0.12) {
                         const targets = bullArmy.filter(b => b.alive);
                         if (targets.length > 0) {
                             const target = targets[Math.floor(Math.random() * targets.length)];
-                            spawnCatapultProjectile(unit.x - 20, unit.y - 10, target.x + 10, target.y - 20, false);
+                            spawnProjectile(unit.x - 25, unit.y - 10, target.x + 15, target.y - 15, false);
                             unit.state = 'attack';
-                            unit.attackCooldown = 40 + Math.random() * 30;
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 300);
+                            unit.attackCooldown = 35 + Math.random() * 25;
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
                         }
                     }
-                    unit.x += Math.sin(Date.now() * 0.001 + unit.phase + 2) * 0.15;
-                    unit.y += Math.sin(Date.now() * 0.0015 + unit.phase * 0.7 + 1) * 0.1;
                 }
 
-                // Actualizar proyectiles
+                // === PROYECTILES ===
                 for (let i = projectiles.length - 1; i >= 0; i--) {
                     const p = projectiles[i];
                     p.x += p.vx;
                     p.y += p.vy;
-                    p.vy += p.gravity || 0.05;
+                    p.vy += p.gravity;
                     p.trail.push({ x: p.x, y: p.y });
-                    if (p.trail.length > 12) p.trail.shift();
+                    if (p.trail.length > 14) p.trail.shift();
 
-                    // Colisión con ejército enemigo
                     const enemyArmy = p.isBull ? bearArmy : bullArmy;
                     let hit = false;
                     for (const unit of enemyArmy) {
                         if (!unit.alive) continue;
                         const dx = p.x - unit.x;
                         const dy = p.y - unit.y;
-                        if (Math.sqrt(dx * dx + dy * dy) < 35) {
-                            // Impacto
+                        if (Math.sqrt(dx * dx + dy * dy) < 32) {
                             const color = p.isBull ? '#ff6d00' : '#2979ff';
                             createExplosion(p.x, p.y, color, 60, true);
-                            unit.health -= 25 + Math.random() * 15;
+                            unit.health -= 20 + Math.random() * 15;
                             unit.state = 'hit';
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 400);
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 350);
                             if (unit.health <= 0) {
                                 unit.alive = false;
                                 createExplosion(unit.x, unit.y, '#ff9800', 100, true);
@@ -428,18 +568,13 @@
                             break;
                         }
                     }
-                    if (hit) {
-                        projectiles.splice(i, 1);
-                        continue;
-                    }
-                    // Fuera de pantalla
-                    if (p.x < -50 || p.x > W + 50 || p.y > H + 50) {
+                    if (hit || p.x < -50 || p.x > W + 50 || p.y > H + 50) {
                         projectiles.splice(i, 1);
                         continue;
                     }
                 }
 
-                // Actualizar partículas
+                // === PARTÍCULAS ===
                 for (let i = particles.length - 1; i >= 0; i--) {
                     const p = particles[i];
                     p.x += p.vx;
@@ -451,191 +586,258 @@
                     }
                 }
 
-                // Shake
+                // === SHAKE ===
                 if (shakeIntensity > 0) {
                     shakeX = (Math.random() - 0.5) * shakeIntensity * 1.2;
                     shakeY = (Math.random() - 0.5) * shakeIntensity * 1.2;
-                    shakeIntensity *= 0.92;
+                    shakeIntensity *= 0.9;
                     if (shakeIntensity < 0.3) shakeIntensity = 0;
                 } else {
                     shakeX = 0;
                     shakeY = 0;
                 }
 
-                // Reanimar ejércitos si todos muertos
+                // === VERIFICAR VICTORIA ===
                 const bullAlive = bullArmy.filter(u => u.alive).length;
                 const bearAlive = bearArmy.filter(u => u.alive).length;
+
                 if (bullAlive === 0 || bearAlive === 0) {
+                    if (bullAlive === 0) {
+                        bearWins++;
+                        victoryStatusEl.textContent = '🐻 OSO VICTORIA';
+                        victoryStatusEl.className = 'value red';
+                    } else {
+                        bullWins++;
+                        victoryStatusEl.textContent = '🐂 TORO VICTORIA';
+                        victoryStatusEl.className = 'value green';
+                    }
+                    createExplosion(W / 2, H / 2, '#ff9800', 150, true);
                     setTimeout(() => {
                         createArmies();
-                        createExplosion(W / 2, H / 2, '#ff9800', 150, true);
-                    }, 1500);
+                        // Limpiar proyectiles y partículas
+                        projectiles = [];
+                        particles = [];
+                    }, 1800);
                 }
 
-                // Ataques automáticos de catapulta (generales)
-                attackTimer++;
-                const cooldown = 60 / (1 + Math.abs(force) * 0.5);
-                if (attackTimer > cooldown && Math.abs(force) > 0.1) {
-                    attackTimer = 0;
-                    // Lanzar desde ambos lados
-                    if (force > 0) {
-                        const bullUnits = bullArmy.filter(u => u.alive);
-                        const bearUnits = bearArmy.filter(u => u.alive);
-                        if (bullUnits.length > 0 && bearUnits.length > 0) {
+                // Ataques automáticos de catapulta (ambos bandos)
+                if (Math.abs(force) > 0.08 && gameTime % Math.max(30, 80 - Math.abs(force) * 40) === 0) {
+                    const bullUnits = bullArmy.filter(u => u.alive);
+                    const bearUnits = bearArmy.filter(u => u.alive);
+                    if (bullUnits.length > 0 && bearUnits.length > 0) {
+                        if (force > 0) {
                             const from = bullUnits[Math.floor(Math.random() * bullUnits.length)];
                             const to = bearUnits[Math.floor(Math.random() * bearUnits.length)];
-                            spawnCatapultProjectile(from.x + 30, from.y - 20, to.x - 20, to.y - 20, true);
-                        }
-                    } else {
-                        const bullUnits = bullArmy.filter(u => u.alive);
-                        const bearUnits = bearArmy.filter(u => u.alive);
-                        if (bullUnits.length > 0 && bearUnits.length > 0) {
+                            spawnProjectile(from.x + 30, from.y - 20, to.x - 20, to.y - 20, true);
+                        } else {
                             const from = bearUnits[Math.floor(Math.random() * bearUnits.length)];
                             const to = bullUnits[Math.floor(Math.random() * bullUnits.length)];
-                            spawnCatapultProjectile(from.x - 30, from.y - 20, to.x + 20, to.y - 20, false);
+                            spawnProjectile(from.x - 30, from.y - 20, to.x + 20, to.y - 20, false);
                         }
                     }
                 }
             }
 
-            // ----- DIBUJAR CAMPO DE BATALLA 3D -----
+            // ============================================================
+            // DIBUJADO - Estilo League of Legends
+            // ============================================================
 
-            function drawBattlefield() {
-                // Fondo cielo
+            function drawScene() {
+                // === FONDO ===
                 const grad = ctx.createLinearGradient(0, 0, 0, H);
-                grad.addColorStop(0, '#0d1b2a');
-                grad.addColorStop(0.4, '#1b3a4b');
-                grad.addColorStop(0.7, '#2d5a6a');
-                grad.addColorStop(1, '#3d6a7a');
+                grad.addColorStop(0, '#0a0e1a');
+                grad.addColorStop(0.3, '#162030');
+                grad.addColorStop(0.6, '#1a2a40');
+                grad.addColorStop(0.8, '#0f1a2a');
+                grad.addColorStop(1, '#0a0e1a');
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, 0, W, H);
 
-                // Nubes con profundidad
-                ctx.fillStyle = 'rgba(255,255,255,0.04)';
-                for (let i = 0; i < 8; i++) {
-                    let x = (i * 150 + Date.now() * 0.002) % (W + 200) - 100;
-                    let y = 20 + i * 18 + Math.sin(i) * 10;
-                    let s = 1 + i * 0.1;
+                // === ESTRELLAS ===
+                for (let i = 0; i < 80; i++) {
+                    const x = (i * 137 + 50) % W;
+                    const y = (i * 97 + 30) % (H * 0.5);
+                    const size = 0.5 + (i % 3) * 0.5;
+                    const alpha = 0.3 + Math.sin(gameTime * 0.01 + i) * 0.2;
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fillRect(x, y, size, size);
+                }
+
+                // === NUBES ===
+                ctx.fillStyle = 'rgba(255,255,255,0.02)';
+                for (let i = 0; i < 6; i++) {
+                    let x = (i * 200 + gameTime * 0.01) % (W + 300) - 150;
+                    let y = 30 + i * 25 + Math.sin(i * 0.7) * 15;
                     ctx.beginPath();
-                    ctx.arc(x, y, 60 * s, 0, Math.PI * 2);
-                    ctx.arc(x + 70 * s, y - 30 * s, 50 * s, 0, Math.PI * 2);
-                    ctx.arc(x + 130 * s, y, 60 * s, 0, Math.PI * 2);
+                    ctx.arc(x, y, 80 + i * 10, 0, Math.PI * 2);
+                    ctx.arc(x + 90, y - 20, 70 + i * 8, 0, Math.PI * 2);
+                    ctx.arc(x + 160, y, 80 + i * 10, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
-                // Montañas de fondo
-                ctx.fillStyle = '#1a2a33';
+                // === MONTAÑAS LEJANAS ===
+                ctx.fillStyle = '#0d1822';
                 ctx.beginPath();
-                ctx.moveTo(0, H - 180);
-                for (let i = 0; i <= W; i += 10) {
-                    let h = Math.sin(i * 0.005) * 50 + Math.sin(i * 0.012 + 0.5) * 30 + 70;
-                    ctx.lineTo(i, H - 180 - h);
+                ctx.moveTo(0, H - 170);
+                for (let i = 0; i <= W; i += 5) {
+                    let h = Math.sin(i * 0.004 + 0.5) * 55 + Math.sin(i * 0.009 + 1.2) * 35 + 70;
+                    ctx.lineTo(i, H - 170 - h);
                 }
-                ctx.lineTo(W, H - 180);
+                ctx.lineTo(W, H - 170);
                 ctx.fill();
 
-                // Montañas más cercanas
-                ctx.fillStyle = '#233a44';
+                ctx.fillStyle = '#111e2a';
                 ctx.beginPath();
-                ctx.moveTo(0, H - 130);
-                for (let i = 0; i <= W; i += 10) {
-                    let h = Math.sin(i * 0.008 + 1) * 35 + Math.sin(i * 0.015 + 2) * 25 + 50;
-                    ctx.lineTo(i, H - 130 - h);
+                ctx.moveTo(0, H - 140);
+                for (let i = 0; i <= W; i += 5) {
+                    let h = Math.sin(i * 0.006 + 2) * 40 + Math.sin(i * 0.012 + 0.3) * 28 + 55;
+                    ctx.lineTo(i, H - 140 - h);
                 }
-                ctx.lineTo(W, H - 130);
+                ctx.lineTo(W, H - 140);
                 ctx.fill();
 
-                // Suelo con perspectiva (3D)
-                const midX = W / 2 + force * 60;
+                // === SUELO (perspectiva 3D) ===
+                const midX = W / 2 + force * 70;
 
-                // Mitad izquierda (verde toro)
-                ctx.fillStyle = '#1b5e20';
+                // Mitad Toro (verde)
+                ctx.fillStyle = '#1a4a2a';
                 ctx.beginPath();
-                ctx.moveTo(0, H - 100);
-                ctx.lineTo(midX, H - 100);
+                ctx.moveTo(0, H - 110);
+                ctx.lineTo(midX, H - 110);
                 ctx.lineTo(midX, H);
                 ctx.lineTo(0, H);
                 ctx.fill();
-                // Pasto
-                ctx.fillStyle = '#2e7d32';
-                for (let i = 0; i < 80; i++) {
+
+                // Detalles pasto toro
+                ctx.fillStyle = '#2a6a3a';
+                for (let i = 0; i < 60; i++) {
                     let x = Math.random() * midX;
-                    let y = H - 100 + Math.random() * 100;
-                    let h = 4 + Math.random() * 14;
-                    ctx.fillRect(x, y, 2, h);
+                    let y = H - 110 + Math.random() * 110;
+                    ctx.fillRect(x, y, 2, 5 + Math.random() * 12);
                 }
-                // Árboles pequeños
-                for (let i = 0; i < 6; i++) {
-                    let x = 20 + i * 35 + Math.sin(i * 2) * 10;
-                    let y = H - 80 + Math.sin(i * 1.5) * 15;
-                    ctx.fillStyle = '#3e2723';
-                    ctx.fillRect(x, y, 4, 18);
-                    ctx.fillStyle = '#2e7d32';
+                // Árboles toro
+                for (let i = 0; i < 5; i++) {
+                    let x = 30 + i * 50 + Math.sin(i * 1.7) * 15;
+                    let y = H - 90 + Math.sin(i * 0.8) * 20;
+                    ctx.fillStyle = '#2a1a0a';
+                    ctx.fillRect(x, y, 6, 20);
+                    ctx.fillStyle = '#2a6a3a';
                     ctx.beginPath();
-                    ctx.arc(x + 2, y - 5, 12, 0, Math.PI * 2);
+                    ctx.arc(x + 3, y - 8, 18, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#3a8a4a';
+                    ctx.beginPath();
+                    ctx.arc(x - 5, y - 4, 12, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
-                // Mitad derecha (rojo oso)
-                ctx.fillStyle = '#b71c1c';
+                // Mitad Oso (rojo)
+                ctx.fillStyle = '#5a1a1a';
                 ctx.beginPath();
-                ctx.moveTo(midX, H - 100);
-                ctx.lineTo(W, H - 100);
+                ctx.moveTo(midX, H - 110);
+                ctx.lineTo(W, H - 110);
                 ctx.lineTo(W, H);
                 ctx.lineTo(midX, H);
                 ctx.fill();
-                ctx.fillStyle = '#d32f2f';
-                for (let i = 0; i < 80; i++) {
+
+                ctx.fillStyle = '#7a2a2a';
+                for (let i = 0; i < 60; i++) {
                     let x = midX + Math.random() * (W - midX);
-                    let y = H - 100 + Math.random() * 100;
-                    let h = 4 + Math.random() * 14;
-                    ctx.fillRect(x, y, 2, h);
+                    let y = H - 110 + Math.random() * 110;
+                    ctx.fillRect(x, y, 2, 5 + Math.random() * 12);
                 }
-                for (let i = 0; i < 6; i++) {
-                    let x = W - 20 - i * 35 + Math.sin(i * 2 + 3) * 10;
-                    let y = H - 80 + Math.sin(i * 1.5 + 2) * 15;
-                    ctx.fillStyle = '#3e2723';
-                    ctx.fillRect(x, y, 4, 18);
-                    ctx.fillStyle = '#d32f2f';
+                for (let i = 0; i < 5; i++) {
+                    let x = W - 30 - i * 50 + Math.sin(i * 1.7 + 3) * 15;
+                    let y = H - 90 + Math.sin(i * 0.8 + 2) * 20;
+                    ctx.fillStyle = '#2a1a0a';
+                    ctx.fillRect(x, y, 6, 20);
+                    ctx.fillStyle = '#5a2a2a';
                     ctx.beginPath();
-                    ctx.arc(x + 2, y - 5, 12, 0, Math.PI * 2);
+                    ctx.arc(x + 3, y - 8, 18, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#7a3a3a';
+                    ctx.beginPath();
+                    ctx.arc(x - 5, y - 4, 12, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
-                // Línea de fuego central
+                // === LÍNEA DE FUEGO CENTRAL ===
                 ctx.shadowColor = '#ff9800';
-                ctx.shadowBlur = 30;
+                ctx.shadowBlur = 40;
                 ctx.strokeStyle = '#ff9800';
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 3;
                 ctx.beginPath();
-                ctx.moveTo(midX, H - 100);
+                ctx.moveTo(midX, H - 110);
                 ctx.lineTo(midX, H);
                 ctx.stroke();
                 ctx.shadowBlur = 0;
 
-                // Llamas en la línea
-                for (let i = 0; i < 12; i++) {
-                    let fy = H - 100 + i * 12 + Math.sin(Date.now() * 0.005 + i * 0.7) * 8;
-                    ctx.fillStyle = `rgba(255, 150, 0, ${0.3 + Math.sin(Date.now() * 0.008 + i) * 0.2})`;
+                // Llamas
+                for (let i = 0; i < 14; i++) {
+                    let fy = H - 110 + i * 12 + Math.sin(gameTime * 0.04 + i * 0.8) * 10;
+                    ctx.fillStyle = `rgba(255, 150, 0, ${0.25 + Math.sin(gameTime * 0.05 + i) * 0.15})`;
                     ctx.beginPath();
-                    ctx.arc(midX + Math.sin(Date.now() * 0.007 + i * 1.5) * 14, fy, 8 + Math.sin(Date.now() * 0.006 + i) *
-                    3, 0, Math.PI * 2);
+                    ctx.arc(midX + Math.sin(gameTime * 0.04 + i * 1.3) * 18, fy, 10 + Math.sin(gameTime * 0.03 + i) * 4, 0,
+                        Math.PI * 2);
                     ctx.fill();
                 }
 
-                // Polvo / humo de batalla
-                for (let i = 0; i < 15; i++) {
-                    let x = (i * 70 + Date.now() * 0.005) % W;
-                    let y = H - 60 + Math.sin(i * 0.5 + Date.now() * 0.001) * 20;
-                    ctx.fillStyle = `rgba(180, 160, 140, ${0.03 + Math.sin(i + Date.now()*0.001)*0.015})`;
+                // === POLVO DE GUERRA ===
+                for (let i = 0; i < 20; i++) {
+                    let x = (i * 80 + gameTime * 0.02) % W;
+                    let y = H - 70 + Math.sin(i * 0.6 + gameTime * 0.01) * 25;
+                    ctx.fillStyle = `rgba(150, 140, 120, ${0.02 + Math.sin(i + gameTime * 0.008) * 0.015})`;
                     ctx.beginPath();
-                    ctx.arc(x, y, 30 + Math.sin(i * 0.7 + Date.now() * 0.002) * 15, 0, Math.PI * 2);
+                    ctx.arc(x, y, 35 + Math.sin(i * 0.5 + gameTime * 0.005) * 20, 0, Math.PI * 2);
                     ctx.fill();
                 }
+
+                // === PARTÍCULAS Y PROYECTILES ===
+                drawParticles();
+                drawProjectiles();
+
+                // === EJÉRCITOS ===
+                for (const unit of bullArmy) drawUnit(unit, true);
+                for (const unit of bearArmy) drawUnit(unit, false);
+
+                // === HUD ===
+                ctx.shadowColor = 'rgba(0,0,0,0.9)';
+                ctx.shadowBlur = 20;
+                ctx.font = 'bold 22px "Orbitron", sans-serif';
+                ctx.fillStyle = 'rgba(255,215,0,0.7)';
+                ctx.textAlign = 'center';
+                ctx.fillText('⚔️ BATALLA POR BTC ⚔️', W / 2, 42);
+                ctx.shadowBlur = 0;
+
+                // Contadores
+                ctx.font = 'bold 14px "Orbitron", sans-serif';
+                ctx.textAlign = 'left';
+                const bullAlive = bullArmy.filter(u => u.alive).length;
+                const bearAlive = bearArmy.filter(u => u.alive).length;
+                ctx.fillStyle = '#4caf50';
+                ctx.fillText(`🐂 ${bullAlive}`, 18, 76);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#f44336';
+                ctx.fillText(`${bearAlive} 🐻`, W - 18, 76);
+
+                // Victorias
+                ctx.textAlign = 'left';
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.font = '10px "Orbitron", sans-serif';
+                ctx.fillText(`TOROS: ${bullWins}`, 18, 96);
+                ctx.textAlign = 'right';
+                ctx.fillText(`OSOS: ${bearWins}`, W - 18, 96);
+
+                // Fuerza
+                ctx.textAlign = 'center';
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.font = '10px "Orbitron", sans-serif';
+                ctx.fillText(`FUERZA: ${(force * 100).toFixed(0)}%`, W / 2, 96);
             }
 
-            // ----- DIBUJAR UNIDADES (soldados) -----
-
+            // ============================================================
+            // DIBUJAR UNIDAD (estilo LoL)
+            // ============================================================
             function drawUnit(unit, isBull) {
                 if (!unit.alive) return;
                 const s = unit.size;
@@ -643,124 +845,142 @@
                 const y = unit.y;
 
                 // Sombra
-                ctx.shadowColor = 'rgba(0,0,0,0.4)';
-                ctx.shadowBlur = 12;
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 15;
 
                 // Cuerpo
-                const color1 = isBull ? '#8D6E63' : '#5D4037';
-                const color2 = isBull ? '#A1887F' : '#795548';
+                const color1 = isBull ? '#6d4c41' : '#4e342e';
+                const color2 = isBull ? '#8d6e63' : '#5d4037';
                 ctx.fillStyle = color1;
                 ctx.beginPath();
-                ctx.ellipse(x, y, 14 * s, 20 * s, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y, 13 * s, 18 * s, 0, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.fillStyle = color2;
                 ctx.beginPath();
-                ctx.ellipse(x, y + 4 * s, 10 * s, 14 * s, 0, 0, Math.PI * 2);
+                ctx.ellipse(x, y + 3 * s, 9 * s, 12 * s, 0, 0, Math.PI * 2);
                 ctx.fill();
 
                 // Cabeza
-                ctx.fillStyle = isBull ? '#6D4C41' : '#4E342E';
-                const headX = isBull ? x + 14 * s : x - 14 * s;
+                ctx.fillStyle = isBull ? '#5d3a2a' : '#3e2723';
+                const headX = isBull ? x + 12 * s : x - 12 * s;
                 ctx.beginPath();
-                ctx.arc(headX, y - 10 * s, 10 * s, 0, Math.PI * 2);
+                ctx.arc(headX, y - 8 * s, 9 * s, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Casco / cuernos
+                // Cuernos / Garras
                 if (isBull) {
-                    ctx.fillStyle = '#D4A373';
+                    ctx.fillStyle = '#d4a373';
                     ctx.beginPath();
-                    ctx.moveTo(headX + 6 * s, y - 18 * s);
-                    ctx.lineTo(headX + 16 * s, y - 28 * s);
-                    ctx.lineTo(headX + 10 * s, y - 20 * s);
+                    ctx.moveTo(headX + 5 * s, y - 16 * s);
+                    ctx.lineTo(headX + 14 * s, y - 26 * s);
+                    ctx.lineTo(headX + 9 * s, y - 18 * s);
                     ctx.fill();
                     ctx.beginPath();
-                    ctx.moveTo(headX - 2 * s, y - 18 * s);
-                    ctx.lineTo(headX - 12 * s, y - 28 * s);
-                    ctx.lineTo(headX - 6 * s, y - 20 * s);
+                    ctx.moveTo(headX - 3 * s, y - 16 * s);
+                    ctx.lineTo(headX - 12 * s, y - 26 * s);
+                    ctx.lineTo(headX - 7 * s, y - 18 * s);
                     ctx.fill();
                     // Espada
                     ctx.fillStyle = '#b0bec5';
-                    ctx.fillRect(x + 20 * s, y - 18 * s, 3 * s, 20 * s);
-                    ctx.fillRect(x + 22 * s, y - 20 * s, 2 * s, 5 * s);
+                    ctx.shadowColor = '#ff6d00';
+                    ctx.shadowBlur = 8;
+                    ctx.fillRect(x + 18 * s, y - 16 * s, 3 * s, 22 * s);
+                    ctx.fillRect(x + 20 * s, y - 18 * s, 2 * s, 5 * s);
+                    ctx.shadowBlur = 0;
                 } else {
-                    // Osos: garras
                     ctx.fillStyle = '#bdbdbd';
                     for (let i = -1; i <= 1; i += 2) {
-                        ctx.fillRect(x + i * 16 * s, y + 10 * s, 3 * s, 8 * s);
-                        ctx.fillRect(x + i * 20 * s, y + 12 * s, 3 * s, 8 * s);
+                        ctx.fillRect(x + i * 14 * s, y + 8 * s, 3 * s, 8 * s);
+                        ctx.fillRect(x + i * 18 * s, y + 10 * s, 3 * s, 8 * s);
                     }
                     // Escudo
                     ctx.fillStyle = '#455a64';
+                    ctx.shadowColor = '#2979ff';
+                    ctx.shadowBlur = 6;
                     ctx.beginPath();
-                    ctx.arc(x - 18 * s, y - 2 * s, 10 * s, 0, Math.PI * 2);
+                    ctx.arc(x - 16 * s, y - 2 * s, 10 * s, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.fillStyle = '#546e7a';
                     ctx.beginPath();
-                    ctx.arc(x - 18 * s, y - 2 * s, 7 * s, 0, Math.PI * 2);
+                    ctx.arc(x - 16 * s, y - 2 * s, 7 * s, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.shadowBlur = 0;
                 }
 
-                // Ojos
+                // Ojos (brillantes)
+                ctx.shadowBlur = 0;
                 ctx.fillStyle = '#fff';
                 ctx.beginPath();
-                ctx.arc(headX + 4 * s, y - 12 * s, 3 * s, 0, Math.PI * 2);
+                ctx.arc(headX + 3 * s, y - 10 * s, 2.5 * s, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(headX - 4 * s, y - 12 * s, 3 * s, 0, Math.PI * 2);
+                ctx.arc(headX - 3 * s, y - 10 * s, 2.5 * s, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.fillStyle = '#000';
+                ctx.fillStyle = isBull ? '#4caf50' : '#f44336';
                 ctx.beginPath();
-                ctx.arc(headX + 5 * s, y - 11 * s, 1.5 * s, 0, Math.PI * 2);
+                ctx.arc(headX + 4 * s, y - 9 * s, 1.2 * s, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(headX - 3 * s, y - 11 * s, 1.5 * s, 0, Math.PI * 2);
+                ctx.arc(headX - 2 * s, y - 9 * s, 1.2 * s, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Estado de ataque: efecto de brillo
+                // Efecto de ataque
                 if (unit.state === 'attack') {
                     ctx.shadowColor = isBull ? '#ff6d00' : '#2979ff';
-                    ctx.shadowBlur = 30;
+                    ctx.shadowBlur = 35;
                     ctx.strokeStyle = isBull ? '#ff6d00' : '#2979ff';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
-                    ctx.arc(x, y, 30 * s, 0, Math.PI * 2);
+                    ctx.arc(x, y, 28 * s, 0, Math.PI * 2);
                     ctx.stroke();
                     ctx.shadowBlur = 0;
                 }
 
-                // Barra de vida pequeña
-                const healthPercent = Math.max(0, unit.health / 100);
-                ctx.fillStyle = '#222';
-                ctx.fillRect(x - 20, y - 38, 40, 4);
-                ctx.fillStyle = isBull ? '#4caf50' : '#f44336';
-                ctx.fillRect(x - 20, y - 38, 40 * healthPercent, 4);
-
+                // Barra de vida estilo LoL
+                const healthPercent = Math.max(0, unit.health / unit.maxHealth);
+                const barW = 34 * s;
+                const barH = 4 * s;
+                const barX = x - barW / 2;
+                const barY = y - 32 * s;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
+                const color = healthPercent > 0.5 ? '#4caf50' : healthPercent > 0.25 ? '#ffb347' : '#f44336';
+                ctx.fillStyle = color;
+                ctx.fillRect(barX, barY, barW * healthPercent, barH);
                 ctx.shadowBlur = 0;
+
+                // Nombre (solo algunos)
+                if (unit.row === 0 && unit.col === 0) {
+                    ctx.font = 'bold 8px "Orbitron", sans-serif';
+                    ctx.fillStyle = isBull ? 'rgba(76,175,80,0.6)' : 'rgba(244,67,54,0.6)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(isBull ? 'TORO' : 'OSO', x, y - 38 * s);
+                }
             }
 
-            // ----- DIBUJAR PROYECTILES Y PARTÍCULAS -----
-
+            // ============================================================
+            // DIBUJAR PROYECTILES Y PARTÍCULAS
+            // ============================================================
             function drawProjectiles() {
                 for (const p of projectiles) {
-                    // Estela
+                    // Trail
                     for (let t = 0; t < p.trail.length; t++) {
-                        const alpha = t / p.trail.length * 0.5;
+                        const alpha = t / p.trail.length * 0.4;
                         ctx.beginPath();
-                        ctx.arc(p.trail[t].x, p.trail[t].y, p.radius * (t / p.trail.length) * 0.6, 0, Math.PI * 2);
+                        ctx.arc(p.trail[t].x, p.trail[t].y, p.radius * (t / p.trail.length) * 0.5, 0, Math.PI * 2);
                         ctx.fillStyle = `rgba(255, 200, 100, ${alpha})`;
                         ctx.fill();
                     }
                     // Cuerpo
                     ctx.shadowColor = p.color;
-                    ctx.shadowBlur = 40;
+                    ctx.shadowBlur = 50;
+                    const grad = ctx.createRadialGradient(p.x - 4, p.y - 4, 0, p.x, p.y, p.radius);
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.3, p.color);
+                    grad.addColorStop(1, p.color);
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.fill();
-                    ctx.shadowBlur = 10;
-                    ctx.beginPath();
-                    ctx.arc(p.x - 3, p.y - 3, p.radius * 0.5, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = grad;
                     ctx.fill();
                     ctx.shadowBlur = 0;
                 }
@@ -769,34 +989,45 @@
             function drawParticles() {
                 for (const p of particles) {
                     ctx.globalAlpha = p.life;
-                    ctx.shadowBlur = 20;
+                    const size = p.radius * (0.3 + 0.7 * p.life);
+                    ctx.shadowBlur = p.sparkle ? 30 : 10;
                     ctx.shadowColor = p.color;
                     ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius * (0.4 + 0.6 * p.life), 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
                     ctx.fillStyle = p.color;
                     ctx.fill();
+                    if (p.sparkle) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.shadowBlur = 5;
+                        ctx.beginPath();
+                        ctx.arc(p.x - size * 0.3, p.y - size * 0.3, size * 0.2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
                 ctx.globalAlpha = 1;
                 ctx.shadowBlur = 0;
             }
 
-            // ----- UI Y PRECIO -----
-
+            // ============================================================
+            // PRECIO Y FUERZA
+            // ============================================================
             function updateForce(price, previous) {
                 if (previous === null || price === null) { force = 0; return; }
                 const diff = price - previous;
                 const percent = (diff / previous) * 100;
-                const clamped = Math.min(Math.max(percent, -10), 10);
-                force = clamped / 10;
-                force = force * 0.25 + previousForce * 0.75;
+                const clamped = Math.min(Math.max(percent, -12), 12);
+                force = clamped / 12;
+                force = force * 0.2 + previousForce * 0.8;
                 previousForce = force;
             }
 
             function updateUI(price, previous) {
                 if (!price) return;
                 currentPrice = price;
-                priceDisplay.textContent = '$' + Number(price).toLocaleString('en-US', { minimumFractionDigits: 2,
-                    maximumFractionDigits: 2 });
+                priceDisplay.textContent = '$' + Number(price).toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
 
                 let changeText = '—',
                     changeClass = '',
@@ -821,10 +1052,10 @@
                 const powerPercent = 50 + force * 50;
                 powerBarFill.style.width = Math.min(Math.max(powerPercent, 5), 95) + '%';
 
-                let statusText = '⚖️ Equilibrio';
+                let statusText = '⚖️ EQUILIBRIO';
                 let statusClass = 'neutral';
-                if (force > 0.2) { statusText = '🐂 Toros dominan';
-                    statusClass = 'green'; } else if (force < -0.2) { statusText = '🐻 Osos dominan';
+                if (force > 0.2) { statusText = '🐂 TOROS DOMINAN';
+                    statusClass = 'green'; } else if (force < -0.2) { statusText = '🐻 OSOS DOMINAN';
                     statusClass = 'red'; }
                 powerStatusEl.textContent = statusText;
                 powerStatusEl.className = 'value ' + statusClass;
@@ -833,6 +1064,9 @@
                 updateTime.textContent = '⏱️ ' + now.toLocaleTimeString();
             }
 
+            // ============================================================
+            // FETCH PRECIO
+            // ============================================================
             async function fetchPrice() {
                 try {
                     const resp = await fetch(API_URL);
@@ -852,50 +1086,23 @@
                 }
             }
 
-            // ----- BUCLE PRINCIPAL -----
-
+            // ============================================================
+            // BUCLE PRINCIPAL
+            // ============================================================
             function gameLoop() {
-                updateWar();
+                updateBattle();
 
                 ctx.save();
                 ctx.translate(shakeX, shakeY);
-
-                drawBattlefield();
-
-                // Dibujar partículas y proyectiles (detrás de unidades)
-                drawParticles();
-                drawProjectiles();
-
-                // Dibujar ejércitos
-                for (const unit of bullArmy) drawUnit(unit, true);
-                for (const unit of bearArmy) drawUnit(unit, false);
-
-                // Título
-                ctx.shadowColor = 'rgba(0,0,0,0.8)';
-                ctx.shadowBlur = 15;
-                ctx.font = 'bold 26px "Segoe UI"';
-                ctx.fillStyle = 'rgba(255,215,0,0.85)';
-                ctx.textAlign = 'center';
-                ctx.fillText('⚔️ GUERRA DE TOROS Y OSOS ⚔️', W / 2, 42);
-                ctx.shadowBlur = 0;
-
-                // Contador de unidades
-                ctx.font = 'bold 16px "Segoe UI"';
-                ctx.fillStyle = 'rgba(255,255,255,0.7)';
-                ctx.textAlign = 'left';
-                const bullAlive = bullArmy.filter(u => u.alive).length;
-                const bearAlive = bearArmy.filter(u => u.alive).length;
-                ctx.fillText(`🐂 Toros: ${bullAlive}`, 20, 80);
-                ctx.textAlign = 'right';
-                ctx.fillText(`🐻 Osos: ${bearAlive}`, W - 20, 80);
-
+                drawScene();
                 ctx.restore();
 
                 requestAnimationFrame(gameLoop);
             }
 
-            // ----- INICIALIZAR -----
-
+            // ============================================================
+            // INICIALIZAR
+            // ============================================================
             async function init() {
                 await fetchPrice();
                 setInterval(fetchPrice, REFRESH_MS);

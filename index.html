@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>⚔️ BATALLA BTC - League of Legends Style ⚔️</title>
+    <title>⚔️ BATALLA BTC - League of Legends ⚔️</title>
     <style>
         * {
             margin: 0;
@@ -28,11 +28,10 @@
             width: 100%;
             background: linear-gradient(145deg, #111927, #0d1420);
             border-radius: 30px;
-            padding: 20px 20px 24px;
-            border: 1px solid rgba(255, 215, 0, 0.15);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), inset 0 0 60px rgba(255, 215, 0, 0.03);
+            padding: 18px 18px 22px;
+            border: 2px solid rgba(255, 215, 0, 0.12);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), inset 0 0 60px rgba(255, 215, 0, 0.02);
             position: relative;
-            overflow: hidden;
         }
 
         .container::before {
@@ -42,55 +41,54 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(45deg, #f7931a33, transparent, #f7931a33, transparent);
+            background: linear-gradient(45deg, #f7931a22, transparent, #f7931a22, transparent);
             border-radius: 32px;
             z-index: -1;
-            filter: blur(2px);
+            filter: blur(3px);
         }
 
-        /* HEADER */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 12px;
-            padding: 0 8px;
+            margin-bottom: 10px;
+            padding: 0 6px;
         }
 
         .price-box {
             display: flex;
             align-items: baseline;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 18px 6px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 16px 5px 14px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.08);
         }
 
         .price-label {
             color: #8899bb;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             letter-spacing: 3px;
             text-transform: uppercase;
         }
 
         .price-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             background: linear-gradient(135deg, #f7931a, #ffb347);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(247, 147, 26, 0.3);
+            text-shadow: 0 0 30px rgba(247, 147, 26, 0.2);
         }
 
         .price-change {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            padding: 3px 14px;
+            padding: 2px 12px;
             border-radius: 30px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -106,24 +104,23 @@
         }
 
         .last-update {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #5a6a82;
             letter-spacing: 1px;
             background: rgba(0, 0, 0, 0.3);
-            padding: 4px 14px;
+            padding: 3px 12px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        /* ARENA */
         .arena-wrapper {
             position: relative;
-            border-radius: 20px;
+            border-radius: 18px;
             overflow: hidden;
-            border: 2px solid rgba(255, 215, 0, 0.08);
+            border: 2px solid rgba(255, 215, 0, 0.06);
             background: #0d1420;
-            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.8), 0 10px 40px rgba(0, 0, 0, 0.6);
-            margin: 6px 0 14px;
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9), 0 10px 40px rgba(0, 0, 0, 0.6);
+            margin: 4px 0 12px;
         }
 
         #battleCanvas {
@@ -134,71 +131,69 @@
             background: #0d1420;
         }
 
-        /* STATS */
         .stats {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 10px 0 14px;
+            gap: 6px;
+            margin: 8px 0 12px;
             padding: 0 4px;
         }
 
         .stat-item {
             background: rgba(0, 0, 0, 0.5);
-            padding: 6px 18px;
+            padding: 4px 14px;
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.03);
             flex: 1;
-            min-width: 80px;
+            min-width: 70px;
             text-align: center;
             backdrop-filter: blur(8px);
         }
 
         .stat-item .label {
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             text-transform: uppercase;
             color: #5a6a82;
             letter-spacing: 2px;
         }
 
         .stat-item .value {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            margin-top: 2px;
+            margin-top: 1px;
             color: #c8d8e8;
         }
 
         .value.green {
             color: #4caf50;
-            text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
         }
         .value.red {
             color: #f44336;
-            text-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+            text-shadow: 0 0 20px rgba(244, 67, 54, 0.2);
         }
         .value.neutral {
             color: #ffb347;
-            text-shadow: 0 0 20px rgba(255, 180, 70, 0.2);
+            text-shadow: 0 0 20px rgba(255, 180, 70, 0.15);
         }
 
-        /* FOOTER */
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             padding: 0 4px;
         }
 
         .refresh-btn {
-            background: rgba(255, 215, 0, 0.06);
-            border: 1px solid rgba(255, 215, 0, 0.15);
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.12);
             color: #c8d8e8;
-            padding: 8px 24px;
+            padding: 6px 20px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -206,37 +201,35 @@
         }
 
         .refresh-btn:hover {
-            background: rgba(255, 215, 0, 0.12);
-            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.25);
             color: #fff;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
-            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.04);
         }
 
         .power-indicator {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             background: rgba(0, 0, 0, 0.4);
-            padding: 4px 16px 4px 12px;
+            padding: 3px 14px 3px 10px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .power-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #8899bb;
             font-weight: 700;
         }
 
         .power-bar-bg {
-            width: 140px;
-            height: 8px;
+            width: 130px;
+            height: 7px;
             background: rgba(0, 0, 0, 0.6);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
         .power-bar-fill {
@@ -245,43 +238,39 @@
             background: linear-gradient(90deg, #f44336, #ffb347, #4caf50);
             border-radius: 20px;
             transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
         }
 
         @media (max-width: 600px) {
             .price-value {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
             .stat-item .value {
-                font-size: 0.8rem;
+                font-size: 0.7rem;
             }
             .power-bar-bg {
-                width: 80px;
+                width: 70px;
             }
             .container {
-                padding: 12px 12px 16px;
+                padding: 10px 10px 14px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
             <div class="price-box">
                 <span class="price-label">⚡ BTC</span>
-                <span class="price-value" id="priceDisplay">—</span>
+                <span class="price-value" id="priceDisplay">$—</span>
                 <span class="price-change" id="changeDisplay">—</span>
             </div>
             <div class="last-update" id="updateTime">⏱️ —</div>
         </div>
 
-        <!-- ARENA -->
         <div class="arena-wrapper">
             <canvas id="battleCanvas" width="960" height="540"></canvas>
         </div>
 
-        <!-- STATS -->
         <div class="stats">
             <div class="stat-item">
                 <div class="label">Precio Anterior</div>
@@ -301,7 +290,6 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="footer">
             <button class="refresh-btn" id="refreshBtn">🔄 ACTUALIZAR</button>
             <div class="power-indicator">
@@ -319,9 +307,7 @@
             // ============================================================
             // CONFIGURACIÓN
             // ============================================================
-            const API_URL = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd';
-            const REFRESH_MS = 5000; // 5 segundos para máxima actualización
-
+            const REFRESH_MS = 5000;
             const canvas = document.getElementById('battleCanvas');
             const ctx = canvas.getContext('2d');
             const W = 960,
@@ -339,695 +325,107 @@
             const refreshBtn = document.getElementById('refreshBtn');
 
             // ============================================================
-            // ESTADO DEL JUEGO
+            // ESTADO
             // ============================================================
-            let currentPrice = null;
+            let currentPrice = 65000; // Precio inicial por defecto
             let lastPrice = null;
-            let force = 0; // -1 (oso) a 1 (toro)
+            let force = 0;
             let previousForce = 0;
             let gameTime = 0;
-
-            // Victorias
             let bullWins = 0;
             let bearWins = 0;
 
             // ============================================================
-            // EJÉRCITOS - Estilo League of Legends
+            // FUENTES DE PRECIO (múltiples para evitar bloqueos)
             // ============================================================
-            let bullArmy = [];
-            let bearArmy = [];
-            let projectiles = [];
-            let particles = [];
-            let explosions = [];
+            const PRICE_SOURCES = [
+                'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+                'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
+                'https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD'
+            ];
 
-            // Efectos visuales
-            let shakeIntensity = 0;
-            let shakeX = 0,
-                shakeY = 0;
+            let priceSourceIndex = 0;
 
-            // ============================================================
-            // CREAR EJÉRCITOS
-            // ============================================================
-            function createArmies() {
-                bullArmy = [];
-                bearArmy = [];
-
-                // Toros (ejército izquierdo) - 20 unidades en formación
-                for (let i = 0; i < 20; i++) {
-                    const row = Math.floor(i / 5);
-                    const col = i % 5;
-                    bullArmy.push({
-                        x: 60 + col * 32 + row * 6,
-                        y: 150 + row * 38 + Math.sin(i * 1.3) * 6,
-                        baseX: 60 + col * 32 + row * 6,
-                        baseY: 150 + row * 38 + Math.sin(i * 1.3) * 6,
-                        type: 'bull',
-                        health: 100,
-                        maxHealth: 100,
-                        state: 'idle',
-                        attackCooldown: 0,
-                        size: 0.6 + Math.random() * 0.25,
-                        phase: Math.random() * 100,
-                        alive: true,
-                        attackTimer: 0,
-                        row: row,
-                        col: col
-                    });
-                }
-
-                // Osos (ejército derecho) - 20 unidades
-                for (let i = 0; i < 20; i++) {
-                    const row = Math.floor(i / 5);
-                    const col = i % 5;
-                    bearArmy.push({
-                        x: 900 - col * 32 - row * 6,
-                        y: 150 + row * 38 + Math.sin(i * 1.3 + 10) * 6,
-                        baseX: 900 - col * 32 - row * 6,
-                        baseY: 150 + row * 38 + Math.sin(i * 1.3 + 10) * 6,
-                        type: 'bear',
-                        health: 100,
-                        maxHealth: 100,
-                        state: 'idle',
-                        attackCooldown: 0,
-                        size: 0.6 + Math.random() * 0.25,
-                        phase: Math.random() * 100,
-                        alive: true,
-                        attackTimer: 0,
-                        row: row,
-                        col: col
-                    });
-                }
-            }
-            createArmies();
-
-            // ============================================================
-            // PROYECTILES Y EXPLOSIONES
-            // ============================================================
-            function spawnProjectile(fromX, fromY, toX, toY, isBull) {
-                const dx = toX - fromX;
-                const dy = toY - fromY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const speed = 5 + Math.random() * 1.5;
-                const vx = (dx / dist) * speed;
-                const vy = (dy / dist) * speed - 1.2;
-                const color = isBull ? '#ff6d00' : '#2979ff';
-                const size = 12 + Math.random() * 6;
-                projectiles.push({
-                    x: fromX,
-                    y: fromY - 15,
-                    vx: vx,
-                    vy: vy,
-                    radius: size,
-                    color: color,
-                    isBull: isBull,
-                    trail: [],
-                    life: 1,
-                    gravity: 0.06,
-                    glow: isBull ? '#ff9800' : '#64b5f6'
-                });
-            }
-
-            function createExplosion(x, y, color, count = 70, big = false) {
-                const mult = big ? 1.8 : 1;
-                const colors = [color, '#ffffff', color, '#ffcc80', '#90caf9'];
-                for (let i = 0; i < count * mult; i++) {
-                    const angle = Math.random() * 2 * Math.PI;
-                    const speed = 1 + Math.random() * 9 * mult;
-                    const size = 2 + Math.random() * 14 * mult;
-                    const c = colors[Math.floor(Math.random() * colors.length)];
-                    particles.push({
-                        x: x + (Math.random() - 0.5) * 10,
-                        y: y + (Math.random() - 0.5) * 10,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed - 1.5,
-                        radius: size,
-                        color: c,
-                        life: 1,
-                        decay: 0.005 + Math.random() * 0.025,
-                        gravity: 0.05,
-                        sparkle: Math.random() > 0.7
-                    });
-                }
-                // Destellos blancos
-                for (let i = 0; i < 30 * mult; i++) {
-                    particles.push({
-                        x: x + (Math.random() - 0.5) * 30,
-                        y: y + (Math.random() - 0.5) * 30,
-                        vx: (Math.random() - 0.5) * 5,
-                        vy: -3 - Math.random() * 6,
-                        radius: 1 + Math.random() * 4,
-                        color: '#ffffff',
-                        life: 1,
-                        decay: 0.03 + Math.random() * 0.06,
-                        gravity: -0.02,
-                        sparkle: true
-                    });
-                }
-                shakeIntensity = big ? 18 : 10;
-            }
-
-            // ============================================================
-            // LÓGICA DE BATALLA
-            // ============================================================
-            function updateBattle() {
-                gameTime++;
-                const attackThreshold = 0.12;
-                const isBullDominant = force > attackThreshold;
-                const isBearDominant = force < -attackThreshold;
-
-                // === TOROS ===
-                for (const unit of bullArmy) {
-                    if (!unit.alive) continue;
-                    unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
-
-                    // Movimiento de avance/retroceso según fuerza
-                    const advance = force * 25;
-                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase) * 3;
-                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7) * 2;
-
-                    // Atacar si dominan
-                    if (isBullDominant && unit.attackCooldown === 0 && Math.random() < 0.06 + Math.abs(force) * 0.12) {
-                        const targets = bearArmy.filter(b => b.alive);
-                        if (targets.length > 0) {
-                            const target = targets[Math.floor(Math.random() * targets.length)];
-                            spawnProjectile(unit.x + 25, unit.y - 10, target.x - 15, target.y - 15, true);
-                            unit.state = 'attack';
-                            unit.attackCooldown = 35 + Math.random() * 25;
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
-                        }
-                    }
-                }
-
-                // === OSOS ===
-                for (const unit of bearArmy) {
-                    if (!unit.alive) continue;
-                    unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
-
-                    const advance = force * 25;
-                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase + 2) * 3;
-                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7 + 1) * 2;
-
-                    if (isBearDominant && unit.attackCooldown === 0 && Math.random() < 0.06 + Math.abs(force) * 0.12) {
-                        const targets = bullArmy.filter(b => b.alive);
-                        if (targets.length > 0) {
-                            const target = targets[Math.floor(Math.random() * targets.length)];
-                            spawnProjectile(unit.x - 25, unit.y - 10, target.x + 15, target.y - 15, false);
-                            unit.state = 'attack';
-                            unit.attackCooldown = 35 + Math.random() * 25;
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
-                        }
-                    }
-                }
-
-                // === PROYECTILES ===
-                for (let i = projectiles.length - 1; i >= 0; i--) {
-                    const p = projectiles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;
-                    p.trail.push({ x: p.x, y: p.y });
-                    if (p.trail.length > 14) p.trail.shift();
-
-                    const enemyArmy = p.isBull ? bearArmy : bullArmy;
-                    let hit = false;
-                    for (const unit of enemyArmy) {
-                        if (!unit.alive) continue;
-                        const dx = p.x - unit.x;
-                        const dy = p.y - unit.y;
-                        if (Math.sqrt(dx * dx + dy * dy) < 32) {
-                            const color = p.isBull ? '#ff6d00' : '#2979ff';
-                            createExplosion(p.x, p.y, color, 60, true);
-                            unit.health -= 20 + Math.random() * 15;
-                            unit.state = 'hit';
-                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 350);
-                            if (unit.health <= 0) {
-                                unit.alive = false;
-                                createExplosion(unit.x, unit.y, '#ff9800', 100, true);
+            async function fetchPrice() {
+                for (let attempt = 0; attempt < PRICE_SOURCES.length; attempt++) {
+                    try {
+                        const url = PRICE_SOURCES[priceSourceIndex % PRICE_SOURCES.length];
+                        const resp = await fetch(url, {
+                            headers: {
+                                'Accept': 'application/json'
                             }
-                            hit = true;
-                            break;
-                        }
-                    }
-                    if (hit || p.x < -50 || p.x > W + 50 || p.y > H + 50) {
-                        projectiles.splice(i, 1);
-                        continue;
-                    }
-                }
+                        });
+                        if (!resp.ok) throw new Error('HTTP error');
+                        const data = await resp.json();
 
-                // === PARTÍCULAS ===
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity || 0.05;
-                    p.life -= p.decay || 0.01;
-                    if (p.life <= 0 || p.y > H + 30) {
-                        particles.splice(i, 1);
-                    }
-                }
-
-                // === SHAKE ===
-                if (shakeIntensity > 0) {
-                    shakeX = (Math.random() - 0.5) * shakeIntensity * 1.2;
-                    shakeY = (Math.random() - 0.5) * shakeIntensity * 1.2;
-                    shakeIntensity *= 0.9;
-                    if (shakeIntensity < 0.3) shakeIntensity = 0;
-                } else {
-                    shakeX = 0;
-                    shakeY = 0;
-                }
-
-                // === VERIFICAR VICTORIA ===
-                const bullAlive = bullArmy.filter(u => u.alive).length;
-                const bearAlive = bearArmy.filter(u => u.alive).length;
-
-                if (bullAlive === 0 || bearAlive === 0) {
-                    if (bullAlive === 0) {
-                        bearWins++;
-                        victoryStatusEl.textContent = '🐻 OSO VICTORIA';
-                        victoryStatusEl.className = 'value red';
-                    } else {
-                        bullWins++;
-                        victoryStatusEl.textContent = '🐂 TORO VICTORIA';
-                        victoryStatusEl.className = 'value green';
-                    }
-                    createExplosion(W / 2, H / 2, '#ff9800', 150, true);
-                    setTimeout(() => {
-                        createArmies();
-                        // Limpiar proyectiles y partículas
-                        projectiles = [];
-                        particles = [];
-                    }, 1800);
-                }
-
-                // Ataques automáticos de catapulta (ambos bandos)
-                if (Math.abs(force) > 0.08 && gameTime % Math.max(30, 80 - Math.abs(force) * 40) === 0) {
-                    const bullUnits = bullArmy.filter(u => u.alive);
-                    const bearUnits = bearArmy.filter(u => u.alive);
-                    if (bullUnits.length > 0 && bearUnits.length > 0) {
-                        if (force > 0) {
-                            const from = bullUnits[Math.floor(Math.random() * bullUnits.length)];
-                            const to = bearUnits[Math.floor(Math.random() * bearUnits.length)];
-                            spawnProjectile(from.x + 30, from.y - 20, to.x - 20, to.y - 20, true);
+                        let price = null;
+                        // Detectar formato
+                        if (data.bitcoin && data.bitcoin.usd) {
+                            price = data.bitcoin.usd;
+                        } else if (data.price) {
+                            price = parseFloat(data.price);
+                        } else if (data.symbol === 'BTCUSDT' && data.price) {
+                            price = parseFloat(data.price);
                         } else {
-                            const from = bearUnits[Math.floor(Math.random() * bearUnits.length)];
-                            const to = bullUnits[Math.floor(Math.random() * bullUnits.length)];
-                            spawnProjectile(from.x - 30, from.y - 20, to.x + 20, to.y - 20, false);
+                            // Intentar extraer de cualquier campo
+                            const keys = Object.keys(data);
+                            for (const key of keys) {
+                                if (typeof data[key] === 'number' && data[key] > 1000) {
+                                    price = data[key];
+                                    break;
+                                }
+                            }
                         }
+
+                        if (price && typeof price === 'number' && price > 1000) {
+                            const previous = lastPrice;
+                            lastPrice = price;
+                            currentPrice = price;
+                            updateForce(price, previous);
+                            updateUI(price, previous);
+                            return price;
+                        }
+                        priceSourceIndex++;
+                    } catch (e) {
+                        console.warn('Error en fuente de precio:', e);
+                        priceSourceIndex++;
                     }
                 }
+
+                // Si falla todo, usar precio simulado con pequeña variación
+                const variation = (Math.random() - 0.5) * 200;
+                const simulatedPrice = currentPrice + variation;
+                if (simulatedPrice > 1000) {
+                    const previous = lastPrice;
+                    lastPrice = simulatedPrice;
+                    currentPrice = simulatedPrice;
+                    updateForce(simulatedPrice, previous);
+                    updateUI(simulatedPrice, previous);
+                    return simulatedPrice;
+                }
+                return null;
             }
 
             // ============================================================
-            // DIBUJADO - Estilo League of Legends
-            // ============================================================
-
-            function drawScene() {
-                // === FONDO ===
-                const grad = ctx.createLinearGradient(0, 0, 0, H);
-                grad.addColorStop(0, '#0a0e1a');
-                grad.addColorStop(0.3, '#162030');
-                grad.addColorStop(0.6, '#1a2a40');
-                grad.addColorStop(0.8, '#0f1a2a');
-                grad.addColorStop(1, '#0a0e1a');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, H);
-
-                // === ESTRELLAS ===
-                for (let i = 0; i < 80; i++) {
-                    const x = (i * 137 + 50) % W;
-                    const y = (i * 97 + 30) % (H * 0.5);
-                    const size = 0.5 + (i % 3) * 0.5;
-                    const alpha = 0.3 + Math.sin(gameTime * 0.01 + i) * 0.2;
-                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-                    ctx.fillRect(x, y, size, size);
-                }
-
-                // === NUBES ===
-                ctx.fillStyle = 'rgba(255,255,255,0.02)';
-                for (let i = 0; i < 6; i++) {
-                    let x = (i * 200 + gameTime * 0.01) % (W + 300) - 150;
-                    let y = 30 + i * 25 + Math.sin(i * 0.7) * 15;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 80 + i * 10, 0, Math.PI * 2);
-                    ctx.arc(x + 90, y - 20, 70 + i * 8, 0, Math.PI * 2);
-                    ctx.arc(x + 160, y, 80 + i * 10, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // === MONTAÑAS LEJANAS ===
-                ctx.fillStyle = '#0d1822';
-                ctx.beginPath();
-                ctx.moveTo(0, H - 170);
-                for (let i = 0; i <= W; i += 5) {
-                    let h = Math.sin(i * 0.004 + 0.5) * 55 + Math.sin(i * 0.009 + 1.2) * 35 + 70;
-                    ctx.lineTo(i, H - 170 - h);
-                }
-                ctx.lineTo(W, H - 170);
-                ctx.fill();
-
-                ctx.fillStyle = '#111e2a';
-                ctx.beginPath();
-                ctx.moveTo(0, H - 140);
-                for (let i = 0; i <= W; i += 5) {
-                    let h = Math.sin(i * 0.006 + 2) * 40 + Math.sin(i * 0.012 + 0.3) * 28 + 55;
-                    ctx.lineTo(i, H - 140 - h);
-                }
-                ctx.lineTo(W, H - 140);
-                ctx.fill();
-
-                // === SUELO (perspectiva 3D) ===
-                const midX = W / 2 + force * 70;
-
-                // Mitad Toro (verde)
-                ctx.fillStyle = '#1a4a2a';
-                ctx.beginPath();
-                ctx.moveTo(0, H - 110);
-                ctx.lineTo(midX, H - 110);
-                ctx.lineTo(midX, H);
-                ctx.lineTo(0, H);
-                ctx.fill();
-
-                // Detalles pasto toro
-                ctx.fillStyle = '#2a6a3a';
-                for (let i = 0; i < 60; i++) {
-                    let x = Math.random() * midX;
-                    let y = H - 110 + Math.random() * 110;
-                    ctx.fillRect(x, y, 2, 5 + Math.random() * 12);
-                }
-                // Árboles toro
-                for (let i = 0; i < 5; i++) {
-                    let x = 30 + i * 50 + Math.sin(i * 1.7) * 15;
-                    let y = H - 90 + Math.sin(i * 0.8) * 20;
-                    ctx.fillStyle = '#2a1a0a';
-                    ctx.fillRect(x, y, 6, 20);
-                    ctx.fillStyle = '#2a6a3a';
-                    ctx.beginPath();
-                    ctx.arc(x + 3, y - 8, 18, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#3a8a4a';
-                    ctx.beginPath();
-                    ctx.arc(x - 5, y - 4, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // Mitad Oso (rojo)
-                ctx.fillStyle = '#5a1a1a';
-                ctx.beginPath();
-                ctx.moveTo(midX, H - 110);
-                ctx.lineTo(W, H - 110);
-                ctx.lineTo(W, H);
-                ctx.lineTo(midX, H);
-                ctx.fill();
-
-                ctx.fillStyle = '#7a2a2a';
-                for (let i = 0; i < 60; i++) {
-                    let x = midX + Math.random() * (W - midX);
-                    let y = H - 110 + Math.random() * 110;
-                    ctx.fillRect(x, y, 2, 5 + Math.random() * 12);
-                }
-                for (let i = 0; i < 5; i++) {
-                    let x = W - 30 - i * 50 + Math.sin(i * 1.7 + 3) * 15;
-                    let y = H - 90 + Math.sin(i * 0.8 + 2) * 20;
-                    ctx.fillStyle = '#2a1a0a';
-                    ctx.fillRect(x, y, 6, 20);
-                    ctx.fillStyle = '#5a2a2a';
-                    ctx.beginPath();
-                    ctx.arc(x + 3, y - 8, 18, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#7a3a3a';
-                    ctx.beginPath();
-                    ctx.arc(x - 5, y - 4, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // === LÍNEA DE FUEGO CENTRAL ===
-                ctx.shadowColor = '#ff9800';
-                ctx.shadowBlur = 40;
-                ctx.strokeStyle = '#ff9800';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(midX, H - 110);
-                ctx.lineTo(midX, H);
-                ctx.stroke();
-                ctx.shadowBlur = 0;
-
-                // Llamas
-                for (let i = 0; i < 14; i++) {
-                    let fy = H - 110 + i * 12 + Math.sin(gameTime * 0.04 + i * 0.8) * 10;
-                    ctx.fillStyle = `rgba(255, 150, 0, ${0.25 + Math.sin(gameTime * 0.05 + i) * 0.15})`;
-                    ctx.beginPath();
-                    ctx.arc(midX + Math.sin(gameTime * 0.04 + i * 1.3) * 18, fy, 10 + Math.sin(gameTime * 0.03 + i) * 4, 0,
-                        Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // === POLVO DE GUERRA ===
-                for (let i = 0; i < 20; i++) {
-                    let x = (i * 80 + gameTime * 0.02) % W;
-                    let y = H - 70 + Math.sin(i * 0.6 + gameTime * 0.01) * 25;
-                    ctx.fillStyle = `rgba(150, 140, 120, ${0.02 + Math.sin(i + gameTime * 0.008) * 0.015})`;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 35 + Math.sin(i * 0.5 + gameTime * 0.005) * 20, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                // === PARTÍCULAS Y PROYECTILES ===
-                drawParticles();
-                drawProjectiles();
-
-                // === EJÉRCITOS ===
-                for (const unit of bullArmy) drawUnit(unit, true);
-                for (const unit of bearArmy) drawUnit(unit, false);
-
-                // === HUD ===
-                ctx.shadowColor = 'rgba(0,0,0,0.9)';
-                ctx.shadowBlur = 20;
-                ctx.font = 'bold 22px "Orbitron", sans-serif';
-                ctx.fillStyle = 'rgba(255,215,0,0.7)';
-                ctx.textAlign = 'center';
-                ctx.fillText('⚔️ BATALLA POR BTC ⚔️', W / 2, 42);
-                ctx.shadowBlur = 0;
-
-                // Contadores
-                ctx.font = 'bold 14px "Orbitron", sans-serif';
-                ctx.textAlign = 'left';
-                const bullAlive = bullArmy.filter(u => u.alive).length;
-                const bearAlive = bearArmy.filter(u => u.alive).length;
-                ctx.fillStyle = '#4caf50';
-                ctx.fillText(`🐂 ${bullAlive}`, 18, 76);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#f44336';
-                ctx.fillText(`${bearAlive} 🐻`, W - 18, 76);
-
-                // Victorias
-                ctx.textAlign = 'left';
-                ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                ctx.font = '10px "Orbitron", sans-serif';
-                ctx.fillText(`TOROS: ${bullWins}`, 18, 96);
-                ctx.textAlign = 'right';
-                ctx.fillText(`OSOS: ${bearWins}`, W - 18, 96);
-
-                // Fuerza
-                ctx.textAlign = 'center';
-                ctx.fillStyle = 'rgba(255,255,255,0.15)';
-                ctx.font = '10px "Orbitron", sans-serif';
-                ctx.fillText(`FUERZA: ${(force * 100).toFixed(0)}%`, W / 2, 96);
-            }
-
-            // ============================================================
-            // DIBUJAR UNIDAD (estilo LoL)
-            // ============================================================
-            function drawUnit(unit, isBull) {
-                if (!unit.alive) return;
-                const s = unit.size;
-                const x = unit.x;
-                const y = unit.y;
-
-                // Sombra
-                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 15;
-
-                // Cuerpo
-                const color1 = isBull ? '#6d4c41' : '#4e342e';
-                const color2 = isBull ? '#8d6e63' : '#5d4037';
-                ctx.fillStyle = color1;
-                ctx.beginPath();
-                ctx.ellipse(x, y, 13 * s, 18 * s, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = color2;
-                ctx.beginPath();
-                ctx.ellipse(x, y + 3 * s, 9 * s, 12 * s, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Cabeza
-                ctx.fillStyle = isBull ? '#5d3a2a' : '#3e2723';
-                const headX = isBull ? x + 12 * s : x - 12 * s;
-                ctx.beginPath();
-                ctx.arc(headX, y - 8 * s, 9 * s, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Cuernos / Garras
-                if (isBull) {
-                    ctx.fillStyle = '#d4a373';
-                    ctx.beginPath();
-                    ctx.moveTo(headX + 5 * s, y - 16 * s);
-                    ctx.lineTo(headX + 14 * s, y - 26 * s);
-                    ctx.lineTo(headX + 9 * s, y - 18 * s);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.moveTo(headX - 3 * s, y - 16 * s);
-                    ctx.lineTo(headX - 12 * s, y - 26 * s);
-                    ctx.lineTo(headX - 7 * s, y - 18 * s);
-                    ctx.fill();
-                    // Espada
-                    ctx.fillStyle = '#b0bec5';
-                    ctx.shadowColor = '#ff6d00';
-                    ctx.shadowBlur = 8;
-                    ctx.fillRect(x + 18 * s, y - 16 * s, 3 * s, 22 * s);
-                    ctx.fillRect(x + 20 * s, y - 18 * s, 2 * s, 5 * s);
-                    ctx.shadowBlur = 0;
-                } else {
-                    ctx.fillStyle = '#bdbdbd';
-                    for (let i = -1; i <= 1; i += 2) {
-                        ctx.fillRect(x + i * 14 * s, y + 8 * s, 3 * s, 8 * s);
-                        ctx.fillRect(x + i * 18 * s, y + 10 * s, 3 * s, 8 * s);
-                    }
-                    // Escudo
-                    ctx.fillStyle = '#455a64';
-                    ctx.shadowColor = '#2979ff';
-                    ctx.shadowBlur = 6;
-                    ctx.beginPath();
-                    ctx.arc(x - 16 * s, y - 2 * s, 10 * s, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.fillStyle = '#546e7a';
-                    ctx.beginPath();
-                    ctx.arc(x - 16 * s, y - 2 * s, 7 * s, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-
-                // Ojos (brillantes)
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = '#fff';
-                ctx.beginPath();
-                ctx.arc(headX + 3 * s, y - 10 * s, 2.5 * s, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(headX - 3 * s, y - 10 * s, 2.5 * s, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = isBull ? '#4caf50' : '#f44336';
-                ctx.beginPath();
-                ctx.arc(headX + 4 * s, y - 9 * s, 1.2 * s, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(headX - 2 * s, y - 9 * s, 1.2 * s, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Efecto de ataque
-                if (unit.state === 'attack') {
-                    ctx.shadowColor = isBull ? '#ff6d00' : '#2979ff';
-                    ctx.shadowBlur = 35;
-                    ctx.strokeStyle = isBull ? '#ff6d00' : '#2979ff';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 28 * s, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-
-                // Barra de vida estilo LoL
-                const healthPercent = Math.max(0, unit.health / unit.maxHealth);
-                const barW = 34 * s;
-                const barH = 4 * s;
-                const barX = x - barW / 2;
-                const barY = y - 32 * s;
-                ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
-                const color = healthPercent > 0.5 ? '#4caf50' : healthPercent > 0.25 ? '#ffb347' : '#f44336';
-                ctx.fillStyle = color;
-                ctx.fillRect(barX, barY, barW * healthPercent, barH);
-                ctx.shadowBlur = 0;
-
-                // Nombre (solo algunos)
-                if (unit.row === 0 && unit.col === 0) {
-                    ctx.font = 'bold 8px "Orbitron", sans-serif';
-                    ctx.fillStyle = isBull ? 'rgba(76,175,80,0.6)' : 'rgba(244,67,54,0.6)';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(isBull ? 'TORO' : 'OSO', x, y - 38 * s);
-                }
-            }
-
-            // ============================================================
-            // DIBUJAR PROYECTILES Y PARTÍCULAS
-            // ============================================================
-            function drawProjectiles() {
-                for (const p of projectiles) {
-                    // Trail
-                    for (let t = 0; t < p.trail.length; t++) {
-                        const alpha = t / p.trail.length * 0.4;
-                        ctx.beginPath();
-                        ctx.arc(p.trail[t].x, p.trail[t].y, p.radius * (t / p.trail.length) * 0.5, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(255, 200, 100, ${alpha})`;
-                        ctx.fill();
-                    }
-                    // Cuerpo
-                    ctx.shadowColor = p.color;
-                    ctx.shadowBlur = 50;
-                    const grad = ctx.createRadialGradient(p.x - 4, p.y - 4, 0, p.x, p.y, p.radius);
-                    grad.addColorStop(0, '#ffffff');
-                    grad.addColorStop(0.3, p.color);
-                    grad.addColorStop(1, p.color);
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = grad;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            function drawParticles() {
-                for (const p of particles) {
-                    ctx.globalAlpha = p.life;
-                    const size = p.radius * (0.3 + 0.7 * p.life);
-                    ctx.shadowBlur = p.sparkle ? 30 : 10;
-                    ctx.shadowColor = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.fill();
-                    if (p.sparkle) {
-                        ctx.fillStyle = '#ffffff';
-                        ctx.shadowBlur = 5;
-                        ctx.beginPath();
-                        ctx.arc(p.x - size * 0.3, p.y - size * 0.3, size * 0.2, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 0;
-            }
-
-            // ============================================================
-            // PRECIO Y FUERZA
+            // FUERZA Y UI
             // ============================================================
             function updateForce(price, previous) {
                 if (previous === null || price === null) { force = 0; return; }
                 const diff = price - previous;
                 const percent = (diff / previous) * 100;
-                const clamped = Math.min(Math.max(percent, -12), 12);
-                force = clamped / 12;
+                const clamped = Math.min(Math.max(percent, -15), 15);
+                force = clamped / 15;
                 force = force * 0.2 + previousForce * 0.8;
                 previousForce = force;
             }
 
             function updateUI(price, previous) {
                 if (!price) return;
-                currentPrice = price;
-                priceDisplay.textContent = '$' + Number(price).toLocaleString('en-US', {
+                const formatted = '$' + Number(price).toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
+                priceDisplay.textContent = formatted;
 
                 let changeText = '—',
                     changeClass = '',
@@ -1065,25 +463,605 @@
             }
 
             // ============================================================
-            // FETCH PRECIO
+            // EJÉRCITOS Y BATALLA
             // ============================================================
-            async function fetchPrice() {
-                try {
-                    const resp = await fetch(API_URL);
-                    if (!resp.ok) throw new Error('API error');
-                    const data = await resp.json();
-                    const price = data.bitcoin.usd;
-                    if (typeof price === 'number') {
-                        const previous = lastPrice;
-                        lastPrice = price;
-                        updateForce(price, previous);
-                        updateUI(price, previous);
-                        return price;
-                    }
-                } catch (e) {
-                    console.warn('Error fetching price:', e);
-                    priceDisplay.textContent = '⚠️ Error';
+            let bullArmy = [];
+            let bearArmy = [];
+            let projectiles = [];
+            let particles = [];
+            let shakeIntensity = 0;
+            let shakeX = 0,
+                shakeY = 0;
+
+            function createArmies() {
+                bullArmy = [];
+                bearArmy = [];
+
+                // Toros - 20 unidades en formación (5x4)
+                for (let i = 0; i < 20; i++) {
+                    const row = Math.floor(i / 5);
+                    const col = i % 5;
+                    bullArmy.push({
+                        x: 70 + col * 30 + row * 4,
+                        y: 160 + row * 36 + Math.sin(i * 1.3) * 5,
+                        baseX: 70 + col * 30 + row * 4,
+                        baseY: 160 + row * 36 + Math.sin(i * 1.3) * 5,
+                        health: 100,
+                        maxHealth: 100,
+                        state: 'idle',
+                        attackCooldown: 0,
+                        size: 0.6 + Math.random() * 0.2,
+                        phase: Math.random() * 100,
+                        alive: true,
+                        row: row,
+                        col: col
+                    });
                 }
+
+                // Osos - 20 unidades
+                for (let i = 0; i < 20; i++) {
+                    const row = Math.floor(i / 5);
+                    const col = i % 5;
+                    bearArmy.push({
+                        x: 890 - col * 30 - row * 4,
+                        y: 160 + row * 36 + Math.sin(i * 1.3 + 10) * 5,
+                        baseX: 890 - col * 30 - row * 4,
+                        baseY: 160 + row * 36 + Math.sin(i * 1.3 + 10) * 5,
+                        health: 100,
+                        maxHealth: 100,
+                        state: 'idle',
+                        attackCooldown: 0,
+                        size: 0.6 + Math.random() * 0.2,
+                        phase: Math.random() * 100,
+                        alive: true,
+                        row: row,
+                        col: col
+                    });
+                }
+            }
+            createArmies();
+
+            // ============================================================
+            // PROYECTILES Y EXPLOSIONES
+            // ============================================================
+            function spawnProjectile(fromX, fromY, toX, toY, isBull) {
+                const dx = toX - fromX;
+                const dy = toY - fromY;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                const speed = 5 + Math.random() * 1.5;
+                const vx = (dx / dist) * speed;
+                const vy = (dy / dist) * speed - 1;
+                const color = isBull ? '#ff6d00' : '#2979ff';
+                const size = 12 + Math.random() * 6;
+                projectiles.push({
+                    x: fromX,
+                    y: fromY - 15,
+                    vx: vx,
+                    vy: vy,
+                    radius: size,
+                    color: color,
+                    isBull: isBull,
+                    trail: [],
+                    life: 1,
+                    gravity: 0.05,
+                    glow: isBull ? '#ff9800' : '#64b5f6'
+                });
+            }
+
+            function createExplosion(x, y, color, count = 70, big = false) {
+                const mult = big ? 1.8 : 1;
+                const colors = [color, '#ffffff', color, '#ffcc80', '#90caf9'];
+                for (let i = 0; i < count * mult; i++) {
+                    const angle = Math.random() * 2 * Math.PI;
+                    const speed = 1 + Math.random() * 9 * mult;
+                    const size = 2 + Math.random() * 14 * mult;
+                    const c = colors[Math.floor(Math.random() * colors.length)];
+                    particles.push({
+                        x: x + (Math.random() - 0.5) * 10,
+                        y: y + (Math.random() - 0.5) * 10,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 1.5,
+                        radius: size,
+                        color: c,
+                        life: 1,
+                        decay: 0.005 + Math.random() * 0.025,
+                        gravity: 0.05,
+                        sparkle: Math.random() > 0.7
+                    });
+                }
+                for (let i = 0; i < 30 * mult; i++) {
+                    particles.push({
+                        x: x + (Math.random() - 0.5) * 30,
+                        y: y + (Math.random() - 0.5) * 30,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: -3 - Math.random() * 6,
+                        radius: 1 + Math.random() * 4,
+                        color: '#ffffff',
+                        life: 1,
+                        decay: 0.03 + Math.random() * 0.06,
+                        gravity: -0.02,
+                        sparkle: true
+                    });
+                }
+                shakeIntensity = big ? 18 : 10;
+            }
+
+            // ============================================================
+            // ACTUALIZAR BATALLA
+            // ============================================================
+            function updateBattle() {
+                gameTime++;
+                const attackThreshold = 0.1;
+                const isBullDominant = force > attackThreshold;
+                const isBearDominant = force < -attackThreshold;
+
+                // Toros
+                for (const unit of bullArmy) {
+                    if (!unit.alive) continue;
+                    unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
+                    const advance = force * 30;
+                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase) * 3;
+                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7) * 2;
+
+                    if (isBullDominant && unit.attackCooldown === 0 && Math.random() < 0.05 + Math.abs(force) * 0.1) {
+                        const targets = bearArmy.filter(b => b.alive);
+                        if (targets.length > 0) {
+                            const target = targets[Math.floor(Math.random() * targets.length)];
+                            spawnProjectile(unit.x + 25, unit.y - 10, target.x - 15, target.y - 15, true);
+                            unit.state = 'attack';
+                            unit.attackCooldown = 35 + Math.random() * 25;
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
+                        }
+                    }
+                }
+
+                // Osos
+                for (const unit of bearArmy) {
+                    if (!unit.alive) continue;
+                    unit.attackCooldown = Math.max(0, unit.attackCooldown - 1);
+                    const advance = force * 30;
+                    unit.x = unit.baseX + advance + Math.sin(gameTime * 0.02 + unit.phase + 2) * 3;
+                    unit.y = unit.baseY + Math.sin(gameTime * 0.025 + unit.phase * 0.7 + 1) * 2;
+
+                    if (isBearDominant && unit.attackCooldown === 0 && Math.random() < 0.05 + Math.abs(force) * 0.1) {
+                        const targets = bullArmy.filter(b => b.alive);
+                        if (targets.length > 0) {
+                            const target = targets[Math.floor(Math.random() * targets.length)];
+                            spawnProjectile(unit.x - 25, unit.y - 10, target.x + 15, target.y - 15, false);
+                            unit.state = 'attack';
+                            unit.attackCooldown = 35 + Math.random() * 25;
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 250);
+                        }
+                    }
+                }
+
+                // Proyectiles
+                for (let i = projectiles.length - 1; i >= 0; i--) {
+                    const p = projectiles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity;
+                    p.trail.push({ x: p.x, y: p.y });
+                    if (p.trail.length > 14) p.trail.shift();
+
+                    const enemyArmy = p.isBull ? bearArmy : bullArmy;
+                    let hit = false;
+                    for (const unit of enemyArmy) {
+                        if (!unit.alive) continue;
+                        const dx = p.x - unit.x;
+                        const dy = p.y - unit.y;
+                        if (Math.sqrt(dx * dx + dy * dy) < 32) {
+                            createExplosion(p.x, p.y, p.isBull ? '#ff6d00' : '#2979ff', 60, true);
+                            unit.health -= 18 + Math.random() * 15;
+                            unit.state = 'hit';
+                            setTimeout(() => { if (unit) unit.state = 'idle'; }, 350);
+                            if (unit.health <= 0) {
+                                unit.alive = false;
+                                createExplosion(unit.x, unit.y, '#ff9800', 100, true);
+                            }
+                            hit = true;
+                            break;
+                        }
+                    }
+                    if (hit || p.x < -50 || p.x > W + 50 || p.y > H + 50) {
+                        projectiles.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                // Partículas
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity || 0.05;
+                    p.life -= p.decay || 0.01;
+                    if (p.life <= 0 || p.y > H + 30) {
+                        particles.splice(i, 1);
+                    }
+                }
+
+                // Shake
+                if (shakeIntensity > 0) {
+                    shakeX = (Math.random() - 0.5) * shakeIntensity * 1.2;
+                    shakeY = (Math.random() - 0.5) * shakeIntensity * 1.2;
+                    shakeIntensity *= 0.9;
+                    if (shakeIntensity < 0.3) shakeIntensity = 0;
+                } else {
+                    shakeX = 0;
+                    shakeY = 0;
+                }
+
+                // Victorias
+                const bullAlive = bullArmy.filter(u => u.alive).length;
+                const bearAlive = bearArmy.filter(u => u.alive).length;
+
+                if (bullAlive === 0 || bearAlive === 0) {
+                    if (bullAlive === 0) {
+                        bearWins++;
+                        victoryStatusEl.textContent = '🐻 OSO VICTORIA';
+                        victoryStatusEl.className = 'value red';
+                    } else {
+                        bullWins++;
+                        victoryStatusEl.textContent = '🐂 TORO VICTORIA';
+                        victoryStatusEl.className = 'value green';
+                    }
+                    createExplosion(W / 2, H / 2, '#ff9800', 150, true);
+                    setTimeout(() => {
+                        createArmies();
+                        projectiles = [];
+                        particles = [];
+                    }, 1800);
+                }
+
+                // Ataques automáticos
+                if (Math.abs(force) > 0.05 && gameTime % Math.max(40, 80 - Math.abs(force) * 50) === 0) {
+                    const bullUnits = bullArmy.filter(u => u.alive);
+                    const bearUnits = bearArmy.filter(u => u.alive);
+                    if (bullUnits.length > 0 && bearUnits.length > 0) {
+                        if (force > 0) {
+                            const from = bullUnits[Math.floor(Math.random() * bullUnits.length)];
+                            const to = bearUnits[Math.floor(Math.random() * bearUnits.length)];
+                            spawnProjectile(from.x + 30, from.y - 20, to.x - 20, to.y - 20, true);
+                        } else {
+                            const from = bearUnits[Math.floor(Math.random() * bearUnits.length)];
+                            const to = bullUnits[Math.floor(Math.random() * bullUnits.length)];
+                            spawnProjectile(from.x - 30, from.y - 20, to.x + 20, to.y - 20, false);
+                        }
+                    }
+                }
+            }
+
+            // ============================================================
+            // DIBUJAR MAPA - Estilo League of Legends
+            // ============================================================
+            function drawMap() {
+                // Fondo base
+                ctx.fillStyle = '#0a0e1a';
+                ctx.fillRect(0, 0, W, H);
+
+                // Cielo estrellado
+                for (let i = 0; i < 100; i++) {
+                    const x = (i * 137 + 50) % W;
+                    const y = (i * 97 + 30) % (H * 0.45);
+                    const size = 0.5 + (i % 3) * 0.5;
+                    const alpha = 0.2 + Math.sin(gameTime * 0.01 + i) * 0.15;
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fillRect(x, y, size, size);
+                }
+
+                // Río central (estilo LoL)
+                const midX = W / 2 + force * 40;
+
+                // Agua del río (curvo)
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,150,255,0.1)';
+                ctx.shadowBlur = 30;
+                ctx.beginPath();
+                ctx.moveTo(midX - 30, H - 150);
+                ctx.quadraticCurveTo(midX + 80, H / 2 + 30, midX - 20, 130);
+                ctx.quadraticCurveTo(midX - 60, 100, midX - 10, 80);
+                ctx.lineTo(midX + 10, 80);
+                ctx.quadraticCurveTo(midX - 40, 100, midX + 30, 130);
+                ctx.quadraticCurveTo(midX + 100, H / 2 + 30, midX + 20, H - 150);
+                ctx.closePath();
+                const waterGrad = ctx.createLinearGradient(0, 0, 0, H);
+                waterGrad.addColorStop(0, 'rgba(20,80,150,0.25)');
+                waterGrad.addColorStop(0.5, 'rgba(30,120,200,0.35)');
+                waterGrad.addColorStop(1, 'rgba(20,80,150,0.25)');
+                ctx.fillStyle = waterGrad;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.restore();
+
+                // Suelo - mitades con textura
+                // Toro (verde)
+                ctx.fillStyle = '#1a4a2a';
+                ctx.beginPath();
+                ctx.moveTo(0, H - 110);
+                ctx.lineTo(midX - 30, H - 150);
+                ctx.quadraticCurveTo(midX - 40, H / 2 + 30, midX - 20, 130);
+                ctx.quadraticCurveTo(midX - 60, 100, midX - 10, 80);
+                ctx.lineTo(0, 80);
+                ctx.lineTo(0, H);
+                ctx.fill();
+
+                // Textura pasto toro
+                ctx.fillStyle = '#2a6a3a';
+                for (let i = 0; i < 40; i++) {
+                    let x = Math.random() * (midX - 30);
+                    let y = 80 + Math.random() * (H - 190);
+                    ctx.fillRect(x, y, 2, 4 + Math.random() * 10);
+                }
+
+                // Oso (rojo)
+                ctx.fillStyle = '#5a1a1a';
+                ctx.beginPath();
+                ctx.moveTo(midX + 30, H - 150);
+                ctx.lineTo(W, H - 110);
+                ctx.lineTo(W, H);
+                ctx.lineTo(midX + 30, H - 150);
+                ctx.quadraticCurveTo(midX + 100, H / 2 + 30, midX + 30, 130);
+                ctx.quadraticCurveTo(midX - 40, 100, midX + 10, 80);
+                ctx.quadraticCurveTo(midX - 60, 100, midX + 30, 130);
+                ctx.fill();
+
+                ctx.fillStyle = '#7a2a2a';
+                for (let i = 0; i < 40; i++) {
+                    let x = midX + 30 + Math.random() * (W - midX - 30);
+                    let y = 80 + Math.random() * (H - 190);
+                    ctx.fillRect(x, y, 2, 4 + Math.random() * 10);
+                }
+
+                // Base/Torre del equipo (Nexus)
+                // Toro (izquierda)
+                ctx.shadowColor = '#4caf50';
+                ctx.shadowBlur = 40;
+                ctx.fillStyle = '#2a6a3a';
+                ctx.beginPath();
+                ctx.arc(45, H - 60, 35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#4caf50';
+                ctx.font = '32px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🏰', 45, H - 60);
+                ctx.shadowBlur = 0;
+
+                // Oso (derecha)
+                ctx.shadowColor = '#f44336';
+                ctx.shadowBlur = 40;
+                ctx.fillStyle = '#7a2a2a';
+                ctx.beginPath();
+                ctx.arc(W - 45, H - 60, 35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#f44336';
+                ctx.font = '32px sans-serif';
+                ctx.fillText('🏰', W - 45, H - 60);
+                ctx.shadowBlur = 0;
+
+                // Torres (estructuras defensivas)
+                const towerPositions = [
+                    [150, 200],
+                    [250, 300],
+                    [150, 400],
+                    [W - 150, 200],
+                    [W - 250, 300],
+                    [W - 150, 400]
+                ];
+                for (let i = 0; i < towerPositions.length; i++) {
+                    const [tx, ty] = towerPositions[i];
+                    const isBull = i < 3;
+                    ctx.shadowColor = isBull ? '#4caf50' : '#f44336';
+                    ctx.shadowBlur = 20;
+                    ctx.fillStyle = isBull ? '#2a4a2a' : '#4a2a2a';
+                    ctx.fillRect(tx - 10, ty - 25, 20, 35);
+                    ctx.fillStyle = isBull ? '#4caf50' : '#f44336';
+                    ctx.fillRect(tx - 6, ty - 30, 12, 8);
+                    ctx.shadowBlur = 0;
+                    // Luz de torreta
+                    ctx.fillStyle = isBull ? 'rgba(76,175,80,0.1)' : 'rgba(244,67,54,0.1)';
+                    ctx.beginPath();
+                    ctx.arc(tx, ty + 10, 40, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Línea de fuego central
+                ctx.shadowColor = '#ff9800';
+                ctx.shadowBlur = 40;
+                ctx.strokeStyle = '#ff9800';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 8]);
+                ctx.beginPath();
+                ctx.moveTo(midX, 80);
+                ctx.quadraticCurveTo(midX + 40, H / 2, midX, H - 150);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.shadowBlur = 0;
+
+                // Llamas
+                for (let i = 0; i < 10; i++) {
+                    const t = i / 10;
+                    const lx = midX + 40 * Math.sin(t * Math.PI) + (Math.random() - 0.5) * 20;
+                    const ly = 80 + t * (H - 230);
+                    const size = 6 + Math.random() * 8;
+                    ctx.fillStyle = `rgba(255, 150, 0, ${0.15 + Math.sin(gameTime * 0.05 + i) * 0.1})`;
+                    ctx.beginPath();
+                    ctx.arc(lx, ly, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // ============================================================
+            // DIBUJAR UNIDADES (estilo LoL)
+            // ============================================================
+            function drawUnit(unit, isBull) {
+                if (!unit.alive) return;
+                const s = unit.size;
+                const x = unit.x;
+                const y = unit.y;
+
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 12;
+
+                // Cuerpo
+                const color1 = isBull ? '#6d4c41' : '#4e342e';
+                const color2 = isBull ? '#8d6e63' : '#5d4037';
+                ctx.fillStyle = color1;
+                ctx.beginPath();
+                ctx.ellipse(x, y, 12 * s, 17 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = color2;
+                ctx.beginPath();
+                ctx.ellipse(x, y + 3 * s, 8 * s, 11 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cabeza
+                ctx.fillStyle = isBull ? '#5d3a2a' : '#3e2723';
+                const headX = isBull ? x + 11 * s : x - 11 * s;
+                ctx.beginPath();
+                ctx.arc(headX, y - 7 * s, 8 * s, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cuernos / Garras
+                if (isBull) {
+                    ctx.fillStyle = '#d4a373';
+                    ctx.shadowBlur = 5;
+                    ctx.beginPath();
+                    ctx.moveTo(headX + 4 * s, y - 14 * s);
+                    ctx.lineTo(headX + 12 * s, y - 23 * s);
+                    ctx.lineTo(headX + 8 * s, y - 16 * s);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(headX - 3 * s, y - 14 * s);
+                    ctx.lineTo(headX - 11 * s, y - 23 * s);
+                    ctx.lineTo(headX - 7 * s, y - 16 * s);
+                    ctx.fill();
+                    // Espada
+                    ctx.fillStyle = '#b0bec5';
+                    ctx.shadowColor = '#ff6d00';
+                    ctx.shadowBlur = 8;
+                    ctx.fillRect(x + 16 * s, y - 14 * s, 2.5 * s, 20 * s);
+                    ctx.fillRect(x + 18 * s, y - 16 * s, 2 * s, 5 * s);
+                    ctx.shadowBlur = 0;
+                } else {
+                    ctx.fillStyle = '#bdbdbd';
+                    ctx.shadowBlur = 5;
+                    for (let i = -1; i <= 1; i += 2) {
+                        ctx.fillRect(x + i * 12 * s, y + 7 * s, 2.5 * s, 7 * s);
+                        ctx.fillRect(x + i * 16 * s, y + 9 * s, 2.5 * s, 7 * s);
+                    }
+                    // Escudo
+                    ctx.fillStyle = '#455a64';
+                    ctx.shadowColor = '#2979ff';
+                    ctx.shadowBlur = 6;
+                    ctx.beginPath();
+                    ctx.arc(x - 14 * s, y - 2 * s, 9 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#546e7a';
+                    ctx.beginPath();
+                    ctx.arc(x - 14 * s, y - 2 * s, 6 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+
+                // Ojos
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(headX + 3 * s, y - 9 * s, 2 * s, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(headX - 3 * s, y - 9 * s, 2 * s, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = isBull ? '#4caf50' : '#f44336';
+                ctx.beginPath();
+                ctx.arc(headX + 3.5 * s, y - 8 * s, 1 * s, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(headX - 2.5 * s, y - 8 * s, 1 * s, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Efecto ataque
+                if (unit.state === 'attack') {
+                    ctx.shadowColor = isBull ? '#ff6d00' : '#2979ff';
+                    ctx.shadowBlur = 30;
+                    ctx.strokeStyle = isBull ? '#ff6d00' : '#2979ff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 25 * s, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+
+                // Barra de vida
+                const healthPercent = Math.max(0, unit.health / unit.maxHealth);
+                const barW = 32 * s;
+                const barH = 4 * s;
+                const barX = x - barW / 2;
+                const barY = y - 30 * s;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
+                const color = healthPercent > 0.5 ? '#4caf50' : healthPercent > 0.25 ? '#ffb347' : '#f44336';
+                ctx.fillStyle = color;
+                ctx.fillRect(barX, barY, barW * healthPercent, barH);
+                ctx.shadowBlur = 0;
+
+                // Nombre
+                if (unit.row === 0 && unit.col === 0) {
+                    ctx.font = 'bold 7px "Orbitron", sans-serif';
+                    ctx.fillStyle = isBull ? 'rgba(76,175,80,0.5)' : 'rgba(244,67,54,0.5)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(isBull ? 'TORO' : 'OSO', x, y - 36 * s);
+                }
+            }
+
+            // ============================================================
+            // DIBUJAR PROYECTILES Y PARTÍCULAS
+            // ============================================================
+            function drawProjectiles() {
+                for (const p of projectiles) {
+                    for (let t = 0; t < p.trail.length; t++) {
+                        const alpha = t / p.trail.length * 0.4;
+                        ctx.beginPath();
+                        ctx.arc(p.trail[t].x, p.trail[t].y, p.radius * (t / p.trail.length) * 0.5, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 200, 100, ${alpha})`;
+                        ctx.fill();
+                    }
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 50;
+                    const grad = ctx.createRadialGradient(p.x - 4, p.y - 4, 0, p.x, p.y, p.radius);
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.3, p.color);
+                    grad.addColorStop(1, p.color);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            function drawParticles() {
+                for (const p of particles) {
+                    ctx.globalAlpha = p.life;
+                    const size = p.radius * (0.3 + 0.7 * p.life);
+                    ctx.shadowBlur = p.sparkle ? 30 : 10;
+                    ctx.shadowColor = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    if (p.sparkle) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.shadowBlur = 5;
+                        ctx.beginPath();
+                        ctx.arc(p.x - size * 0.3, p.y - size * 0.3, size * 0.2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
             }
 
             // ============================================================
@@ -1094,7 +1072,41 @@
 
                 ctx.save();
                 ctx.translate(shakeX, shakeY);
-                drawScene();
+                drawMap();
+                drawParticles();
+                drawProjectiles();
+
+                for (const unit of bullArmy) drawUnit(unit, true);
+                for (const unit of bearArmy) drawUnit(unit, false);
+
+                // HUD Superior
+                ctx.shadowColor = 'rgba(0,0,0,0.9)';
+                ctx.shadowBlur = 20;
+                ctx.font = 'bold 18px "Orbitron", sans-serif';
+                ctx.fillStyle = 'rgba(255,215,0,0.6)';
+                ctx.textAlign = 'center';
+                ctx.fillText('⚔️ BATALLA BTC ⚔️', W / 2, 32);
+                ctx.shadowBlur = 0;
+
+                // Contadores
+                const bullAlive = bullArmy.filter(u => u.alive).length;
+                const bearAlive = bearArmy.filter(u => u.alive).length;
+                ctx.font = 'bold 12px "Orbitron", sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#4caf50';
+                ctx.fillText(`🐂 ${bullAlive}`, 14, 62);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#f44336';
+                ctx.fillText(`${bearAlive} 🐻`, W - 14, 62);
+
+                // Victorias
+                ctx.textAlign = 'left';
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.font = '8px "Orbitron", sans-serif';
+                ctx.fillText(`VICTORIAS: ${bullWins}`, 14, 78);
+                ctx.textAlign = 'right';
+                ctx.fillText(`${bearWins}`, W - 14, 78);
+
                 ctx.restore();
 
                 requestAnimationFrame(gameLoop);
@@ -1111,6 +1123,8 @@
                     refreshBtn.style.opacity = '0.6';
                     setTimeout(() => refreshBtn.style.opacity = '1', 200);
                 });
+                // También intentar cargar al inicio con un pequeño retraso
+                setTimeout(fetchPrice, 1000);
                 gameLoop();
             }
 

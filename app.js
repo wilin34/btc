@@ -7,8 +7,8 @@
 // ============================================================
 const appState = {
     image: null,
-    imageData: null, // for export
-    scale: 0, // meters per pixel
+    imageData: null,
+    scale: 0,
     scaleCalibrated: false,
     cameras: [],
     selectedCameraId: null,
@@ -34,7 +34,7 @@ const appState = {
     nextCameraId: 1,
     selectedCamera: null,
     isDraggingDial: false,
-    pendingChanges: null,
+    simulationInterval: null,
 };
 
 // ============================================================
@@ -51,6 +51,7 @@ const coordY = document.getElementById('coordY');
 const activeCameraDisplay = document.getElementById('activeCameraDisplay');
 const modeDisplay = document.getElementById('modeDisplay');
 const cameraCount = document.getElementById('cameraCount');
+const totalCameras = document.getElementById('totalCameras');
 const tooltip = document.getElementById('tooltip');
 const fileInput = document.getElementById('fileInput');
 const projectInput = document.getElementById('projectInput');
@@ -58,6 +59,10 @@ const dropOverlay = document.getElementById('dropOverlay');
 const calibrationOverlay = document.getElementById('calibrationOverlay');
 const calibInput = document.getElementById('calibInput');
 const calibPixels = document.getElementById('calibPixels');
+const camEditNumber = document.getElementById('camEditNumber');
+const simulationOverlay = document.getElementById('simulationOverlay');
+const simulationFeed = document.getElementById('simulationFeed');
+const simCamCount = document.getElementById('simCamCount');
 
 // Dial
 const dialCanvas = document.getElementById('dialCanvas');
@@ -114,7 +119,6 @@ function getCanvasCoords(e) {
 }
 
 function getImageCoords(canvasX, canvasY) {
-    // Convert canvas coordinates to image coordinates
     const imgX = (canvasX - appState.imageX) / appState.imageScale;
     const imgY = (canvasY - appState.imageY) / appState.imageScale;
     return { x: imgX, y: imgY };
@@ -140,56 +144,22 @@ function isOnImage(canvasX, canvasY) {
 function drawScene() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw background
     ctx.fillStyle = '#0a0e17';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw image
     if (appState.image) {
         ctx.drawImage(appState.image, appState.imageX, appState.imageY, appState.imageWidth, appState.imageHeight);
     }
 
-    // Draw areas
     drawAreas();
-
-    // Draw measure points
     drawMeasurements();
 
-    // Draw cameras
-    drawCameras();
+    // Draw cameras with scaling based on image size
+    const baseSize = Math.min(appState.imageWidth || canvas.width, appState.imageHeight || canvas.height);
+    const cameraScale = Math.max(0.5, Math.min(1.5, baseSize / 600));
+    drawCameras(cameraScale);
 
-    // Draw calibration line
-    if (appState.isCalibrating && appState.calibPoints.length === 2) {
-        const p1 = appState.calibPoints[0];
-        const p2 = appState.calibPoints[1];
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = '#ffa502';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        // Draw endpoints
-        ctx.fillStyle = '#ffa502';
-        ctx.beginPath();
-        ctx.arc(p1.x, p1.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(p2.x, p2.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        const distPx = Math.sqrt(
-            Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
-        );
-        const midX = (p1.x + p2.x) / 2;
-        const midY = (p1.y + p2.y) / 2;
-        ctx.fillStyle = '#ffa502';
-        ctx.font = '13px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(`${distPx.toFixed(1)} px`, midX, midY - 10);
-    }
+    drawCalibration();
 }
 
 function drawAreas() {
@@ -201,21 +171,29 @@ function drawAreas() {
             ctx.lineTo(pts[i].x, pts[i].y);
         }
         ctx.closePath();
-        ctx.fillStyle = 'rgba(0, 168, 255, 0.1)';
+        ctx.fillStyle = 'rgba(0, 168, 255, 0.08)';
         ctx.fill();
-        ctx.strokeStyle = 'rgba(0, 168, 255, 0.5)';
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(0, 168, 255, 0.3)';
+        ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Label
         if (area.label) {
             const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
             const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
             ctx.fillStyle = 'rgba(0, 168, 255, 0.7)';
-            ctx.font = '12px Inter, sans-serif';
+            ctx.font = 'bold 14px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(area.label, cx, cy);
+            
+            // Show dimensions if calibrated
+            if (appState.scaleCalibrated && area.points.length >= 4) {
+                const w = calculateDistance(pts[0].x, pts[0].y, pts[1].x, pts[1].y);
+                const h = calculateDistance(pts[1].x, pts[1].y, pts[2].x, pts[2].y);
+                ctx.fillStyle = 'rgba(0, 168, 255, 0.5)';
+                ctx.font = '12px Inter, sans-serif';
+                ctx.fillText(`${w.toFixed(2)}m × ${h.toFixed(2)}m`, cx, cy + 22);
+            }
         }
     });
 }
@@ -226,40 +204,41 @@ function drawMeasurements() {
         ctx.fillStyle = '#00d2a0';
         pts.forEach((p, i) => {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
             ctx.fill();
             if (i > 0) {
                 ctx.beginPath();
                 ctx.moveTo(pts[i - 1].x, pts[i - 1].y);
                 ctx.lineTo(p.x, p.y);
                 ctx.strokeStyle = '#00d2a0';
-                ctx.lineWidth = 1.5;
-                ctx.setLineDash([4, 4]);
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
                 ctx.stroke();
                 ctx.setLineDash([]);
                 const dist = calculateDistance(pts[i - 1].x, pts[i - 1].y, p.x, p.y);
                 const midX = (pts[i - 1].x + p.x) / 2;
                 const midY = (pts[i - 1].y + p.y) / 2;
                 ctx.fillStyle = '#00d2a0';
-                ctx.font = '12px Inter, sans-serif';
+                ctx.font = 'bold 14px Inter, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
-                ctx.fillText(`${dist.toFixed(2)}m`, midX, midY - 4);
+                ctx.fillText(`${dist.toFixed(2)}m`, midX, midY - 6);
             }
         });
     }
 }
 
-function drawCameras() {
+function drawCameras(scale) {
     appState.cameras.forEach(cam => {
         const pos = getCanvasCoordsFromImage(cam.x, cam.y);
-        drawCamera(cam, pos, cam.id === appState.selectedCameraId);
+        drawCamera(cam, pos, cam.id === appState.selectedCameraId, scale);
     });
 }
 
-function drawCamera(cam, pos, selected) {
-    const radius = 18;
-    const distancePx = metersToPx(cam.distance);
+function drawCamera(cam, pos, selected, scale) {
+    const baseRadius = 20 * scale;
+    const radius = Math.max(12, Math.min(32, baseRadius));
+    const distancePx = metersToPx(cam.distance) * scale;
     const fovRad = degToRad(cam.fov);
     const angleRad = degToRad(cam.rotation);
 
@@ -267,34 +246,33 @@ function drawCamera(cam, pos, selected) {
     ctx.save();
     ctx.translate(pos.x, pos.y);
     ctx.rotate(angleRad);
+    ctx.scale(scale, scale);
 
-    // Draw cone
     const startAngle = -fovRad / 2;
     const endAngle = fovRad / 2;
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.arc(0, 0, distancePx, startAngle, endAngle);
+    ctx.arc(0, 0, distancePx / scale, startAngle, endAngle);
     ctx.closePath();
 
-    // Color based on status
     if (cam.active !== false) {
-        ctx.fillStyle = 'rgba(0, 210, 160, 0.2)';
-        ctx.strokeStyle = 'rgba(0, 210, 160, 0.6)';
+        ctx.fillStyle = 'rgba(0, 210, 160, 0.15)';
+        ctx.strokeStyle = 'rgba(0, 210, 160, 0.5)';
     } else {
-        ctx.fillStyle = 'rgba(255, 71, 87, 0.15)';
-        ctx.strokeStyle = 'rgba(255, 71, 87, 0.5)';
+        ctx.fillStyle = 'rgba(255, 71, 87, 0.1)';
+        ctx.strokeStyle = 'rgba(255, 71, 87, 0.4)';
     }
     ctx.fill();
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2 / scale;
     ctx.stroke();
 
     // Distance line
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(distancePx, 0);
-    ctx.strokeStyle = cam.active !== false ? 'rgba(0, 210, 160, 0.4)' : 'rgba(255, 71, 87, 0.3)';
-    ctx.lineWidth = 1;
+    ctx.lineTo(distancePx / scale, 0);
+    ctx.strokeStyle = cam.active !== false ? 'rgba(0, 210, 160, 0.3)' : 'rgba(255, 71, 87, 0.3)';
+    ctx.lineWidth = 1.5 / scale;
     ctx.stroke();
 
     ctx.restore();
@@ -302,53 +280,86 @@ function drawCamera(cam, pos, selected) {
     // Camera body
     ctx.save();
     ctx.translate(pos.x, pos.y);
+    const r = radius;
 
-    // Glow if selected
     if (selected) {
         ctx.shadowColor = '#00a8ff';
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 30;
     }
 
-    // Outer ring
     ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fillStyle = selected ? 'rgba(0, 168, 255, 0.2)' : 'rgba(0, 168, 255, 0.1)';
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = selected ? 'rgba(0, 168, 255, 0.2)' : 'rgba(0, 168, 255, 0.08)';
     ctx.fill();
     ctx.strokeStyle = selected ? '#00a8ff' : (cam.active !== false ? '#00d2a0' : '#ff4757');
     ctx.lineWidth = selected ? 3 : 2;
     ctx.stroke();
 
-    // Inner circle (lens)
     ctx.beginPath();
-    ctx.arc(0, 0, 8, 0, Math.PI * 2);
-    ctx.fillStyle = cam.active !== false ? '#00d2a0' : '#ff4757';
-    ctx.fill();
-
-    // Direction indicator
-    ctx.beginPath();
-    ctx.moveTo(0, -radius + 4);
-    ctx.lineTo(-6, -radius + 12);
-    ctx.lineTo(6, -radius + 12);
-    ctx.closePath();
+    ctx.arc(0, 0, r * 0.4, 0, Math.PI * 2);
     ctx.fillStyle = cam.active !== false ? '#00d2a0' : '#ff4757';
     ctx.fill();
 
     ctx.shadowBlur = 0;
+
+    // Direction indicator
+    ctx.beginPath();
+    ctx.moveTo(0, -r + 6);
+    ctx.lineTo(-6, -r + 16);
+    ctx.lineTo(6, -r + 16);
+    ctx.closePath();
+    ctx.fillStyle = cam.active !== false ? '#00d2a0' : '#ff4757';
+    ctx.fill();
+
     ctx.restore();
 
-    // Label
-    ctx.fillStyle = selected ? '#00a8ff' : 'rgba(224, 230, 237, 0.7)';
-    ctx.font = selected ? 'bold 12px Inter, sans-serif' : '11px Inter, sans-serif';
+    // Label - bigger and bolder
+    ctx.fillStyle = selected ? '#00a8ff' : 'rgba(224, 230, 237, 0.8)';
+    ctx.font = selected ? 'bold 14px Inter, sans-serif' : '13px Inter, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(cam.name || `Cámara ${cam.id}`, pos.x, pos.y - radius - 6);
+    const label = cam.name || `Cámara ${cam.id}`;
+    ctx.fillText(label, pos.x, pos.y - radius - 8);
 
-    // Distance label if selected
-    if (selected) {
+    // Distance label
+    if (selected && appState.scaleCalibrated) {
         ctx.fillStyle = '#8a9bb5';
-        ctx.font = '10px Inter, sans-serif';
+        ctx.font = '12px Inter, sans-serif';
         ctx.textBaseline = 'top';
-        ctx.fillText(`${cam.distance.toFixed(1)}m`, pos.x + radius + 12, pos.y - 6);
+        ctx.fillText(`${cam.distance.toFixed(1)}m`, pos.x + radius + 16, pos.y - 8);
+    }
+}
+
+function drawCalibration() {
+    if (appState.isCalibrating && appState.calibPoints.length === 2) {
+        const p1 = appState.calibPoints[0];
+        const p2 = appState.calibPoints[1];
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = '#ffa502';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#ffa502';
+        ctx.beginPath();
+        ctx.arc(p1.x, p1.y, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(p2.x, p2.y, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        const distPx = Math.sqrt(
+            Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)
+        );
+        const midX = (p1.x + p2.x) / 2;
+        const midY = (p1.y + p2.y) / 2;
+        ctx.fillStyle = '#ffa502';
+        ctx.font = 'bold 16px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${distPx.toFixed(1)} px`, midX, midY - 14);
     }
 }
 
@@ -356,6 +367,10 @@ function drawCamera(cam, pos, selected) {
 // CAMERA OPERATIONS
 // ============================================================
 function addCamera(x, y) {
+    if (!appState.image) {
+        alert('Carga un plano primero.');
+        return null;
+    }
     const imgCoords = getImageCoords(x, y);
     const cam = {
         id: generateId(),
@@ -365,11 +380,12 @@ function addCamera(x, y) {
         rotation: 0,
         distance: 4.0,
         fov: 81,
-        model: '2.8mm - 1.7 - 4m',
+        model: '2.8mm - 110°',
         active: true,
     };
     appState.cameras.push(cam);
     appState.selectedCameraId = cam.id;
+    appState.selectedCamera = cam;
     updateUI();
     saveState();
     return cam;
@@ -382,7 +398,28 @@ function deleteCamera(id) {
         appState.selectedCameraId = null;
         appState.selectedCamera = null;
         propertiesPanel.classList.add('hidden');
+        activeCameraDisplay.textContent = 'Ninguna';
     }
+    updateUI();
+    saveState();
+}
+
+function deleteSelectedCamera() {
+    if (appState.selectedCameraId) {
+        deleteCamera(appState.selectedCameraId);
+    } else {
+        alert('Selecciona una cámara para eliminar.');
+    }
+}
+
+function clearAllCameras() {
+    if (appState.cameras.length === 0) return;
+    if (!confirm('¿Eliminar todas las cámaras?')) return;
+    appState.cameras = [];
+    appState.selectedCameraId = null;
+    appState.selectedCamera = null;
+    propertiesPanel.classList.add('hidden');
+    activeCameraDisplay.textContent = 'Ninguna';
     updateUI();
     saveState();
 }
@@ -394,6 +431,7 @@ function selectCamera(id) {
     if (cam) {
         loadProperties(cam);
         propertiesPanel.classList.remove('hidden');
+        camEditNumber.textContent = appState.cameras.indexOf(cam) + 1;
         activeCameraDisplay.textContent = cam.name || cam.id;
     } else {
         propertiesPanel.classList.add('hidden');
@@ -404,7 +442,7 @@ function selectCamera(id) {
 
 function loadProperties(cam) {
     document.getElementById('propName').value = cam.name || '';
-    document.getElementById('propModel').value = cam.model || '2.8mm - 1.7 - 4m';
+    document.getElementById('propModel').value = cam.model || '2.8mm - 110°';
     document.getElementById('propPosX').textContent = pxToMeters(cam.x).toFixed(2);
     document.getElementById('propPosY').textContent = pxToMeters(cam.y).toFixed(2);
     document.getElementById('propRotation').textContent = `${Math.round(cam.rotation)}°`;
@@ -413,7 +451,6 @@ function loadProperties(cam) {
     document.getElementById('propFov').value = cam.fov;
     document.getElementById('propFovVal').textContent = Math.round(cam.fov);
 
-    // Update dial
     drawDial(cam.rotation);
 }
 
@@ -425,15 +462,16 @@ function applyProperties() {
     const model = document.getElementById('propModel').value;
     const distance = parseFloat(document.getElementById('propDistance').value);
     const fov = parseFloat(document.getElementById('propFov').value);
+    const rotation = parseFloat(document.getElementById('propRotation').textContent) || 0;
 
     cam.name = name;
     cam.model = model;
     cam.distance = distance;
     cam.fov = fov;
+    cam.rotation = rotation;
 
     activeCameraDisplay.textContent = name;
 
-    // Update position display
     document.getElementById('propPosX').textContent = pxToMeters(cam.x).toFixed(2);
     document.getElementById('propPosY').textContent = pxToMeters(cam.y).toFixed(2);
 
@@ -449,11 +487,10 @@ function drawDial(angle) {
     const h = dialCanvas.height;
     const cx = w / 2;
     const cy = h / 2;
-    const radius = 50;
+    const radius = 58;
 
     dialCtx.clearRect(0, 0, w, h);
 
-    // Outer ring
     const grad = dialCtx.createRadialGradient(cx, cy, radius - 4, cx, cy, radius);
     grad.addColorStop(0, '#1a2538');
     grad.addColorStop(1, '#0a0e17');
@@ -465,37 +502,42 @@ function drawDial(angle) {
     dialCtx.lineWidth = 2;
     dialCtx.stroke();
 
-    // Tick marks
     for (let i = 0; i < 36; i++) {
         const a = degToRad(i * 10 - 90);
         const isMain = i % 3 === 0;
-        const len = isMain ? 8 : 4;
-        const r1 = radius - 10;
-        const r2 = radius - 10 - len;
+        const len = isMain ? 10 : 6;
+        const r1 = radius - 12;
+        const r2 = radius - 12 - len;
         dialCtx.beginPath();
         dialCtx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
         dialCtx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
         dialCtx.strokeStyle = isMain ? '#8a9bb5' : '#3a4f6a';
-        dialCtx.lineWidth = isMain ? 2 : 1;
+        dialCtx.lineWidth = isMain ? 2.5 : 1.5;
         dialCtx.stroke();
+
+        if (isMain) {
+            dialCtx.fillStyle = '#5a6f8a';
+            dialCtx.font = '10px Inter, sans-serif';
+            dialCtx.textAlign = 'center';
+            dialCtx.textBaseline = 'bottom';
+            const labelR = radius - 18;
+            dialCtx.fillText(i * 10, cx + Math.cos(a) * labelR, cy + Math.sin(a) * labelR + 10);
+        }
     }
 
-    // Main indicator (needle)
     const angleRad = degToRad(angle - 90);
     dialCtx.beginPath();
     dialCtx.moveTo(cx, cy);
-    dialCtx.lineTo(cx + Math.cos(angleRad) * (radius - 6), cy + Math.sin(angleRad) * (radius - 6));
+    dialCtx.lineTo(cx + Math.cos(angleRad) * (radius - 8), cy + Math.sin(angleRad) * (radius - 8));
     dialCtx.strokeStyle = '#00a8ff';
-    dialCtx.lineWidth = 3;
+    dialCtx.lineWidth = 4;
     dialCtx.stroke();
 
-    // Center dot
     dialCtx.beginPath();
-    dialCtx.arc(cx, cy, 4, 0, Math.PI * 2);
+    dialCtx.arc(cx, cy, 6, 0, Math.PI * 2);
     dialCtx.fillStyle = '#00a8ff';
     dialCtx.fill();
 
-    // Outer glow ring
     dialCtx.beginPath();
     dialCtx.arc(cx, cy, radius - 2, 0, Math.PI * 2);
     dialCtx.strokeStyle = 'rgba(0, 168, 255, 0.1)';
@@ -513,21 +555,19 @@ function renderCameraList() {
     );
 
     cameraList.innerHTML = '';
-    filtered.forEach(cam => {
+    filtered.forEach((cam) => {
         const card = document.createElement('div');
         card.className = `camera-card${cam.id === appState.selectedCameraId ? ' selected' : ''}`;
 
-        // Thumbnail
         const thumb = document.createElement('div');
         thumb.className = 'thumb';
         const thumbCanvas = document.createElement('canvas');
-        thumbCanvas.width = 40;
-        thumbCanvas.height = 40;
+        thumbCanvas.width = 48;
+        thumbCanvas.height = 48;
         renderCameraThumb(thumbCanvas, cam);
         thumb.appendChild(thumbCanvas);
         card.appendChild(thumb);
 
-        // Info
         const info = document.createElement('div');
         info.className = 'info';
         const nameSpan = document.createElement('div');
@@ -535,17 +575,15 @@ function renderCameraList() {
         nameSpan.textContent = cam.name || cam.id;
         const modelSpan = document.createElement('div');
         modelSpan.className = 'model';
-        modelSpan.textContent = cam.model || 'Sin modelo';
+        modelSpan.textContent = `${cam.model || 'Sin modelo'} • ${cam.distance.toFixed(1)}m`;
         info.appendChild(nameSpan);
         info.appendChild(modelSpan);
         card.appendChild(info);
 
-        // Status
         const status = document.createElement('div');
         status.className = `status${cam.active !== false ? ' active' : ' inactive'}`;
         card.appendChild(status);
 
-        // Delete button
         const del = document.createElement('button');
         del.className = 'delete-btn';
         del.textContent = '×';
@@ -559,17 +597,11 @@ function renderCameraList() {
             selectCamera(cam.id);
         });
 
-        // Drag support for reordering or moving to map
-        card.draggable = true;
-        card.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', cam.id);
-            e.dataTransfer.effectAllowed = 'copy';
-        });
-
         cameraList.appendChild(card);
     });
 
     cameraCount.textContent = appState.cameras.length;
+    totalCameras.textContent = appState.cameras.length;
 }
 
 function renderCameraThumb(canvas, cam) {
@@ -583,7 +615,7 @@ function renderCameraThumb(canvas, cam) {
     ctx.fillStyle = '#0a0e17';
     ctx.fillRect(0, 0, w, h);
 
-    const dist = Math.min(w, h) * 0.35;
+    const dist = Math.min(w, h) * 0.4;
     const fovRad = degToRad(cam.fov);
     const angleRad = degToRad(cam.rotation);
 
@@ -591,22 +623,20 @@ function renderCameraThumb(canvas, cam) {
     ctx.translate(cx, cy);
     ctx.rotate(angleRad);
 
-    // Cone
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, dist, -fovRad / 2, fovRad / 2);
     ctx.closePath();
-    ctx.fillStyle = 'rgba(0, 210, 160, 0.25)';
+    ctx.fillStyle = 'rgba(0, 210, 160, 0.2)';
     ctx.fill();
-    ctx.strokeStyle = 'rgba(0, 210, 160, 0.5)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0, 210, 160, 0.4)';
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
     ctx.restore();
 
-    // Dot
     ctx.beginPath();
-    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
     ctx.fillStyle = cam.active !== false ? '#00d2a0' : '#ff4757';
     ctx.fill();
 }
@@ -615,6 +645,10 @@ function renderCameraThumb(canvas, cam) {
 // CALIBRATION
 // ============================================================
 function startCalibration() {
+    if (!appState.image) {
+        alert('Carga un plano primero.');
+        return;
+    }
     if (appState.cameras.length > 0) {
         if (!confirm('La calibración se aplicará a todas las cámaras. ¿Continuar?')) return;
     }
@@ -685,7 +719,6 @@ function setupCanvasEvents() {
         tooltip.classList.add('hidden');
     });
 
-    // Drag and drop for images
     canvas.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropOverlay.classList.remove('hidden');
@@ -705,7 +738,6 @@ function setupCanvasEvents() {
         }
     });
 
-    // Resize
     window.addEventListener('resize', () => {
         resizeCanvas();
     });
@@ -716,8 +748,7 @@ function onCanvasMouseMove(e) {
     appState.mouseX = pos.x;
     appState.mouseY = pos.y;
 
-    // Update status bar coordinates
-    if (isOnImage(pos.x, pos.y)) {
+    if (isOnImage(pos.x, pos.y) && appState.scaleCalibrated) {
         const imgCoords = getImageCoords(pos.x, pos.y);
         coordX.textContent = pxToMeters(imgCoords.x).toFixed(2);
         coordY.textContent = pxToMeters(imgCoords.y).toFixed(2);
@@ -726,18 +757,16 @@ function onCanvasMouseMove(e) {
         coordY.textContent = '0';
     }
 
-    // Tooltip
-    if (isOnImage(pos.x, pos.y)) {
+    if (isOnImage(pos.x, pos.y) && appState.scaleCalibrated) {
         const imgCoords = getImageCoords(pos.x, pos.y);
         tooltip.textContent = `(${pxToMeters(imgCoords.x).toFixed(2)}m, ${pxToMeters(imgCoords.y).toFixed(2)}m)`;
-        tooltip.style.left = (e.clientX + 12) + 'px';
-        tooltip.style.top = (e.clientY - 10) + 'px';
+        tooltip.style.left = (e.clientX + 16) + 'px';
+        tooltip.style.top = (e.clientY - 12) + 'px';
         tooltip.classList.remove('hidden');
     } else {
         tooltip.classList.add('hidden');
     }
 
-    // Drag camera
     if (appState.dragTarget) {
         const imgCoords = getImageCoords(pos.x, pos.y);
         appState.dragTarget.x = imgCoords.x;
@@ -750,7 +779,6 @@ function onCanvasMouseMove(e) {
         return;
     }
 
-    // Calibration
     if (appState.isCalibrating && appState.calibPoints.length === 1) {
         drawScene();
         const p1 = appState.calibPoints[0];
@@ -758,18 +786,17 @@ function onCanvasMouseMove(e) {
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(pos.x, pos.y);
         ctx.strokeStyle = '#ffa502';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
         ctx.stroke();
         ctx.setLineDash([]);
         ctx.fillStyle = '#ffa502';
         ctx.beginPath();
-        ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
+        ctx.arc(pos.x, pos.y, 7, 0, Math.PI * 2);
         ctx.fill();
         return;
     }
 
-    // Hover camera detection
     if (!appState.isAddingCamera && !appState.isCalibrating && !appState.isMeasuring) {
         const hit = getCameraAt(pos.x, pos.y);
         canvas.style.cursor = hit ? 'grab' : 'default';
@@ -802,7 +829,6 @@ function onCanvasMouseDown(e) {
             appState.isMeasuring = false;
             modeDisplay.textContent = 'Selección';
             canvas.style.cursor = 'default';
-            document.getElementById('btnMeasure').classList.remove('active');
         }
         return;
     }
@@ -813,35 +839,28 @@ function onCanvasMouseDown(e) {
             appState.isAddingCamera = false;
             modeDisplay.textContent = 'Selección';
             canvas.style.cursor = 'default';
-            document.getElementById('btnAddCamera').classList.remove('active');
+            document.getElementById('btnAddCamera').classList.remove('primary');
         }
         return;
     }
 
-    // Try to select/drag a camera
     const hit = getCameraAt(pos.x, pos.y);
     if (hit) {
         selectCamera(hit.id);
-        // Start drag
         appState.dragTarget = hit;
-        appState.dragOffset = { x: pos.x - hit.x, y: pos.y - hit.y };
         canvas.style.cursor = 'grabbing';
     } else {
-        // Deselect
-        if (!appState.isMeasuring) {
-            appState.selectedCameraId = null;
-            appState.selectedCamera = null;
-            propertiesPanel.classList.add('hidden');
-            activeCameraDisplay.textContent = 'Ninguna';
-            updateUI();
-        }
+        appState.selectedCameraId = null;
+        appState.selectedCamera = null;
+        propertiesPanel.classList.add('hidden');
+        activeCameraDisplay.textContent = 'Ninguna';
+        updateUI();
     }
 }
 
 function onCanvasMouseUp(e) {
     if (appState.dragTarget) {
         appState.dragTarget = null;
-        appState.dragOffset = null;
         canvas.style.cursor = 'default';
         saveState();
         drawScene();
@@ -849,13 +868,16 @@ function onCanvasMouseUp(e) {
 }
 
 function getCameraAt(canvasX, canvasY) {
-    // Check from top to bottom (reverse order)
+    const baseSize = Math.min(appState.imageWidth || canvas.width, appState.imageHeight || canvas.height);
+    const cameraScale = Math.max(0.5, Math.min(1.5, baseSize / 600));
+    const hitRadius = Math.max(15, 25 * cameraScale);
+    
     for (let i = appState.cameras.length - 1; i >= 0; i--) {
         const cam = appState.cameras[i];
         const pos = getCanvasCoordsFromImage(cam.x, cam.y);
         const dx = canvasX - pos.x;
         const dy = canvasY - pos.y;
-        if (dx * dx + dy * dy < 400) { // 20px radius
+        if (dx * dx + dy * dy < hitRadius * hitRadius) {
             return cam;
         }
     }
@@ -874,7 +896,6 @@ function loadImageFile(file) {
             appState.imageData = e.target.result;
             resizeCanvas();
             if (!appState.scaleCalibrated) {
-                // Auto-start calibration
                 setTimeout(() => {
                     if (confirm('¿Deseas calibrar la escala ahora?')) {
                         startCalibration();
@@ -887,6 +908,18 @@ function loadImageFile(file) {
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+}
+
+function removeImage() {
+    if (!appState.image) return;
+    if (!confirm('¿Quitar la imagen de fondo?')) return;
+    appState.image = null;
+    appState.imageData = null;
+    appState.scaleCalibrated = false;
+    appState.scale = 0;
+    resizeCanvas();
+    updateUI();
+    saveState();
 }
 
 function resizeCanvas() {
@@ -957,8 +990,10 @@ function saveState() {
             nextCameraId: appState.nextCameraId,
         };
         localStorage.setItem('wijtech_simulator', JSON.stringify(data));
+        return true;
     } catch (e) {
         console.warn('Could not save state:', e);
+        return false;
     }
 }
 
@@ -995,7 +1030,21 @@ function loadState() {
     }
 }
 
+function saveProject() {
+    if (!appState.image) {
+        alert('No hay proyecto para guardar.');
+        return;
+    }
+    if (saveState()) {
+        alert('✅ Proyecto guardado en localStorage.');
+    }
+}
+
 function exportProject() {
+    if (!appState.image) {
+        alert('No hay proyecto para exportar.');
+        return;
+    }
     const data = {
         image: appState.imageData,
         scale: appState.scale,
@@ -1010,7 +1059,9 @@ function exportProject() {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'wijtech_project.json';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
 
@@ -1039,7 +1090,7 @@ function importProject(file) {
                         selectCamera(appState.cameras[0].id);
                     }
                     saveState();
-                    alert('Proyecto cargado correctamente.');
+                    alert('✅ Proyecto cargado correctamente.');
                 };
                 img.src = data.image;
             } else {
@@ -1052,28 +1103,51 @@ function importProject(file) {
     reader.readAsText(file);
 }
 
+function exportImage() {
+    if (!appState.image) {
+        alert('No hay imagen para exportar.');
+        return;
+    }
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'wijtech_simulation.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
 function loadExample() {
-    // Create a simple example with a blank canvas and some cameras
+    if (appState.cameras.length > 0 || appState.image) {
+        if (!confirm('Esto reemplazará tu proyecto actual. ¿Continuar?')) return;
+    }
+
     appState.image = null;
     appState.imageData = null;
-    appState.scale = 0.023; // Example scale
+    appState.scale = 0.023;
     appState.scaleCalibrated = true;
 
-    const w = canvas.width || 800;
-    const h = canvas.height || 600;
-
-    // Create some example cameras
     appState.cameras = [
-        { id: 'cam-001', name: 'Entrada Principal', x: 200, y: 300, rotation: 45, distance: 6, fov: 81, model: '2.8mm - 1.7 - 4m', active: true },
-        { id: 'cam-002', name: 'Parking', x: 500, y: 200, rotation: 120, distance: 8, fov: 60, model: '3.6mm - 2.1 - 6m', active: true },
-        { id: 'cam-003', name: 'Oficinas', x: 350, y: 450, rotation: 270, distance: 5, fov: 90, model: '6.0mm - 3.2 - 10m', active: true },
+        { id: 'cam-001', name: 'Entrada', x: 150, y: 200, rotation: 45, distance: 6, fov: 81, model: '2.8mm - 110°', active: true },
+        { id: 'cam-002', name: 'Recepción', x: 300, y: 150, rotation: 90, distance: 4, fov: 81, model: '2.8mm - 110°', active: true },
+        { id: 'cam-003', name: 'Parking', x: 500, y: 350, rotation: 135, distance: 12, fov: 81, model: '2.8mm - 110°', active: true },
+        { id: 'cam-004', name: 'Sala principal', x: 350, y: 400, rotation: 180, distance: 8, fov: 81, model: '3.6mm - 87°', active: true },
+        { id: 'cam-005', name: 'Oficinas', x: 600, y: 200, rotation: 225, distance: 5, fov: 81, model: '3.6mm - 87°', active: true },
+        { id: 'cam-006', name: 'Caja fuerte', x: 700, y: 450, rotation: 270, distance: 10, fov: 30, model: '12.0mm - 30°', active: true },
+        { id: 'cam-007', name: 'Ascensor', x: 100, y: 450, rotation: 315, distance: 5, fov: 81, model: '3.6mm - 87°', active: true },
+        { id: 'cam-008', name: 'Salida', x: 750, y: 100, rotation: 0, distance: 8, fov: 30, model: '12.0mm - 30°', active: true },
     ];
-    appState.nextCameraId = 4;
+    appState.nextCameraId = 9;
 
-    // Example areas
     appState.areas = [
-        { points: [{x: 150, y: 150}, {x: 250, y: 150}, {x: 250, y: 250}, {x: 150, y: 250}], label: 'Sala 1' },
-        { points: [{x: 300, y: 100}, {x: 450, y: 100}, {x: 450, y: 200}, {x: 300, y: 200}], label: 'Sala 2' },
+        { points: [{x: 120, y: 120}, {x: 280, y: 120}, {x: 280, y: 280}, {x: 120, y: 280}], label: 'Entrada' },
+        { points: [{x: 300, y: 100}, {x: 480, y: 100}, {x: 480, y: 250}, {x: 300, y: 250}], label: 'Sala principal' },
+        { points: [{x: 500, y: 280}, {x: 700, y: 280}, {x: 700, y: 500}, {x: 500, y: 500}], label: 'Parking' },
+        { points: [{x: 50, y: 400}, {x: 180, y: 400}, {x: 180, y: 550}, {x: 50, y: 550}], label: 'Ascensor' },
+        { points: [{x: 650, y: 50}, {x: 780, y: 50}, {x: 780, y: 180}, {x: 650, y: 180}], label: 'Salida' },
+        { points: [{x: 580, y: 120}, {x: 680, y: 120}, {x: 680, y: 220}, {x: 580, y: 220}], label: 'Oficinas' },
+        { points: [{x: 680, y: 420}, {x: 760, y: 420}, {x: 760, y: 500}, {x: 680, y: 500}], label: 'Caja fuerte' },
+        { points: [{x: 200, y: 300}, {x: 340, y: 300}, {x: 340, y: 380}, {x: 200, y: 380}], label: 'Recepción' },
     ];
 
     appState.selectedCameraId = appState.cameras[0].id;
@@ -1085,107 +1159,114 @@ function loadExample() {
 }
 
 // ============================================================
-// SIMULATION MODE
+// SIMULATION
 // ============================================================
-let simulationInterval = null;
+function startSimulation() {
+    if (appState.cameras.length === 0) {
+        alert('No hay cámaras para simular.');
+        return;
+    }
 
-function toggleSimulation() {
-    appState.isSimulating = !appState.isSimulating;
-    if (appState.isSimulating) {
-        document.getElementById('btnSimulate').classList.add('active');
-        document.body.classList.add('simulating');
-        document.getElementById('btnSimulate').innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-            Detener
-        `;
-        modeDisplay.textContent = 'Simulación';
-        // Flash cameras
-        let flash = false;
-        simulationInterval = setInterval(() => {
-            flash = !flash;
-            appState.cameras.forEach(cam => {
-                cam.active = flash;
-            });
-            drawScene();
-            renderCameraList();
-        }, 800);
-    } else {
-        document.getElementById('btnSimulate').classList.remove('active');
-        document.body.classList.remove('simulating');
-        document.getElementById('btnSimulate').innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Simular
-        `;
-        modeDisplay.textContent = 'Selección';
-        clearInterval(simulationInterval);
-        simulationInterval = null;
-        appState.cameras.forEach(cam => {
-            cam.active = true;
+    appState.isSimulating = true;
+    simulationOverlay.classList.remove('hidden');
+    simCamCount.textContent = appState.cameras.length;
+    updateSimulationFeed();
+
+    let counter = 0;
+    appState.simulationInterval = setInterval(() => {
+        counter++;
+        // Simulate camera activity - random cameras activate/deactivate
+        appState.cameras.forEach((cam, index) => {
+            // Each camera has a chance to change state
+            if (Math.random() < 0.3) {
+                cam.active = !cam.active;
+            }
+            // Some cameras stay active more often
+            if (index % 2 === 0 && Math.random() < 0.7) {
+                cam.active = true;
+            }
         });
+        updateSimulationFeed();
         drawScene();
         renderCameraList();
+    }, 1500);
+}
+
+function updateSimulationFeed() {
+    simulationFeed.innerHTML = '';
+    appState.cameras.forEach(cam => {
+        const div = document.createElement('div');
+        div.className = 'sim-cam-feed';
+        const name = document.createElement('div');
+        name.className = 'sim-name';
+        name.textContent = cam.name || cam.id;
+        div.appendChild(name);
+
+        const status = document.createElement('div');
+        status.className = 'sim-status';
+        const dot = document.createElement('span');
+        dot.className = `sim-dot ${cam.active !== false ? 'on' : 'off'}`;
+        status.appendChild(dot);
+        status.appendChild(document.createTextNode(cam.active !== false ? ' ACTIVA' : ' INACTIVA'));
+        div.appendChild(status);
+
+        simulationFeed.appendChild(div);
+    });
+}
+
+function stopSimulation() {
+    appState.isSimulating = false;
+    simulationOverlay.classList.add('hidden');
+    if (appState.simulationInterval) {
+        clearInterval(appState.simulationInterval);
+        appState.simulationInterval = null;
+    }
+    // Restore all cameras to active
+    appState.cameras.forEach(cam => cam.active = true);
+    drawScene();
+    renderCameraList();
+}
+
+// ============================================================
+// FULLSCREEN
+// ============================================================
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert('Error al entrar en pantalla completa: ' + err.message);
+        });
+    } else {
+        document.exitFullscreen();
     }
 }
 
 // ============================================================
-// KEYBOARD SHORTCUTS
+// HELP
 // ============================================================
-document.addEventListener('keydown', (e) => {
-    // Delete selected camera
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (appState.selectedCameraId) {
-            deleteCamera(appState.selectedCameraId);
-        }
-    }
-    // R for rotation mode (focus dial)
-    if (e.key === 'r' || e.key === 'R') {
-        if (appState.selectedCamera) {
-            document.getElementById('propRotation').focus();
-        }
-    }
-    // M for measure mode
-    if (e.key === 'm' || e.key === 'M') {
-        if (!appState.isMeasuring) {
-            appState.isMeasuring = true;
-            modeDisplay.textContent = 'Medición';
-            canvas.style.cursor = 'crosshair';
-            document.getElementById('btnMeasure').classList.add('active');
-            appState.measurePoints = [];
-        } else {
-            appState.isMeasuring = false;
-            modeDisplay.textContent = 'Selección';
-            canvas.style.cursor = 'default';
-            document.getElementById('btnMeasure').classList.remove('active');
-            appState.measurePoints = [];
-        }
-        drawScene();
-    }
-    // Escape to cancel actions
-    if (e.key === 'Escape') {
-        if (appState.isCalibrating) {
-            appState.isCalibrating = false;
-            appState.calibPoints = [];
-            canvas.style.cursor = 'default';
-            modeDisplay.textContent = 'Selección';
-            calibrationOverlay.classList.add('hidden');
-            drawScene();
-        }
-        if (appState.isAddingCamera) {
-            appState.isAddingCamera = false;
-            canvas.style.cursor = 'default';
-            modeDisplay.textContent = 'Selección';
-            document.getElementById('btnAddCamera').classList.remove('active');
-        }
-        if (appState.isMeasuring) {
-            appState.isMeasuring = false;
-            modeDisplay.textContent = 'Selección';
-            canvas.style.cursor = 'default';
-            document.getElementById('btnMeasure').classList.remove('active');
-            appState.measurePoints = [];
-            drawScene();
-        }
-    }
-});
+function showHelp() {
+    alert(
+        '🎥 WijTech CCTV Simulator\n' +
+        '========================\n\n' +
+        '📌 FUNCIONALIDADES:\n' +
+        '• Carga un plano (JPG, PNG)\n' +
+        '• Calibra la escala dibujando una línea\n' +
+        '• Agrega cámaras con el botón + Añadir\n' +
+        '• Arrastra cámaras para reposicionarlas\n' +
+        '• Ajusta rotación con el dial circular\n' +
+        '• Ajusta alcance y FOV con sliders\n' +
+        '• Mide distancias en metros\n' +
+        '• Simulación en vivo con monitoreo\n\n' +
+        '⌨️ ATAJOS:\n' +
+        '• Delete/Backspace: Eliminar cámara\n' +
+        '• Escape: Cancelar acción\n' +
+        '• R: Enfocar dial de rotación\n' +
+        '• M: Activar modo medir\n\n' +
+        '💾 GUARDADO:\n' +
+        '• Guardar: Guarda en localStorage\n' +
+        '• Exportar: Guarda como JSON\n' +
+        '• Cargar: Carga un proyecto JSON'
+    );
+}
 
 // ============================================================
 // DIAL EVENTS
@@ -1203,18 +1284,19 @@ function setupDialEvents() {
     window.addEventListener('mousemove', (e) => {
         if (!isDragging || !appState.selectedCamera) return;
         updateDialAngle(e);
+        drawScene();
     });
 
     window.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
             dialCanvas.style.cursor = 'grab';
-            // Save the change
-            applyProperties();
+            if (appState.selectedCamera) {
+                applyProperties();
+            }
         }
     });
 
-    // Touch support
     dialCanvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         if (!appState.selectedCamera) return;
@@ -1230,13 +1312,16 @@ function setupDialEvents() {
         const touch = e.touches[0];
         const rect = dialCanvas.getBoundingClientRect();
         updateDialAngleFromTouch(touch.clientX, touch.clientY, rect);
+        drawScene();
     });
 
     dialCanvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         if (isDragging) {
             isDragging = false;
-            applyProperties();
+            if (appState.selectedCamera) {
+                applyProperties();
+            }
         }
     });
 }
@@ -1246,9 +1331,7 @@ function updateDialAngle(e) {
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-    // Add 90 because we draw from top
     let newAngle = normalizeAngle(angle + 90);
-    // Snap to 1 degree
     newAngle = Math.round(newAngle);
     if (appState.selectedCamera) {
         appState.selectedCamera.rotation = newAngle;
@@ -1273,17 +1356,90 @@ function updateDialAngleFromTouch(clientX, clientY, rect) {
 }
 
 // ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (appState.selectedCameraId) {
+            deleteCamera(appState.selectedCameraId);
+        }
+    }
+    if (e.key === 'r' || e.key === 'R') {
+        if (appState.selectedCamera) {
+            document.getElementById('propRotation').focus();
+        }
+    }
+    if (e.key === 'm' || e.key === 'M') {
+        if (!appState.isMeasuring) {
+            appState.isMeasuring = true;
+            modeDisplay.textContent = 'Medición';
+            canvas.style.cursor = 'crosshair';
+            appState.measurePoints = [];
+        } else {
+            appState.isMeasuring = false;
+            modeDisplay.textContent = 'Selección';
+            canvas.style.cursor = 'default';
+            appState.measurePoints = [];
+        }
+        drawScene();
+    }
+    if (e.key === 'Escape') {
+        if (appState.isCalibrating) {
+            appState.isCalibrating = false;
+            appState.calibPoints = [];
+            canvas.style.cursor = 'default';
+            modeDisplay.textContent = 'Selección';
+            calibrationOverlay.classList.add('hidden');
+            drawScene();
+        }
+        if (appState.isAddingCamera) {
+            appState.isAddingCamera = false;
+            canvas.style.cursor = 'default';
+            modeDisplay.textContent = 'Selección';
+            document.getElementById('btnAddCamera').classList.remove('primary');
+        }
+        if (appState.isMeasuring) {
+            appState.isMeasuring = false;
+            modeDisplay.textContent = 'Selección';
+            canvas.style.cursor = 'default';
+            appState.measurePoints = [];
+            drawScene();
+        }
+        if (appState.isSimulating) {
+            stopSimulation();
+        }
+    }
+});
+
+// ============================================================
 // INITIALIZATION
 // ============================================================
 function init() {
-    // Resize canvas
     resizeCanvas();
-
-    // Setup events
     setupCanvasEvents();
     setupDialEvents();
 
-    // Toolbar buttons
+    // --- TOOLBAR BUTTONS ---
+    document.getElementById('btnAddCamera').addEventListener('click', () => {
+        if (!appState.image) {
+            alert('Carga un plano primero.');
+            return;
+        }
+        appState.isAddingCamera = !appState.isAddingCamera;
+        if (appState.isAddingCamera) {
+            modeDisplay.textContent = 'Agregar Cámara';
+            canvas.style.cursor = 'crosshair';
+            document.getElementById('btnAddCamera').classList.add('primary');
+        } else {
+            modeDisplay.textContent = 'Selección';
+            canvas.style.cursor = 'default';
+            document.getElementById('btnAddCamera').classList.remove('primary');
+        }
+    });
+
+    document.getElementById('btnDeleteCamera').addEventListener('click', deleteSelectedCamera);
+    document.getElementById('btnClearAll').addEventListener('click', clearAllCameras);
+
     document.getElementById('btnLoadImage').addEventListener('click', () => {
         fileInput.click();
     });
@@ -1295,62 +1451,11 @@ function init() {
         e.target.value = '';
     });
 
-    document.getElementById('btnAddCamera').addEventListener('click', () => {
-        if (!appState.image) {
-            alert('Carga un plano primero.');
-            return;
-        }
-        appState.isAddingCamera = !appState.isAddingCamera;
-        if (appState.isAddingCamera) {
-            modeDisplay.textContent = 'Agregar Cámara';
-            canvas.style.cursor = 'crosshair';
-            document.getElementById('btnAddCamera').classList.add('active');
-        } else {
-            modeDisplay.textContent = 'Selección';
-            canvas.style.cursor = 'default';
-            document.getElementById('btnAddCamera').classList.remove('active');
-        }
-    });
+    document.getElementById('btnRemoveImage').addEventListener('click', removeImage);
+    document.getElementById('btnExportImage').addEventListener('click', exportImage);
+    document.getElementById('btnSaveProject').addEventListener('click', saveProject);
 
-    document.getElementById('btnMeasure').addEventListener('click', () => {
-        if (!appState.image) {
-            alert('Carga un plano primero.');
-            return;
-        }
-        appState.isMeasuring = !appState.isMeasuring;
-        if (appState.isMeasuring) {
-            modeDisplay.textContent = 'Medición';
-            canvas.style.cursor = 'crosshair';
-            document.getElementById('btnMeasure').classList.add('active');
-            appState.measurePoints = [];
-        } else {
-            modeDisplay.textContent = 'Selección';
-            canvas.style.cursor = 'default';
-            document.getElementById('btnMeasure').classList.remove('active');
-            appState.measurePoints = [];
-        }
-        drawScene();
-    });
-
-    document.getElementById('btnSimulate').addEventListener('click', toggleSimulation);
-
-    document.getElementById('btnExample').addEventListener('click', () => {
-        if (appState.cameras.length > 0) {
-            if (!confirm('Esto reemplazará tu proyecto actual. ¿Continuar?')) return;
-        }
-        loadExample();
-    });
-
-    document.getElementById('btnSave').addEventListener('click', () => {
-        if (!appState.image) {
-            alert('No hay nada para guardar. Carga un plano primero.');
-            return;
-        }
-        saveState();
-        alert('Proyecto guardado en localStorage.');
-    });
-
-    document.getElementById('btnLoad').addEventListener('click', () => {
+    document.getElementById('btnLoadProject').addEventListener('click', () => {
         projectInput.click();
     });
 
@@ -1361,33 +1466,14 @@ function init() {
         e.target.value = '';
     });
 
-    document.getElementById('btnExport').addEventListener('click', () => {
-        if (!appState.image) {
-            alert('No hay imagen para exportar.');
-            return;
-        }
-        // Export as image
-        const dataUrl = canvas.toDataURL('image/png');
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = 'wijtech_simulation.png';
-        a.click();
-    });
+    document.getElementById('btnExample').addEventListener('click', loadExample);
+    document.getElementById('btnHelp').addEventListener('click', showHelp);
+    document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
 
-    document.getElementById('btnHelp').addEventListener('click', () => {
-        alert(
-            'WijTech CCTV Simulator\n\n' +
-            'Atajos:\n' +
-            '• Delete/Backspace: Eliminar cámara seleccionada\n' +
-            '• R: Rotación (dial)\n' +
-            '• M: Modo medir\n' +
-            '• Escape: Cancelar acción\n\n' +
-            'Carga un plano, calibra la escala y coloca cámaras.\n' +
-            'Arrastra las cámaras para reposicionarlas.'
-        );
-    });
+    // --- SIMULATION ---
+    document.getElementById('btnStopSimulation').addEventListener('click', stopSimulation);
 
-    // Properties panel events
+    // --- PROPERTIES PANEL ---
     document.getElementById('closeProperties').addEventListener('click', () => {
         propertiesPanel.classList.add('hidden');
         appState.selectedCameraId = null;
@@ -1397,7 +1483,6 @@ function init() {
     });
 
     document.getElementById('propApply').addEventListener('click', applyProperties);
-
     document.getElementById('propDelete').addEventListener('click', () => {
         if (appState.selectedCameraId) {
             deleteCamera(appState.selectedCameraId);
@@ -1423,7 +1508,7 @@ function init() {
         }
     });
 
-    // Camera search
+    // Search
     document.getElementById('cameraSearch').addEventListener('input', renderCameraList);
 
     // Name input updates
@@ -1436,7 +1521,6 @@ function init() {
         }
     });
 
-    // Model input updates
     document.getElementById('propModel').addEventListener('change', () => {
         if (appState.selectedCamera) {
             appState.selectedCamera.model = document.getElementById('propModel').value;
@@ -1444,30 +1528,27 @@ function init() {
         }
     });
 
-    // Keyboard shortcut to apply with Enter in properties
     document.getElementById('propName').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') applyProperties();
     });
 
-    // Try to load saved state
+    // Load saved state
     const loaded = loadState();
 
-    // If no state, show a welcome message in the canvas
     if (!loaded && !appState.image) {
         ctx.fillStyle = '#1a2538';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#8a9bb5';
-        ctx.font = '18px Inter, sans-serif';
+        ctx.font = '22px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Carga un plano para comenzar', canvas.width / 2, canvas.height / 2 - 20);
-        ctx.font = '14px Inter, sans-serif';
+        ctx.fillText('📷 Carga un plano para comenzar', canvas.width / 2, canvas.height / 2 - 20);
+        ctx.font = '16px Inter, sans-serif';
         ctx.fillStyle = '#5a6f8a';
-        ctx.fillText('Arrastra una imagen o usa el botón "Cargar"', canvas.width / 2, canvas.height / 2 + 20);
+        ctx.fillText('Arrastra una imagen o usa el botón "Fondo"', canvas.width / 2, canvas.height / 2 + 30);
     }
 
     console.log('WijTech CCTV Simulator initialized.');
 }
 
-// Start the application when DOM is ready
 document.addEventListener('DOMContentLoaded', init);

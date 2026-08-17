@@ -11,30 +11,67 @@
     <header id="toolbar">
         <div class="toolbar-left">
             <div class="logo">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <circle cx="16" cy="16" r="14" stroke="#00a8ff" stroke-width="2"/>
-                    <circle cx="16" cy="16" r="6" fill="#00a8ff" opacity="0.3"/>
-                    <circle cx="16" cy="16" r="3" fill="#00a8ff"/>
-                    <path d="M16 2 L16 8 M16 24 L16 30 M2 16 L8 16 M24 16 L30 16" stroke="#00a8ff" stroke-width="1.5"/>
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                    <circle cx="18" cy="18" r="16" stroke="#00a8ff" stroke-width="2.5"/>
+                    <circle cx="18" cy="18" r="7" fill="#00a8ff" opacity="0.25"/>
+                    <circle cx="18" cy="18" r="3.5" fill="#00a8ff"/>
+                    <path d="M18 2 L18 9 M18 27 L18 34 M2 18 L9 18 M27 18 L34 18" stroke="#00a8ff" stroke-width="2"/>
                 </svg>
                 <span>WijTech CCTV</span>
             </div>
             <span class="subtitle">Diseñador profesional de videovigilancia</span>
         </div>
         <div class="toolbar-center">
-            <button id="btnAddCamera" class="primary">+ Añadir</button>
-            <button id="btnDeleteCamera">Eliminar</button>
-            <button id="btnClearAll">Limpiar</button>
-            <button id="btnLoadImage">Fondo</button>
-            <button id="btnRemoveImage">Quitar</button>
-            <button id="btnExportImage">Exportar</button>
-            <button id="btnSaveProject">Guardar</button>
-            <button id="btnLoadProject">Cargar</button>
-            <button id="btnExample">Ejemplo</button>
+            <button id="btnAddCamera" class="primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                Añadir
+            </button>
+            <button id="btnDeleteCamera" class="danger">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Eliminar
+            </button>
+            <button id="btnClearAll">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Limpiar
+            </button>
+            <button id="btnLoadImage">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Fondo
+            </button>
+            <button id="btnRemoveImage">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Quitar
+            </button>
+            <button id="btnMeasure">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="15 8 19 12 15 16"/><line x1="19" y1="12" x2="19" y2="12"/></svg>
+                Medir
+            </button>
+            <button id="btnSimulate">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Simular
+            </button>
+            <button id="btnExportImage">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Exportar
+            </button>
+            <button id="btnSaveProject">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Guardar
+            </button>
+            <button id="btnLoadProject">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Cargar
+            </button>
+            <button id="btnExample">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Ejemplo
+            </button>
         </div>
         <div class="toolbar-right">
-            <button id="btnHelp">Ayuda</button>
-            <button id="btnFullscreen">Pantalla</button>
+            <button id="btnHelp" class="help-btn">?</button>
+            <button id="btnFullscreen" class="fullscreen-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            </button>
         </div>
     </header>
 
@@ -44,7 +81,7 @@
         <aside id="camera-panel">
             <div class="panel-header">
                 <h3>Cámaras</h3>
-                <span id="cameraCount">0</span>
+                <span class="badge" id="cameraCount">0</span>
             </div>
             <div class="search-box">
                 <input type="text" id="cameraSearch" placeholder="Buscar cámara..." />
@@ -56,43 +93,43 @@
         <!-- Center: Map Canvas -->
         <main id="map-container">
             <canvas id="mapCanvas"></canvas>
-            <!-- Drop overlay for image upload -->
+            
             <div id="dropOverlay" class="drop-overlay hidden">
                 <div class="drop-content">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00a8ff" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    <p>Suelta tu imagen aquí</p>
+                    <p>Arrastra tu imagen aquí</p>
                 </div>
             </div>
-            <!-- Calibration overlay -->
+
             <div id="calibrationOverlay" class="calibration-overlay hidden">
                 <div class="calibration-box">
                     <h3>Calibración de Escala</h3>
-                    <p>Has dibujado una línea de <span id="calibPixels">0</span> píxeles.</p>
-                    <label>¿Cuántos metros mide en la realidad?</label>
-                    <input type="number" id="calibInput" step="0.01" min="0.01" placeholder="Ej: 5.5" />
+                    <p>Línea dibujada: <strong><span id="calibPixels">0</span></strong> píxeles</p>
+                    <label>Ingresa la longitud real en metros:</label>
+                    <input type="number" id="calibInput" step="0.01" min="0.01" placeholder="Ejemplo: 5.5" />
                     <div class="calib-actions">
                         <button id="calibConfirm" class="primary">Confirmar</button>
                         <button id="calibCancel">Cancelar</button>
                     </div>
                 </div>
             </div>
-            <!-- Tooltip -->
+
             <div id="tooltip" class="tooltip hidden"></div>
         </main>
 
         <!-- Right Panel: Properties -->
         <aside id="properties-panel" class="hidden">
             <div class="panel-header">
-                <h3>Editar cámara #<span id="camEditNumber">1</span></h3>
+                <h3>Editar Cámara <span id="camEditNumber">#1</span></h3>
                 <button id="closeProperties" class="close-btn">×</button>
             </div>
             <div id="propertiesContent">
                 <div class="prop-group">
-                    <label>ETIQUETA</label>
+                    <label>Etiqueta</label>
                     <input type="text" id="propName" placeholder="Nombre de la cámara" />
                 </div>
                 <div class="prop-group">
-                    <label>LENTE (MM)</label>
+                    <label>Modelo de lente</label>
                     <select id="propModel">
                         <option value="2.8mm - 110°">2.8mm - 110°</option>
                         <option value="3.6mm - 87°">3.6mm - 87°</option>
@@ -102,35 +139,35 @@
                     </select>
                 </div>
                 <div class="prop-group">
-                    <label>DISTANCIA (M)</label>
+                    <label>Distancia (metros)</label>
                     <div class="slider-container">
                         <input type="range" id="propDistance" min="0.5" max="50" step="0.1" value="4" />
                         <span id="propDistanceVal" class="slider-value">4.0</span>
                     </div>
                 </div>
                 <div class="prop-group">
-                    <label>ROTACIÓN (°)</label>
+                    <label>Rotación</label>
                     <div class="dial-container">
                         <canvas id="dialCanvas" width="120" height="120"></canvas>
                         <span id="propRotation" class="dial-value">0°</span>
                     </div>
                 </div>
                 <div class="prop-group">
-                    <label>FOV (°)</label>
+                    <label>Ángulo de visión (FOV)</label>
                     <div class="slider-container">
                         <input type="range" id="propFov" min="10" max="120" step="1" value="81" />
-                        <span id="propFovVal" class="slider-value">81</span>
+                        <span id="propFovVal" class="slider-value">81°</span>
                     </div>
                 </div>
                 <div class="prop-group">
-                    <label>POSICIÓN</label>
+                    <label>Posición en el mapa</label>
                     <div class="pos-display">
-                        <span id="propPosX">0.00</span>m, <span id="propPosY">0.00</span>m
+                        X: <span id="propPosX">0.00</span>m &nbsp;|&nbsp; Y: <span id="propPosY">0.00</span>m
                     </div>
                 </div>
                 <div class="prop-actions">
-                    <button id="propApply" class="primary">Aplicar</button>
-                    <button id="propDelete" class="danger">Eliminar</button>
+                    <button id="propApply" class="primary">Aplicar cambios</button>
+                    <button id="propDelete" class="danger">Eliminar cámara</button>
                 </div>
             </div>
         </aside>
@@ -138,11 +175,11 @@
 
     <!-- Status Bar -->
     <footer id="status-bar">
-        <span id="statusScale">📏 Escala: <span id="scaleDisplay">No calibrada</span></span>
-        <span id="statusCoords">📍 Coordenadas: (<span id="coordX">0</span>, <span id="coordY">0</span>)</span>
-        <span id="statusCamera">🎥 Cámara: <span id="activeCameraDisplay">Ninguna</span></span>
-        <span id="statusMode">Modo: <span id="modeDisplay">Selección</span></span>
-        <span id="statusCameras">📷 <span id="totalCameras">0</span> cámaras</span>
+        <span class="status-item" id="statusScale">📏 Escala: <span id="scaleDisplay">No calibrada</span></span>
+        <span class="status-item" id="statusCoords">📍 Posición: (<span id="coordX">0.00</span>, <span id="coordY">0.00</span>)</span>
+        <span class="status-item" id="statusCamera">🎥 Cámara: <span id="activeCameraDisplay">Ninguna</span></span>
+        <span class="status-item" id="statusMode">Modo: <span id="modeDisplay">Selección</span></span>
+        <span class="status-item" id="statusCameras">📷 <span id="totalCameras">0</span> cámaras</span>
     </footer>
 
     <input type="file" id="fileInput" accept="image/*" style="display:none" />
